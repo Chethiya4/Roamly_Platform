@@ -14,8 +14,6 @@
 
   <header class="header">
     <div class="header-inner">
-      
-      <!-- Updated Logo Section -->
       <a href="index.html" class="logo">
         <img src="assets/logo.png" alt="Brand logo">
       </a>
@@ -50,7 +48,6 @@
           <span class="badge">0</span>
         </button>
 
-        <!-- Added id="darkModeToggle" to hook it up in JS -->
         <button type="button" class="icon-btn" id="darkModeToggle" aria-label="Toggle dark mode">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="4.5"/>
@@ -87,12 +84,122 @@
         </div>
       </div>
     </section>
+
+    <!-- Search Section -->
+    <section class="search-section section-padding scroll-reveal">
+      <div class="container">
+        <h2 class="section-title">Where do you want to go?</h2>
+        <div class="search-box">
+          <input type="text" placeholder="Search for destinations, events, or activities...">
+          <button type="button" class="btn-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/>
+            </svg>
+          </button>
+        </div>
+        <div class="popular-tags">
+          <span>Popular:</span>
+          <button type="button" class="tag">Sigiriya</button>
+          <button type="button" class="tag">Ella</button>
+          <button type="button" class="tag">Galle Fort</button>
+          <button type="button" class="tag">Yala National Park</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Monthly Special -->
+    <section class="monthly-special section-padding scroll-reveal">
+      <div class="container monthly-grid">
+        <div class="monthly-image">
+          <img src="images/Esala.jpg" alt="Esala Perahera">
+        </div>
+        <div class="monthly-content">
+          <span class="badge-special">Monthly Special</span>
+          <h2>Kandy Esala Perahera</h2>
+          <p>Experience the grand festival of the sacred tooth relic. Witness a mesmerizing pageant of elephants, traditional dancers, and fire breathers illuminating the historic streets of Kandy. A cultural spectacle you cannot miss.</p>
+          <button type="button" class="btn-primary">Explore Event</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Popular Locations Section -->
+    <section class="popular-locations section-padding">
+      <div class="container">
+        <h2 class="section-title scroll-reveal">Popular Locations</h2>
+        <div class="locations-grid">
+          
+          <div class="location-card scroll-reveal" style="transition-delay: 0.1s" onclick="openModal('Sigiriya', 'The ancient rock fortress and palace ruin, considered by locals as the Eighth Wonder of the World.')">
+            <div class="card-img"><img src="images/Sigiriya1.jpg" alt="Sigiriya"></div>
+            <div class="card-info">
+              <h3>Sigiriya</h3>
+              <div class="rating"><span>⭐ 4.9</span> (2.4k reviews)</div>
+            </div>
+          </div>
+
+          <div class="location-card scroll-reveal" style="transition-delay: 0.2s" onclick="openModal('Ella', 'A small town in the Badulla District known for its breathtaking views, tea plantations, and waterfalls.')">
+            <div class="card-img"><img src="images/Ella1.jpg" alt="Ella"></div>
+            <div class="card-info">
+              <h3>Ella</h3>
+              <div class="rating"><span>⭐ 4.8</span> (1.8k reviews)</div>
+            </div>
+          </div>
+
+          <div class="location-card scroll-reveal" style="transition-delay: 0.3s" onclick="openModal('Galle Fort', 'A historical, archaeological and architectural heritage monument first built by the Portuguese.')">
+            <div class="card-img"><img src="images/gallfort1.jpg" alt="Galle Fort"></div>
+            <div class="card-info">
+              <h3>Galle Fort</h3>
+              <div class="rating"><span>⭐ 4.7</span> (3.1k reviews)</div>
+            </div>
+          </div>
+
+          <div class="location-card scroll-reveal" style="transition-delay: 0.4s" onclick="openModal('Yala National Park', 'The most visited and second largest national park in Sri Lanka, famous for its leopards.')">
+            <div class="card-img"><img src="images/Yala1.jpg" alt="Yala National Park"></div>
+            <div class="card-info">
+              <h3>Yala National Park</h3>
+              <div class="rating"><span>⭐ 4.8</span> (1.2k reviews)</div>
+            </div>
+          </div>
+
+          <div class="location-card scroll-reveal" style="transition-delay: 0.1s" onclick="openModal('Nuwara Eliya', 'Often referred to as Little England, this city offers a cool climate and stunning tea estates.')">
+            <div class="card-img"><img src="images/NuwaraEliya1.jpg" alt="Nuwara Eliya"></div>
+            <div class="card-info">
+              <h3>Nuwara Eliya</h3>
+              <div class="rating"><span>⭐ 4.6</span> (1.5k reviews)</div>
+            </div>
+          </div>
+
+          <div class="location-card scroll-reveal" style="transition-delay: 0.2s" onclick="openModal('Mirissa Beach', 'A stunning crescent beach located in the south coast, renowned for its whale watching tours.')">
+            <div class="card-img"><img src="images/Mirissa1.jpg" alt="Mirissa Beach"></div>
+            <div class="card-info">
+              <h3>Mirissa Beach</h3>
+              <div class="rating"><span>⭐ 4.9</span> (2.9k reviews)</div>
+            </div>
+          </div>
+
+          <div class="location-card scroll-reveal" style="transition-delay: 0.3s" onclick="openModal('Adam\'s Peak', 'A tall conical mountain located in central Sri Lanka, well known for the Sri Pada sacred footprint.')">
+            <div class="card-img"><img src="images/AdamsPeak1.jpg" alt="Adam's Peak"></div>
+            <div class="card-info">
+              <h3>Adam's Peak</h3>
+              <div class="rating"><span>⭐ 4.7</span> (900 reviews)</div>
+            </div>
+          </div>
+
+          <div class="location-card scroll-reveal" style="transition-delay: 0.4s" onclick="openModal('Arugam Bay', 'A moon-shaped curl of soft sand, internationally renowned as one of the best surfing destinations.')">
+            <div class="card-img"><img src="images/ArugamBay1.jpg" alt="Arugam Bay"></div>
+            <div class="card-info">
+              <h3>Arugam Bay</h3>
+              <div class="rating"><span>⭐ 4.8</span> (1.4k reviews)</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer class="footer">
     <div class="footer-top">
       <div class="footer-brand">
-        <!-- Updated Footer Logo to match header logic -->
         <img src="assets/logo.png" alt="Brand logo">
         <p>Community-driven travel discovery for Sri Lanka — built by travellers, for travellers.</p>
       </div>
@@ -127,14 +234,41 @@
         </ul>
       </div>
     </div>
-
     <div class="footer-divider"></div>
-
     <div class="footer-bottom">
       <p>© 2026 Roamly. All rights reserved.</p>
       <p class="footer-note">ICT 2022 — Full Stack Development Project</p>
     </div>
   </footer>
+
+  <!-- Popup Modal -->
+  <div class="modal-overlay" id="locationModal">
+    <div class="modal-content">
+      <button class="btn-close" onclick="closeModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+      
+      <div class="slideshow-container">
+        <div class="slides" id="modalSlides">
+          <img class="slide active" src="" alt="Slide 1">
+          <img class="slide" src="" alt="Slide 2">
+          <img class="slide" src="" alt="Slide 3">
+
+        </div>
+        <button class="slide-btn prev" onclick="changeSlide(-1)">&#10094;</button>
+        <button class="slide-btn next" onclick="changeSlide(1)">&#10095;</button>
+      </div>
+
+      <div class="modal-info">
+        <h2 id="modalTitle">Location Title</h2>
+        <p id="modalDesc">Location description goes here.</p>
+        <div class="modal-actions">
+          <a href="#" onclick="alert('Booking system currently not available.'); return false;" class="btn-primary">Book Now</a>
+          <a href="#" onclick="alert('Maps currently not available.'); return false;" class="btn-outline">View on Map</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
