@@ -359,3 +359,224 @@ body.dark-mode .modal-actions .btn-outline:hover { background: rgba(255,255,255,
 .dark-mode .filter-input {
   color-scheme: dark;
 }
+
+/* ---------- GALLERY 3D CAROUSEL ---------- */
+:root {
+  /* Desktop Sizes */
+  --cell-width: 420px;
+  --cell-height: 280px;
+  --tz: 380px; /* Radius of the 3D circle */
+}
+@media(max-width: 768px) {
+  :root {
+    /* Mobile Sizes */
+    --cell-width: 260px;
+    --cell-height: 180px;
+    --tz: 240px; 
+  }
+}
+
+.scene {
+  width: var(--cell-width);
+  height: var(--cell-height);
+  margin: 60px auto 100px;
+  perspective: 1400px;
+  position: relative;
+}
+
+.carousel {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  transform-style: preserve-3d;
+  /* 24s spin time. Lower number = faster spin */
+  animation: spinCarousel 24s infinite linear; 
+}
+.carousel:hover {
+  animation-play-state: paused;
+}
+.carousel.reverse {
+  animation-direction: reverse;
+}
+
+.carousel__cell {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(10,27,51,0.25);
+  border: 4px solid var(--surface);
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+.carousel__cell:hover {
+  filter: brightness(1.1);
+}
+.carousel__cell img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  cursor: pointer; /* Tells user it is clickable */
+}
+
+/* Bend each image around a hexagon */
+.carousel__cell:nth-child(1) { transform: rotateY(0deg) translateZ(var(--tz)); }
+.carousel__cell:nth-child(2) { transform: rotateY(60deg) translateZ(var(--tz)); }
+.carousel__cell:nth-child(3) { transform: rotateY(120deg) translateZ(var(--tz)); }
+.carousel__cell:nth-child(4) { transform: rotateY(180deg) translateZ(var(--tz)); }
+.carousel__cell:nth-child(5) { transform: rotateY(240deg) translateZ(var(--tz)); }
+.carousel__cell:nth-child(6) { transform: rotateY(300deg) translateZ(var(--tz)); }
+
+@keyframes spinCarousel {
+  0% { transform: translateZ(calc(var(--tz) * -1)) rotateY(0deg); }
+  100% { transform: translateZ(calc(var(--tz) * -1)) rotateY(-360deg); }
+}
+
+/* ---------- LIGHTBOX MODAL ---------- */
+.lightbox-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(10,27,51,0.95);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+.lightbox-modal.active {
+  opacity: 1;
+  pointer-events: all;
+}
+.lightbox-modal img {
+  max-width: 90%;
+  max-height: 90vh; /* Don't overflow screen height */
+  border-radius: var(--radius-sm);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  transform: scale(0.95);
+  transition: transform 0.3s ease;
+}
+.lightbox-modal.active img {
+  transform: scale(1);
+}
+.lightbox-close {
+  position: absolute;
+  top: 30px;
+  right: 40px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 3rem;
+  cursor: pointer;
+  transition: 0.2s;
+  line-height: 1;
+}
+.lightbox-close:hover {
+  color: var(--red);
+  transform: scale(1.1);
+}
+
+/* ---------- HORIZONTAL SCROLLING GALLERY ---------- */
+.scrolling-gallery {
+  width: 100vw;
+  overflow: hidden;
+  position: relative;
+}
+
+.scrolling-track {
+  display: flex;
+  width: max-content;
+  /* Adjust 35s to make it scroll faster or slower */
+  animation: scrollGallery 35s linear infinite; 
+}
+.scrolling-track.reverse {
+  animation-direction: reverse;
+}
+
+/* Pause the animation nicely when hovered */
+.scrolling-gallery:hover .scrolling-track {
+  animation-play-state: paused;
+}
+
+.track-inner {
+  display: flex;
+  gap: 20px;
+  padding-right: 20px; /* Crucial for a seamless loop */
+}
+
+.track-inner img {
+  width: 420px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  cursor: zoom-in;
+  transition: transform 0.3s ease, filter 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: var(--shadow-sm);
+}
+.track-inner img:hover {
+  transform: scale(1.03) translateY(-5px);
+  filter: brightness(1.1);
+  box-shadow: var(--shadow);
+}
+
+@keyframes scrollGallery {
+  0% { transform: translateX(0); }
+  /* Shifts exactly half the track width for an infinite loop illusion */
+  100% { transform: translateX(-50%); } 
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .track-inner img {
+    width: 280px;
+    height: 200px;
+  }
+}
+
+/* ---------- LIGHTBOX MODAL ---------- */
+.lightbox-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(10,27,51,0.95);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+.lightbox-modal.active {
+  opacity: 1;
+  pointer-events: all;
+}
+.lightbox-modal img {
+  max-width: 90%;
+  max-height: 90vh; 
+  border-radius: var(--radius-sm);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  transform: scale(0.95);
+  transition: transform 0.3s ease;
+}
+.lightbox-modal.active img {
+  transform: scale(1);
+}
+.lightbox-close {
+  position: absolute;
+  top: 30px;
+  right: 40px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 3rem;
+  cursor: pointer;
+  transition: 0.2s;
+  line-height: 1;
+}
+.lightbox-close:hover {
+  color: var(--red);
+  transform: scale(1.1);
+}
