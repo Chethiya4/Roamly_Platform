@@ -220,3 +220,47 @@ body.dark-mode .modal-actions .btn-outline:hover { background: rgba(255,255,255,
 .footer-bottom { max-width: 1240px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 0.78rem; color: rgba(255, 255, 255, 0.5); }
 @media (max-width: 860px) { .footer-top { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 560px) { .footer-top { grid-template-columns: 1fr; } }
+
+/* ---------- DESTINATION CARDS (MAP MODAL) ---------- */
+.dest-card { 
+  padding: 18px; 
+  border: 1px solid var(--line); 
+  border-radius: var(--radius-sm); 
+  margin-bottom: 14px; 
+  transition: 0.2s; 
+  background: var(--bg); 
+}
+.dest-card:hover { 
+  transform: translateY(-2px); 
+  border-color: var(--red); 
+  box-shadow: var(--shadow-sm); 
+}
+.dest-card h4 { 
+  margin-bottom: 6px; 
+  color: var(--ink); 
+  font-size: 1.1rem; 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+}
+.dest-card p { 
+  font-size: 0.95rem; 
+  color: var(--ink-soft); 
+  line-height: 1.5; 
+}
+.rating-badge { 
+  font-size: 0.85rem; 
+  color: #f59e0b; 
+  font-weight: 700; 
+}
+
+/* Make modal shape and details stack on mobile */
+@media(max-width: 768px) {
+  .district-modal-layout { flex-direction: column !important; }
+  .district-shape-pane { 
+    border-right: none !important; 
+    border-bottom: 1px solid var(--line); 
+    min-height: 300px !important; 
+    flex: none !important; 
+  }
+}
