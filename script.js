@@ -121,162 +121,254 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-/* ========================================================
-   MAP PAGE LOGIC (Only runs if the map container exists)
-   ======================================================== */
-document.addEventListener('DOMContentLoaded', () => {
-  const mapContainer = document.getElementById('srilanka-map');
-  
-  if (mapContainer && typeof Highcharts !== 'undefined') {
-    
-    const destinationsDB = {
-      "Colombo": [
-        { name: "Galle Face Green", desc: "Urban ocean-side park stretching along the coast.", rating: "4.5" },
-        { name: "Gangaramaya Temple", desc: "One of the most important and beautiful temples.", rating: "4.7" },
-        { name: "National Museum", desc: "The largest museum in Sri Lanka.", rating: "4.6" }
-      ],
-      "Kandy": [
-        { name: "Temple of the Tooth", desc: "Sacred Buddhist temple housing the relic of the tooth of Buddha.", rating: "4.9" },
-        { name: "Royal Botanical Gardens", desc: "Stunning flora and massive trees in Peradeniya.", rating: "4.8" },
-        { name: "Kandy Lake", desc: "Scenic artificial lake in the heart of the city.", rating: "4.5" }
-      ],
-      "Galle": [
-        { name: "Galle Fort", desc: "Historical Portuguese fort and UNESCO World Heritage site.", rating: "4.8" },
-        { name: "Unawatuna Beach", desc: "Famous sandy beach popular with tourists.", rating: "4.6" }
-      ],
-      "Matale": [
-        { name: "Sigiriya", desc: "Ancient rock fortress and palace ruin.", rating: "4.9" },
-        { name: "Dambulla Cave Temple", desc: "World heritage site with ancient Buddhist statues.", rating: "4.8" }
-      ],
-      "Badulla": [
-        { name: "Ella Rock", desc: "Famous hiking destination with stunning valley views.", rating: "4.8" },
-        { name: "Nine Arch Bridge", desc: "Iconic colonial-era railway bridge.", rating: "4.9" }
-      ],
-      "Nuwara Eliya": [
-        { name: "Horton Plains", desc: "National park covered by montane grassland.", rating: "4.8" },
-        { name: "Gregory Lake", desc: "A large scenic lake in the middle of town.", rating: "4.5" }
-      ]
-    };
+document.addEventListener("DOMContentLoaded", () => {
 
-    const mapColor = 'rgba(74, 91, 120, 0.15)';
-    const borderColor = '#4A5B78';
+    if (!document.getElementById("srilanka-map")) return;
 
-    // Extract the map data automatically loaded by the HTML script tag
-    const mapData = Highcharts.maps['countries/lk/lk-all'];
+    const mapData = Highcharts.maps["countries/lk/lk-all"];
 
     if (!mapData) {
-      mapContainer.innerHTML = "<p style='text-align:center; padding: 100px; color: var(--ink);'>Map data not found. Please ensure your internet connection is active.</p>";
-      return;
+        alert("Sri Lanka map data not loaded.");
+        return;
     }
 
-    try {
-      // Initialize Main Map
-      Highcharts.mapChart('srilanka-map', {
-        chart: {
-          backgroundColor: 'transparent'
-        },
-        title: { text: null },
-        credits: { enabled: false },
-        mapNavigation: {
-          enabled: true,
-          buttonOptions: { 
-            verticalAlign: 'bottom',
-            theme: { fill: '#FFFFFF', stroke: '#E0E0E0', style: { color: '#0A1B33' } } 
-          }
-        },
-        tooltip: {
-          headerFormat: '',
-          pointFormat: '<b style="font-size:15px; color: #122A4D;">{point.name} District</b>',
-          backgroundColor: 'rgba(255, 255, 255, 0.95)',
-          borderColor: 'rgba(10, 27, 51, 0.1)',
-          borderRadius: 8,
-          shadow: true
-        },
-        plotOptions: {
-          series: {
-            cursor: 'pointer',
-            point: {
-              events: {
-                click: function () {
-                  openDistrictModal(this.name, this['hc-key']);
-                }
-              }
-            },
-            states: {
-              hover: { color: '#D7263D', borderColor: '#A81B2E' } 
-            }
-          }
-        },
-        series: [{
-          mapData: mapData,
-          name: 'Districts',
-          color: mapColor,
-          borderColor: borderColor,
-          nullColor: mapColor,
-          showInLegend: false,
-          dataLabels: {
-            enabled: true,
-            format: '{point.name}',
-            style: { fontWeight: '600', textOutline: '2px #FFFFFF', color: '#122A4D' }
-          }
-        }]
-      });
+    const destinationsDB = {
+        "Colombo":[
+            {name:"Galle Face Green",desc:"Urban ocean-side park.",rating:"4.5"},
+            {name:"Gangaramaya Temple",desc:"Beautiful Buddhist temple.",rating:"4.8"},
+            {name:"National Museum",desc:"Largest museum in Sri Lanka.",rating:"4.6"}
+        ],
 
-      // Modal Logic
-      const distModal = document.getElementById('districtModal');
-      
-      window.openDistrictModal = (name, hcKey) => {
-        document.getElementById('modalDistrictName').textContent = name;
-        const list = document.getElementById('destinationsList');
-        list.innerHTML = '';
-        
-        const dests = destinationsDB[name] || [
-          { name: "Explore " + name, desc: "Discover natural beauty, local cuisine, and hidden gems in this district.", rating: "4.5" }
+        "Kandy":[
+            {name:"Temple of the Tooth",desc:"UNESCO Heritage.",rating:"4.9"},
+            {name:"Kandy Lake",desc:"Beautiful city lake.",rating:"4.6"},
+            {name:"Royal Botanical Garden",desc:"Peradeniya Garden.",rating:"4.8"}
+        ],
+
+        "Galle":[
+            {name:"Galle Fort",desc:"Dutch Fort.",rating:"4.8"},
+            {name:"Unawatuna Beach",desc:"Popular beach.",rating:"4.7"}
+        ]
+    };
+
+
+    // Create data automatically from map
+    const data = mapData.features.map(feature => ({
+        "hc-key": feature.properties["hc-key"],
+        value: 1
+    }));
+
+
+    Highcharts.mapChart("srilanka-map",{
+
+        chart:{
+            map:mapData,
+            backgroundColor:"transparent"
+        },
+
+        title:{
+            text:null
+        },
+
+        credits:{
+            enabled:false
+        },
+
+        mapNavigation:{
+            enabled:true
+        },
+
+        tooltip:{
+            headerFormat:"",
+            pointFormat:"<b>{point.name}</b>"
+        },
+
+        plotOptions:{
+            series:{
+                cursor:"pointer",
+
+                states:{
+                    hover:{
+                        color:"#D7263D",
+                        borderColor:"#99192b"
+                    }
+                },
+
+                point:{
+                    events:{
+                        click:function(){
+
+                            openDistrictModal(
+                                this.name,
+                                this["hc-key"]
+                            );
+
+                        }
+                    }
+                }
+            }
+        },
+
+        series:[{
+
+            data:data,
+
+            mapData:mapData,
+
+            joinBy:"hc-key",
+
+            name:"District",
+
+            color:"#dfe7f3",
+
+            borderColor:"#4A5B78",
+
+            borderWidth:1,
+
+            dataLabels:{
+                enabled:true,
+                format:"{point.name}",
+                style:{
+                    fontWeight:"600",
+                    color:"#122A4D",
+                    textOutline:"1px white",
+                    fontSize:"10px"
+                }
+            }
+
+        }]
+
+    });
+
+
+    const modal=document.getElementById("districtModal");
+
+
+    window.openDistrictModal=function(name,key){
+
+        document.getElementById("modalDistrictName").innerHTML=name;
+
+        const list=document.getElementById("destinationsList");
+
+        list.innerHTML="";
+
+        const places=destinationsDB[name]||[
+            {
+                name:"No destinations yet",
+                desc:"Tourist places will be added soon.",
+                rating:"-"
+            }
         ];
-        
-        dests.forEach(d => {
-          list.innerHTML += `
+
+        places.forEach(place=>{
+
+            list.innerHTML+=`
+
             <div class="dest-card">
-              <h4>${d.name} <span class="rating-badge">⭐ ${d.rating}</span></h4>
-              <p>${d.desc}</p>
+
+                <h4>
+                    ${place.name}
+                    <span class="rating-badge">
+                        ⭐ ${place.rating}
+                    </span>
+                </h4>
+
+                <p>${place.desc}</p>
+
             </div>
-          `;
+
+            `;
+
         });
 
-        distModal.classList.add('active');
-        document.body.style.overflow = 'hidden';
+        modal.classList.add("active");
 
-        // Render Mini-Map shape
-        setTimeout(() => {
-          Highcharts.mapChart('mini-map', {
-            chart: { backgroundColor: 'transparent', margin: [20, 20, 20, 20] },
-            title: { text: null },
-            credits: { enabled: false },
-            mapNavigation: { enabled: false },
-            tooltip: { enabled: false },
-            plotOptions: {
-              map: { allAreas: false }
-            },
-            series: [{
-              mapData: mapData,
-              data: [{ 'hc-key': hcKey, value: 1 }],
-              joinBy: 'hc-key',
-              color: '#D7263D', 
-              borderColor: 'transparent',
-              states: { hover: { color: '#D7263D' } },
-              dataLabels: { enabled: false }
-            }]
-          });
-        }, 300); 
-      };
+        document.body.style.overflow="hidden";
 
-      window.closeDistrictModal = () => {
-        distModal.classList.remove('active');
-        document.body.style.overflow = '';
-      };
-      
-    } catch (error) {
-      console.error("Map rendering error:", error);
-    }
-  }
+
+        setTimeout(()=>{
+
+            Highcharts.mapChart("mini-map",{
+
+                chart:{
+                    map:mapData,
+                    backgroundColor:"transparent"
+                },
+
+                title:{
+                    text:null
+                },
+
+                credits:{
+                    enabled:false
+                },
+
+                mapNavigation:{
+                    enabled:false
+                },
+
+                tooltip:{
+                    enabled:false
+                },
+
+                series:[{
+
+                    mapData:mapData,
+
+                    joinBy:"hc-key",
+
+                    allAreas:true,
+
+                    borderColor:"#cccccc",
+
+                    nullColor:"#f5f5f5",
+
+                    data:[
+                        {
+                            "hc-key":key,
+                            value:1
+                        }
+                    ],
+
+                    color:"#D7263D",
+
+                    states:{
+                        hover:{
+                            enabled:false
+                        }
+                    },
+
+                    dataLabels:{
+                        enabled:false
+                    }
+
+                }]
+
+            });
+
+        },100);
+
+    };
+
+
+    window.closeDistrictModal=function(){
+
+        modal.classList.remove("active");
+
+        document.body.style.overflow="";
+
+    };
+
+});
+
+const districts=document.querySelectorAll(".district");
+
+districts.forEach(district=>{
+
+    district.addEventListener("click",()=>{
+
+        openDistrictModal(district.id);
+
+    });
+
 });

@@ -580,3 +580,27 @@ body.dark-mode .modal-actions .btn-outline:hover { background: rgba(255,255,255,
   color: var(--red);
   transform: scale(1.1);
 }
+
+svg{
+    width:100%;
+    height:auto;
+}
+
+.district{
+
+    fill:#dfe8f4;
+
+    stroke:#445;
+
+    stroke-width:1;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.district:hover{
+
+    fill:#D7263D;
+
+}
