@@ -684,6 +684,8 @@ svg{
   gap: 24px;
 }
 
+
+
 /* Tablet: 2 columns */
 @media (max-width: 960px) {
   #resultsGrid {
@@ -696,4 +698,135 @@ svg{
   #resultsGrid {
     grid-template-columns: 1fr;
   }
+}
+
+/* ---------- ENHANCED MODAL UI ---------- */
+.modal-weather {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: rgba(10, 27, 51, 0.7);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 1.05rem;
+  z-index: 10;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.modal-wishlist {
+  position: absolute;
+  top: 16px;
+  right: 64px; /* Placed right next to the close button */
+  width: 38px;
+  height: 38px;
+  background: rgba(10, 27, 51, 0.7);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.modal-wishlist:hover {
+  background: rgba(215, 38, 61, 0.8);
+  transform: scale(1.1);
+}
+
+.modal-wishlist.active {
+  background: var(--red);
+  border-color: var(--red);
+}
+
+.modal-wishlist.active svg {
+  fill: #fff; /* Solid fill the heart when active */
+}
+
+/* ---------- PREMIUM MODAL BUTTONS ---------- */
+.modal-actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+/* Vibrant Gradient Booking Button */
+.btn-book-special {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 34px;
+  /* Premium gradient that stands out */
+  background: linear-gradient(135deg, #FF4B2B, #FF416C);
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 800;
+  border-radius: 999px;
+  box-shadow: 0 10px 24px rgba(255, 65, 108, 0.4);
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-book-special:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 14px 32px rgba(255, 65, 108, 0.55);
+  color: #fff;
+}
+
+.btn-book-special svg {
+  transition: transform 0.3s ease;
+}
+
+.btn-book-special:hover svg {
+  transform: translateX(5px); /* Arrow subtly points forward on hover */
+}
+
+/* Sleek Outline Directions Button */
+.btn-direction-special {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 34px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 1.05rem;
+  font-weight: 800;
+  border-radius: 999px;
+  border: 2px solid var(--line);
+  box-shadow: 0 6px 16px rgba(10, 27, 51, 0.08);
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-direction-special:hover {
+  transform: translateY(-4px) scale(1.03);
+  border-color: var(--navy-800);
+  color: var(--navy-800);
+  box-shadow: 0 10px 24px rgba(10, 27, 51, 0.15);
+}
+
+/* Ensure the direction button looks perfect in Dark Mode too */
+body.dark-mode .btn-direction-special {
+  background: var(--surface);
+  color: #fff;
+  border-color: rgba(255,255,255,0.2);
+}
+
+body.dark-mode .btn-direction-special:hover {
+  border-color: #fff;
 }
