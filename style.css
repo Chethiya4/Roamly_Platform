@@ -432,52 +432,6 @@ body.dark-mode .modal-actions .btn-outline:hover { background: rgba(255,255,255,
   100% { transform: translateZ(calc(var(--tz) * -1)) rotateY(-360deg); }
 }
 
-/* ---------- LIGHTBOX MODAL ---------- */
-.lightbox-modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(10,27,51,0.95);
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-  backdrop-filter: blur(5px);
-}
-.lightbox-modal.active {
-  opacity: 1;
-  pointer-events: all;
-}
-.lightbox-modal img {
-  max-width: 90%;
-  max-height: 90vh; /* Don't overflow screen height */
-  border-radius: var(--radius-sm);
-  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-  transform: scale(0.95);
-  transition: transform 0.3s ease;
-}
-.lightbox-modal.active img {
-  transform: scale(1);
-}
-.lightbox-close {
-  position: absolute;
-  top: 30px;
-  right: 40px;
-  background: none;
-  border: none;
-  color: white;
-  font-size: 3rem;
-  cursor: pointer;
-  transition: 0.2s;
-  line-height: 1;
-}
-.lightbox-close:hover {
-  color: var(--red);
-  transform: scale(1.1);
-}
-
 /* ---------- HORIZONTAL SCROLLING GALLERY ---------- */
 .scrolling-gallery {
   width: 100vw;
@@ -587,20 +541,159 @@ svg{
 }
 
 .district{
-
     fill:#dfe8f4;
-
     stroke:#445;
-
     stroke-width:1;
-
     cursor:pointer;
-
     transition:.25s;
 }
 
 .district:hover{
-
     fill:#D7263D;
+}
 
+/* ---------- ADDITIONAL SERVICES GRID ---------- */
+.category-grid {
+  display: grid;
+  /* Automatically fits 4 columns on desktop, wrapping gracefully on mobile */
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.category-btn {
+  position: relative;
+  height: 180px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.category-btn:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow);
+}
+
+.category-btn img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.category-btn:hover img {
+  transform: scale(1.08); /* Smooth zoom effect */
+}
+
+.category-btn-overlay {
+  position: absolute;
+  inset: 0;
+  /* Darker at bottom for text contrast, lighter at top */
+  background: linear-gradient(to top, rgba(10,27,51,0.85) 0%, rgba(10,27,51,0.2) 100%);
+  transition: opacity 0.3s ease;
+}
+
+.category-btn:hover .category-btn-overlay {
+  background: linear-gradient(to top, rgba(10,27,51,0.7) 0%, rgba(10,27,51,0.1) 100%);
+}
+
+.category-btn span {
+  position: relative;
+  z-index: 2;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  letter-spacing: 0.5px;
+  text-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  pointer-events: none;
+}
+/* ---------- 12 ITEMS CATEGORY GRID ---------- */
+.category-grid {
+  display: grid;
+  /* Automatically wraps the 12 items flawlessly on desktop and mobile */
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+}
+
+.category-btn {
+  position: relative;
+  height: 110px; /* Shorter cards to fit all 12 neatly */
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.category-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow);
+}
+
+.category-btn img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.category-btn:hover img {
+  transform: scale(1.1); /* Smooth image zoom */
+}
+
+.category-btn-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10,27,51,0.65); /* Dark overlay for text readability */
+  transition: background 0.3s ease;
+}
+
+.category-btn:hover .category-btn-overlay {
+  background: rgba(10,27,51,0.45); /* Lightens up on hover */
+}
+
+.category-btn span {
+  position: relative;
+  z-index: 2;
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  font-weight: 700;
+  padding: 0 10px;
+  line-height: 1.3;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  pointer-events: none;
+}
+
+/* ---------- STRICT 3-COLUMN RESULTS GRID ---------- */
+#resultsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+/* Tablet: 2 columns */
+@media (max-width: 960px) {
+  #resultsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile: 1 column */
+@media (max-width: 650px) {
+  #resultsGrid {
+    grid-template-columns: 1fr;
+  }
 }

@@ -74,25 +74,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Attached to window so it can be called directly from HTML inline clicks
   window.openModal = (title, desc) => {
-    modalTitle.textContent = title;
-    modalDesc.textContent = desc;
+    if (modalTitle) modalTitle.textContent = title;
+    if (modalDesc) modalDesc.textContent = desc;
     currentSlideIndex = 0;
     
     // Automatically inject unique, high-quality images based on the location name!
-    slideElements.forEach((img, i) => {
-      const cleanTitle = title.replace(/\s+/g, '').toLowerCase();
-      // Using Picsum API to fetch a random image for this specific location + slide index
-      img.src = `https://picsum.photos/seed/${cleanTitle}${i}/800/500`;
-    });
-
-    updateSlides();
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden'; // Stop background from scrolling
+    if (slideElements.length > 0) {
+      slideElements.forEach((img, i) => {
+        const cleanTitle = title.replace(/\s+/g, '').toLowerCase();
+        // Using Picsum API to fetch a random image for this specific location + slide index
+        img.src = `https://picsum.photos/seed/${cleanTitle}${i}/800/500`;
+      });
+      updateSlides();
+    }
+    
+    if (modal) {
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden'; // Stop background from scrolling
+    } else {
+      alert(`Information on ${title}:\n${desc}`);
+    }
   };
 
   window.closeModal = () => {
-    modal.classList.remove('active');
-    document.body.style.overflow = '';
+    if (modal) {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
   };
 
   window.changeSlide = (step) => {
@@ -121,8 +129,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+/* ---------------- HIGHCHARTS MAP ---------------- */
 document.addEventListener("DOMContentLoaded", () => {
-
     if (!document.getElementById("srilanka-map")) return;
 
     const mapData = Highcharts.maps["countries/lk/lk-all"];
@@ -138,19 +146,16 @@ document.addEventListener("DOMContentLoaded", () => {
             {name:"Gangaramaya Temple",desc:"Beautiful Buddhist temple.",rating:"4.8"},
             {name:"National Museum",desc:"Largest museum in Sri Lanka.",rating:"4.6"}
         ],
-
         "Kandy":[
             {name:"Temple of the Tooth",desc:"UNESCO Heritage.",rating:"4.9"},
             {name:"Kandy Lake",desc:"Beautiful city lake.",rating:"4.6"},
             {name:"Royal Botanical Garden",desc:"Peradeniya Garden.",rating:"4.8"}
         ],
-
         "Galle":[
             {name:"Galle Fort",desc:"Dutch Fort.",rating:"4.8"},
             {name:"Unawatuna Beach",desc:"Popular beach.",rating:"4.7"}
         ]
     };
-
 
     // Create data automatically from map
     const data = mapData.features.map(feature => ({
@@ -158,217 +163,63 @@ document.addEventListener("DOMContentLoaded", () => {
         value: 1
     }));
 
-
-    Highcharts.mapChart("srilanka-map",{
-
-        chart:{
-            map:mapData,
-            backgroundColor:"transparent"
+    Highcharts.mapChart("srilanka-map", {
+        chart: {
+            map: mapData,
+            backgroundColor: "transparent"
         },
-
-        title:{
-            text:null
+        title: {
+            text: null
         },
-
-        credits:{
-            enabled:false
+        credits: {
+            enabled: false
         },
-
-        mapNavigation:{
-            enabled:true
+        mapNavigation: {
+            enabled: true
         },
-
-        tooltip:{
-            headerFormat:"",
-            pointFormat:"<b>{point.name}</b>"
+        tooltip: {
+            headerFormat: "",
+            pointFormat: "<b>{point.name}</b>"
         },
-
-        plotOptions:{
-            series:{
-                cursor:"pointer",
-
-                states:{
-                    hover:{
-                        color:"#D7263D",
-                        borderColor:"#99192b"
-                    }
-                },
-
-                point:{
-                    events:{
-                        click:function(){
-
-                            openDistrictModal(
-                                this.name,
-                                this["hc-key"]
-                            );
-
+        plotOptions: {
+            series: {
+                point: {
+                    events: {
+                        click: function () {
+                            const districtName = this.name;
+                            let desc = "Explore beautiful destinations in " + districtName + ".";
+                            
+                            // Check if we have specific destinations in the DB for this district
+                            if (destinationsDB[districtName]) {
+                                const spots = destinationsDB[districtName].map(spot => spot.name).join(', ');
+                                desc = "Top spots include: " + spots + ".";
+                            }
+                            
+                            if (window.openModal) {
+                                window.openModal(districtName, desc);
+                            }
                         }
                     }
                 }
             }
         },
-
-        series:[{
-
-            data:data,
-
-            mapData:mapData,
-
-            joinBy:"hc-key",
-
-            name:"District",
-
-            color:"#dfe7f3",
-
-            borderColor:"#4A5B78",
-
-            borderWidth:1,
-
-            dataLabels:{
-                enabled:true,
-                format:"{point.name}",
-                style:{
-                    fontWeight:"600",
-                    color:"#122A4D",
-                    textOutline:"1px white",
-                    fontSize:"10px"
+        series: [{
+            data: data,
+            name: "Districts",
+            allowPointSelect: true,
+            cursor: 'pointer',
+            states: {
+                hover: {
+                    color: '#D7263D'
+                },
+                select: {
+                    color: '#A81B2E'
                 }
+            },
+            dataLabels: {
+                enabled: true,
+                format: '{point.name}'
             }
-
         }]
-
     });
-
-
-    const modal=document.getElementById("districtModal");
-
-
-    window.openDistrictModal=function(name,key){
-
-        document.getElementById("modalDistrictName").innerHTML=name;
-
-        const list=document.getElementById("destinationsList");
-
-        list.innerHTML="";
-
-        const places=destinationsDB[name]||[
-            {
-                name:"No destinations yet",
-                desc:"Tourist places will be added soon.",
-                rating:"-"
-            }
-        ];
-
-        places.forEach(place=>{
-
-            list.innerHTML+=`
-
-            <div class="dest-card">
-
-                <h4>
-                    ${place.name}
-                    <span class="rating-badge">
-                        ⭐ ${place.rating}
-                    </span>
-                </h4>
-
-                <p>${place.desc}</p>
-
-            </div>
-
-            `;
-
-        });
-
-        modal.classList.add("active");
-
-        document.body.style.overflow="hidden";
-
-
-        setTimeout(()=>{
-
-            Highcharts.mapChart("mini-map",{
-
-                chart:{
-                    map:mapData,
-                    backgroundColor:"transparent"
-                },
-
-                title:{
-                    text:null
-                },
-
-                credits:{
-                    enabled:false
-                },
-
-                mapNavigation:{
-                    enabled:false
-                },
-
-                tooltip:{
-                    enabled:false
-                },
-
-                series:[{
-
-                    mapData:mapData,
-
-                    joinBy:"hc-key",
-
-                    allAreas:true,
-
-                    borderColor:"#cccccc",
-
-                    nullColor:"#f5f5f5",
-
-                    data:[
-                        {
-                            "hc-key":key,
-                            value:1
-                        }
-                    ],
-
-                    color:"#D7263D",
-
-                    states:{
-                        hover:{
-                            enabled:false
-                        }
-                    },
-
-                    dataLabels:{
-                        enabled:false
-                    }
-
-                }]
-
-            });
-
-        },100);
-
-    };
-
-
-    window.closeDistrictModal=function(){
-
-        modal.classList.remove("active");
-
-        document.body.style.overflow="";
-
-    };
-
-});
-
-const districts=document.querySelectorAll(".district");
-
-districts.forEach(district=>{
-
-    district.addEventListener("click",()=>{
-
-        openDistrictModal(district.id);
-
-    });
-
 });

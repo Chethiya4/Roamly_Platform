@@ -79,28 +79,28 @@
         <div class="services-grid">
           
           <div class="service-card" onclick="showResults('transport')">
-            <img src="images/transport.jpg" alt="Transport" class="service-bg">
+            <img src="images/transport.jpg" alt="Transport" class="service-bg" onerror="this.src='https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?q=80&w=800'">
             <div class="service-content">
               <h2>Transport</h2>
             </div>
           </div>
 
           <div class="service-card" onclick="showResults('guides')">
-            <img src="images/tourguide.jpg" alt="Tour Guides" class="service-bg">
+            <img src="images/tourguide.jpg" alt="Tour Guides" class="service-bg" onerror="this.src='https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=800'">
             <div class="service-content">
               <h2>Tour Guides</h2>
             </div>
           </div>
 
           <div class="service-card" onclick="showResults('hotels')">
-            <img src="images/hotel.jpg" alt="Hotels" class="service-bg">
+            <img src="images/hotel.jpg" alt="Hotels" class="service-bg" onerror="this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800'">
             <div class="service-content">
               <h2>Hotels & Accommodations</h2>
             </div>
           </div>
 
           <div class="service-card" onclick="showResults('restaurants')">
-            <img src="images/resturant.jpg" alt="Restaurants" class="service-bg">
+            <img src="images/resturant.jpg" alt="Restaurants" class="service-bg" onerror="this.src='https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=800'">
             <div class="service-content">
               <h2>Restaurants</h2>
             </div>
@@ -110,25 +110,108 @@
       </div>
     </section>
 
+    <!-- NEW: 12-Item Local Directory Section -->
+    <section class="section-padding scroll-reveal" style="background: var(--surface); border-top: 1px solid var(--line);">
+      <div class="container">
+        <h2 class="section-title">Local Directory & Essentials</h2>
+        
+        <div class="category-grid">
+          
+          <div class="category-btn" onclick="showResults('cafes')">
+            <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop" alt="Cafes">
+            <div class="category-btn-overlay"></div>
+            <span>Cafes</span>
+          </div>
+
+          <div class="category-btn" onclick="showResults('supermarkets')">
+            <img src="https://images.unsplash.com/photo-1578916171728-46686eac8d58?q=80&w=400&auto=format&fit=crop" alt="Supermarkets">
+            <div class="category-btn-overlay"></div>
+            <span>Supermarkets & Grocery</span>
+          </div>
+
+          <div class="category-btn" onclick="showResults('pharmacies')">
+            <img src="https://images.unsplash.com/photo-1585435557343-3b092031a831?q=80&w=400&auto=format&fit=crop" alt="Pharmacies">
+            <div class="category-btn-overlay"></div>
+            <span>Pharmacies & Medical</span>
+          </div>
+
+          <div class="category-btn" onclick="showResults('atms')">
+            <img src="https://images.unsplash.com/photo-1554524275-ebcb239eb88d?q=80&w=400&auto=format&fit=crop" alt="ATMs">
+            <div class="category-btn-overlay"></div>
+            <span>ATMs</span>
+          </div>
+
+          <div class="category-btn" onclick="showResults('fuel')">
+            <img src="https://images.unsplash.com/photo-1572051659752-d35fb4c441dc?q=80&w=400&auto=format&fit=crop" alt="Fuel">
+            <div class="category-btn-overlay"></div>
+            <span>Fuel / Charging</span>
+          </div>
+
+          <div class="category-btn" onclick="showResults('rental')">
+            <img src="https://images.unsplash.com/photo-1518987048-93e29699e79a?q=80&w=400&auto=format&fit=crop" alt="Rental Services">
+            <div class="category-btn-overlay"></div>
+            <span>Rental Services</span>
+          </div>
+
+          <div class="category-btn" onclick="showResults('safaris')">
+            <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=400&auto=format&fit=crop" alt="Safaris">
+            <div class="category-btn-overlay"></div>
+            <span>Safaries</span>
+          </div>
+
+          <div class="category-btn" onclick="showResults('adventure')">
+            <img src="https://images.unsplash.com/photo-1533587851505-d119e13bf0b5?q=80&w=400&auto=format&fit=crop" alt="Adventure">
+            <div class="category-btn-overlay"></div>
+            <span>Adventure Activities</span>
+          </div>
+
+          <div class="category-btn" onclick="showResults('police')">
+            <img src="https://images.unsplash.com/photo-1587829741301-dc798b83add3?q=80&w=400&auto=format&fit=crop" alt="Police">
+            <div class="category-btn-overlay"></div>
+            <span>Police Stations</span>
+          </div>
+
+          <div class="category-btn" onclick="showResults('laundry')">
+            <img src="https://images.unsplash.com/photo-1517677208171-0bc6725a3e60?q=80&w=400&auto=format&fit=crop" alt="Laundry">
+            <div class="category-btn-overlay"></div>
+            <span>Laundry Stations</span>
+          </div>
+
+          <div class="category-btn" onclick="showResults('spa')">
+            <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=400&auto=format&fit=crop" alt="Saloons and Spa">
+            <div class="category-btn-overlay"></div>
+            <span>Saloons & Spa</span>
+          </div>
+
+          <div class="category-btn" onclick="showResults('gym')">
+            <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=400&auto=format&fit=crop" alt="Gym & Yoga">
+            <div class="category-btn-overlay"></div>
+            <span>Gym / Yoga Centers</span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
     <!-- Smooth Expandable Results Wrapper -->
-    <div id="resultsWrapper" style="display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); overflow: hidden; background: var(--surface);">
+    <div id="resultsWrapper" style="display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); overflow: hidden; background: var(--bg);">
       <div style="min-height: 0;">
         <section class="section-padding" style="border-top: 1px solid var(--line);">
           <div class="container">
             <h2 id="resultsTitle" class="section-title">Results</h2>
             
             <!-- Interactive Filter & Sorting Bar -->
-            <div class="filter-bar" style="background: var(--bg); padding: 24px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 40px; align-items: flex-end; border: 1px solid var(--line);">
+            <div class="filter-bar" style="background: var(--surface); padding: 24px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 40px; align-items: flex-end; border: 1px solid var(--line);">
               
               <div style="flex: 1.5; min-width: 220px;">
-                <label class="filter-label">Location</label>
+                <label class="filter-label">Filter By Location</label>
                 <div style="position:relative;">
                   <svg style="position:absolute; left:12px; top:11px; width:18px; height:18px; color:var(--ink-faint);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                   <input type="text" id="locationFilter" class="filter-input" placeholder="e.g. Colombo, Kandy" style="padding-left: 38px;">
                 </div>
               </div>
 
-              <!-- This div will dynamically change its inputs based on the category! -->
+              <!-- This div dynamically changes its inputs based on the category! -->
               <div id="dateFilters" style="display: flex; gap: 16px; flex: 2; min-width: 250px;">
                 <!-- Filled via JS -->
               </div>
@@ -158,9 +241,9 @@
     </div>
 
     <!-- Registration Call To Action -->
-    <section class="section-padding scroll-reveal" style="background: var(--bg); border-top: 1px solid var(--line); text-align: center;">
+    <section class="section-padding scroll-reveal" style="background: var(--surface); border-top: 1px solid var(--line); text-align: center;">
       <div class="container">
-        <div style="max-width: 650px; margin: 0 auto; background: var(--surface); padding: 50px 30px; border-radius: var(--radius-lg); box-shadow: var(--shadow); border: 1px solid var(--line);">
+        <div style="max-width: 650px; margin: 0 auto; background: var(--bg); padding: 50px 30px; border-radius: var(--radius-lg); box-shadow: var(--shadow); border: 1px solid var(--line);">
           <h2 style="font-family: var(--font-display); font-size: 2.2rem; margin-bottom: 12px; color: var(--ink);">Are you a service provider?</h2>
           <p style="color: var(--ink-soft); margin-bottom: 30px; font-size: 1.05rem;">Join Roamly's growing network and reach thousands of travellers daily. Grow your business with us.</p>
           <button class="btn-primary" style="font-size: 1.05rem; padding: 14px 36px; border-radius: var(--radius-md);" onclick="alert('Registration Portal opening soon!')">Register Your Business</button>
@@ -214,6 +297,7 @@
 
   <script>
     const servicesDB = {
+      // Main 4 Booking Categories
       transport: {
         title: "Transport Services",
         items: [
@@ -247,6 +331,71 @@
           { name: "Kandy View Cafe", rating: 4.5, price: 12, location: "Kandy", recommended: 0, newest: 6, desc: "Local delicacies served with a stunning view of Kandy Lake." },
           { name: "Galle Fort Bakehouse", rating: 4.7, price: 8, location: "Galle", recommended: 1, newest: 4, desc: "Fresh pastries, local sweets, and world-class Ceylon tea." }
         ]
+      },
+
+      // Directory 12 Categories (isDir: true indicates it's a directory item)
+      cafes: {
+        title: "Cafes", isDir: true, items: [
+          { name: "Java Lounge", rating: 4.6, price: 2, priceRange: "$$", location: "Colombo", recommended: 1, newest: 5, desc: "A cozy spot for premium coffee, fast Wi-Fi, and delicious bakes." },
+          { name: "Kandy Bean Coffee", rating: 4.5, price: 1, priceRange: "$", location: "Kandy", recommended: 0, newest: 2, desc: "Locally sourced organic hill-country coffee." }
+        ]
+      },
+      supermarkets: {
+        title: "Supermarkets & Grocery", isDir: true, items: [
+          { name: "Cargills Food City", rating: 4.2, price: 1, priceRange: "$", location: "Galle", recommended: 1, newest: 2, desc: "Fresh produce, daily essentials, and local snacks." },
+          { name: "Arpico Supercentre", rating: 4.6, price: 2, priceRange: "$$", location: "Colombo", recommended: 1, newest: 8, desc: "Large supermarket with imported goods and household items." }
+        ]
+      },
+      pharmacies: {
+        title: "Pharmacies & Medical Centers", isDir: true, items: [
+          { name: "HealthGuard Pharmacy", rating: 4.5, price: 2, priceRange: "$$", location: "Colombo", recommended: 1, newest: 3, desc: "Reliable 24/7 medical supplies and prescriptions." }
+        ]
+      },
+      atms: {
+        title: "ATMs", isDir: true, items: [
+          { name: "BOC ATM", rating: 4.0, price: 0, priceRange: "Free", location: "Kandy", recommended: 1, newest: 1, desc: "Visa and Mastercard accepted. Secure 24/7 access." }
+        ]
+      },
+      fuel: {
+        title: "Fuel / Charging Stations", isDir: true, items: [
+          { name: "CEYPETCO Fuel Station", rating: 4.1, price: 2, priceRange: "$$", location: "Nuwara Eliya", recommended: 1, newest: 4, desc: "Petrol, Diesel, and basic vehicle tire checks." },
+          { name: "ChargeNet EV Station", rating: 4.8, price: 3, priceRange: "$$$", location: "Colombo", recommended: 0, newest: 9, desc: "Fast DC charging for electric vehicles." }
+        ]
+      },
+      rental: {
+        title: "Rental Services", isDir: true, items: [
+          { name: "Malkey Rent A Car", rating: 4.7, price: 3, priceRange: "$$$", location: "Colombo", recommended: 1, newest: 6, desc: "Self-drive and chauffeur-driven premium rentals." }
+        ]
+      },
+      safaris: {
+        title: "Safaries", isDir: true, items: [
+          { name: "Yala Jeep Safari", rating: 4.9, price: 3, priceRange: "$$$", location: "Yala", recommended: 1, newest: 8, desc: "Incredible half-day and full-day wildlife tours." }
+        ]
+      },
+      adventure: {
+        title: "Adventure Activities", isDir: true, items: [
+          { name: "Kithulgala White Water Rafting", rating: 4.8, price: 2, priceRange: "$$", location: "Kithulgala", recommended: 1, newest: 7, desc: "Thrilling rafting on the Kelani river for all skill levels." }
+        ]
+      },
+      police: {
+        title: "Police Stations", isDir: true, items: [
+          { name: "Tourist Police", rating: 4.0, price: 0, priceRange: "Free", location: "Colombo", recommended: 1, newest: 1, desc: "Dedicated support for foreign and local tourists." }
+        ]
+      },
+      laundry: {
+        title: "Laundry Stations", isDir: true, items: [
+          { name: "Wash & Go Laundromat", rating: 4.6, price: 1, priceRange: "$", location: "Galle", recommended: 1, newest: 5, desc: "Quick self-service and full-service laundry." }
+        ]
+      },
+      spa: {
+        title: "Saloons and Spa", isDir: true, items: [
+          { name: "Ayurveda Wellness Spa", rating: 4.8, price: 3, priceRange: "$$$", location: "Kandy", recommended: 1, newest: 9, desc: "Traditional herbal massages and deep relaxation treatments." }
+        ]
+      },
+      gym: {
+        title: "Gym / Yoga Centers", isDir: true, items: [
+          { name: "Prana Lounge Yoga", rating: 4.9, price: 2, priceRange: "$$", location: "Colombo", recommended: 1, newest: 4, desc: "Peaceful yoga and meditation classes for well-being." }
+        ]
       }
     };
 
@@ -260,6 +409,7 @@
       
       // Dynamic Date Pickers!
       const dateContainer = document.getElementById('dateFilters');
+      
       if (category === 'hotels') {
         dateContainer.innerHTML = `
           <div style="flex:1;">
@@ -271,6 +421,9 @@
             <input type="date" id="dateEnd" class="filter-input">
           </div>
         `;
+      } else if (servicesDB[category].isDir) {
+        // Directory items (ATMs, Fuel, etc.) do not require date filtering!
+        dateContainer.innerHTML = ``;
       } else {
         dateContainer.innerHTML = `
           <div style="flex:1;">
@@ -306,10 +459,12 @@
       
       let items = [...servicesDB[currentCategory].items];
       
+      // Filter by location
       if (locationTerm !== "") {
         items = items.filter(item => item.location.toLowerCase().includes(locationTerm));
       }
       
+      // Sorting Logic
       if (sortBy === 'price_asc') {
         items.sort((a, b) => a.price - b.price); 
       } else if (sortBy === 'price_desc') {
@@ -335,9 +490,23 @@
         return;
       }
       
-      items.forEach((item, index) => {
+      items.forEach((item) => {
         const imgUrl = `https://picsum.photos/seed/${currentCategory}${item.name.replace(/\s/g, '')}/600/400`;
         const priceLabel = currentCategory === 'hotels' ? '/ night' : '';
+        const isDir = servicesDB[currentCategory].isDir;
+        
+        // Show price range ($$) for directory items, or exact price ($15) for booking items
+        const priceDisplay = item.priceRange 
+          ? `💰 ${item.priceRange}` 
+          : `💰 $${item.price} ${priceLabel}`;
+
+        // Change Action Button to Directions if it is a directory item
+        const actionButton = isDir 
+          ? `<button class="btn-primary" style="padding: 8px 18px; font-size: 0.85rem; display:flex; gap:6px; align-items:center;" onclick="window.open('https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.name + ' ' + item.location)}')">
+               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+               Directions
+             </button>`
+          : `<button class="btn-primary" style="padding: 8px 18px; font-size: 0.85rem;" onclick="alert('Proceed to booking flow!')">Book Now</button>`;
         
         grid.innerHTML += `
           <div class="location-card" style="cursor: default; transform: none; box-shadow: var(--shadow-sm);">
@@ -348,7 +517,7 @@
               
               <div style="margin-bottom: 12px; display:flex; gap:10px; align-items:center;">
                 <span style="background:var(--bg); padding:4px 10px; border-radius:6px; font-size:0.75rem; font-weight:700; border:1px solid var(--line); color:var(--ink-soft); text-transform:uppercase;">📍 ${item.location}</span>
-                <span style="background:rgba(215, 38, 61, 0.1); padding:4px 10px; border-radius:6px; font-size:0.75rem; font-weight:700; color:var(--red); text-transform:uppercase;">💰 $${item.price} ${priceLabel}</span>
+                <span style="background:rgba(215, 38, 61, 0.1); padding:4px 10px; border-radius:6px; font-size:0.75rem; font-weight:700; color:var(--red); text-transform:uppercase;">${priceDisplay}</span>
               </div>
               
               <h3 style="margin-bottom: 8px; font-size: 1.3rem;">${item.name}</h3>
@@ -356,7 +525,7 @@
               
               <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--line); padding-top: 16px;">
                 <span style="font-size: 0.95rem;"><span style="color:#f59e0b; font-weight:800;">⭐ ${item.rating}</span></span>
-                <button class="btn-primary" style="padding: 8px 18px; font-size: 0.85rem;" onclick="alert('Proceed to booking flow!')">Book Now</button>
+                ${actionButton}
               </div>
             </div>
           </div>
