@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <title>Roamly — Plan Your Tour</title>
+
+  <style>
+    /* =========================================
+       NEW DYNAMIC UI & WIDGETS STYLES
+       ========================================= */
+
+    /* Live Activity Feed Marquee */
+    .activity-ticker {
+      background: var(--brand-blue, #0A1B33);
+      color: #fff;
+      padding: 10px 0;
+      overflow: hidden;
+      white-space: nowrap;
+      display: flex;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    .ticker-content {
+      display: inline-flex;
+      animation: ticker 30s linear infinite;
+    }
+    .ticker-item {
+      margin-right: 40px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ticker-item span { color: #A0AEC0; }
+    @keyframes ticker {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* Stats Dashboard Grid */
+    .stats-dashboard {
+      background: var(--surface, #F7FAFC);
+      border-bottom: 1px solid #E2E8F0;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    .stat-card {
+      background: #fff;
+      padding: 24px 16px;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+      border: 1px solid #E2E8F0;
+      transition: transform 0.3s;
+    }
+    .stat-card:hover { transform: translateY(-5px); }
+    .stat-icon { font-size: 2rem; margin-bottom: 10px; display: block; }
+    .stat-card h3 { font-family: var(--font-display); font-size: 2rem; color: #2B6CB0; margin-bottom: 5px; }
+    .stat-card p { font-size: 0.9rem; font-weight: 600; color: #4A5568; margin: 0; }
+
+    /* Bento Box: Sri Lanka at a Glance */
+    .insights-section { padding: 60px 0; }
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: auto auto;
+      gap: 20px;
+    }
+    .bento-item {
+      background: #fff;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+      border: 1px solid #E2E8F0;
+    }
+    .bento-weather { grid-column: span 2; }
+    .bento-trending { grid-column: span 1; grid-row: span 2; }
+    .bento-flights { grid-column: span 1; }
+    .bento-costs { grid-column: span 2; display: flex; gap: 20px; justify-content: space-around; align-items: center; text-align: center;}
+    .bento-languages { grid-column: span 1; }
+
+    @media (max-width: 992px) {
+      .bento-grid { grid-template-columns: repeat(2, 1fr); }
+      .bento-weather, .bento-costs { grid-column: span 2; }
+      .bento-trending { grid-column: span 1; grid-row: span 1; }
+    }
+    @media (max-width: 600px) {
+      .bento-grid { grid-template-columns: 1fr; }
+      .bento-weather, .bento-costs, .bento-trending, .bento-flights, .bento-languages { grid-column: span 1; }
+      .bento-costs { flex-direction: column; }
+    }
+
+    .bento-title { font-size: 1.1rem; font-weight: 700; color: #0A1B33; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;}
+    
+    /* Weather Cards inside Bento */
+    .weather-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .weather-card { display: flex; justify-content: space-between; background: #F7FAFC; padding: 12px 16px; border-radius: 12px; font-weight: 600;}
+    
+    /* Trending List */
+    .trending-list { list-style: none; padding: 0; margin: 0; }
+    .trending-list li { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #EDF2F7; font-weight: 600;}
+    .trending-list li:last-child { border-bottom: none; }
+    .trending-rank { background: #EBF8FF; color: #2B6CB0; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 0.85rem;}
+
+    /* Transport Badges */
+    .transport-badge { background: #F7FAFC; padding: 16px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-weight: 700;}
+    .transport-badge h4 { margin: 0; color: #2B6CB0; font-size: 1.2rem;}
+
+    /* Languages Bars */
+    .lang-bar { margin-bottom: 12px; }
+    .lang-label { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;}
+    .lang-track { height: 8px; background: #EDF2F7; border-radius: 4px; overflow: hidden; }
+    .lang-fill { height: 100%; background: #2B6CB0; border-radius: 4px; }
+
+    /* Festival Countdown */
+    .countdown-wrapper { display: flex; gap: 15px; margin-top: 20px;}
+    .cd-box { background: rgba(255,255,255,0.2); backdrop-filter: blur(5px); padding: 10px 15px; border-radius: 12px; text-align: center; color: #fff; border: 1px solid rgba(255,255,255,0.3);}
+    .cd-box span { display: block; font-size: 1.8rem; font-family: var(--font-display); font-weight: 700;}
+    .cd-box p { margin: 0; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+
+    /* Tourist Distribution Map (Bars) */
+    .distribution-section { padding: 60px 0; background: #0A1B33; color: #fff; }
+    .dist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+    .dist-map-img { width: 100%; max-width: 400px; margin: 0 auto; display: block; opacity: 0.8;}
+    .dist-bars .lang-label { color: #fff; }
+    .dist-bars .lang-track { background: rgba(255,255,255,0.1); height: 12px;}
+    .dist-bars .lang-fill { background: #48BB78; box-shadow: 0 0 10px #48BB78; }
+
+    /* Sustainability Banner */
+    .sustainability-banner {
+      background: linear-gradient(135deg, #276749 0%, #2F855A 100%);
+      color: #fff;
+      padding: 40px 20px;
+      text-align: center;
+      margin: 40px 20px;
+      border-radius: 20px;
+    }
+    .sus-grid { display: flex; justify-content: center; gap: 50px; margin-top: 20px; flex-wrap: wrap;}
+    .sus-stat { font-size: 1.2rem; font-weight: 600; }
+    .sus-stat span { display: block; font-size: 2.5rem; font-family: var(--font-display); font-weight: 700; margin-bottom: 5px;}
+
+    @media (max-width: 768px) {
+      .dist-grid { grid-template-columns: 1fr; }
+      .sus-grid { gap: 20px; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <img src="assets/logo.png" alt="Brand logo">
+      </a>
+
+      <div class="header-actions">
+        <!-- Language selector -->
+        <div class="lang-select">
+          <button type="button" class="lang-trigger" id="langTrigger" aria-haspopup="listbox" aria-expanded="false">
+            <span id="langCode">EN</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <ul class="lang-menu" id="langMenu" role="listbox" hidden>
+            <li><button type="button" class="active" data-code="EN">English</button></li>
+            <li><button type="button" data-code="TA">Tamil</button></li>
+            <li><button type="button" data-code="ZH">Chinese</button></li>
+          </ul>
+        </div>
+
+        <!-- Currency selector -->
+        <div class="currency-select" role="group" aria-label="Currency" id="currencySelect">
+          <button type="button" class="active" data-currency="LKR">LKR</button>
+          <button type="button" data-currency="USD">USD</button>
+          <button type="button" data-currency="EUR">EUR</button>
+        </div>
+
+        <button type="button" class="btn-signin">Sign In</button>
+
+        <button type="button" class="icon-btn" aria-label="Wishlist">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/>
+          </svg>
+          <span class="badge">0</span>
+        </button>
+
+        <button type="button" class="icon-btn" id="darkModeToggle" aria-label="Toggle dark mode">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="4.5"/>
+            <path d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="navbar">
+    <ul>
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="map.html">Map</a></li>
+      <li><a href="bookings.html">Bookings</a></li>
+      <li><a href="emergency.html">Emergency</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="about.html">About Us</a></li>
+    </ul>
+  </nav>
+
+  <!-- NEW: Live Activity Feed Marquee -->
+  <!--<div class="activity-ticker">
+    <div class="ticker-content">
+      <div class="ticker-item">✅ <span>Sarah booked a hotel in</span> Ella</div>
+      <div class="ticker-item">⭐ <span>John rated</span> Galle Fort <span>5 stars</span></div>
+      <div class="ticker-item">🚗 <span>Alex rented a scooter in</span> Mirissa</div>
+      <div class="ticker-item">🏄 <span>Emma booked a surfing lesson in</span> Arugam Bay</div>
+      <div class="ticker-item">📸 <span>David saved</span> Sigiriya <span>to wishlist</span></div> -->
+      <!-- Duplicate for infinite loop effect -->
+     <!-- <div class="ticker-item">✅ <span>Sarah booked a hotel in</span> Ella</div>
+      <div class="ticker-item">⭐ <span>John rated</span> Galle Fort <span>5 stars</span></div>
+      <div class="ticker-item">🚗 <span>Alex rented a scooter in</span> Mirissa</div>
+      <div class="ticker-item">🏄 <span>Emma booked a surfing lesson in</span> Arugam Bay</div>
+      <div class="ticker-item">📸 <span>David saved</span> Sigiriya <span>to wishlist</span></div>
+    </div>
+  </div> -->
+
+  <main>
+    <section class="hero">
+      <video class="hero-video" autoplay muted loop playsinline poster="assets/hero-poster.jpg">
+        <source src="assets/background.mp4" type="video/mp4">
+      </video>
+      <div class="hero-overlay"></div>
+
+      <div class="hero-content">
+        <h1>Plan your Tour with <span>Roamly</span></h1>
+        <div class="hero-buttons">
+          <button type="button" class="btn-primary" onclick="window.location.href='map.html'">Explore</button>
+          <button type="button" class="btn-outline" onclick="window.location.href='plan.html'">Plan a Trip</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Search Section -->
+    <section class="search-section section-padding scroll-reveal">
+      <div class="container">
+        <h2 class="section-title">Where do you want to go?</h2>
+        <div class="search-box">
+          <input type="text" placeholder="Search for destinations, events, or activities...">
+          <button type="button" class="btn-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/>
+            </svg>
+          </button>
+        </div>
+        <div class="popular-tags">
+          <span>Popular:</span>
+          <button type="button" class="tag">Sigiriya</button>
+          <button type="button" class="tag">Ella</button>
+          <button type="button" class="tag">Galle Fort</button>
+          <button type="button" class="tag">Yala National Park</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEW: Live Statistics Dashboard -->
+    <section class="stats-dashboard section-padding scroll-reveal" id="statsSection">
+      <div class="container">
+        <h2 class="section-title" style="text-align: center; margin-bottom: 40px;">The Roamly Ecosystem</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-icon">👥</span>
+            <h3 class="counter" data-target="1245890">0</h3>
+            <p>Tourist Arrivals</p>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">🌍</span>
+            <h3 class="counter" data-target="165">0</h3>
+            <p>Countries Visiting</p>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">🏢</span>
+            <h3 class="counter" data-target="2350">0</h3>
+            <p>Registered Businesses</p>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">🧑‍🏫</span>
+            <h3 class="counter" data-target="430">0</h3>
+            <p>Verified Tour Guides</p>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">📍</span>
+            <h3 class="counter" data-target="580">0</h3>
+            <p>Tourist Attractions</p>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">⭐</span>
+            <h3 class="counter" data-target="18450">0</h3>
+            <p>Customer Reviews</p>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">🧳</span>
+            <h3 class="counter" data-target="96800">0</h3>
+            <p>Successful Bookings</p>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">🚗</span>
+            <h3 class="counter" data-target="720">0</h3>
+            <p>Rental Vehicles</p>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">🏄</span>
+            <h3 class="counter" data-target="250">0</h3>
+            <p>Adventure Activities</p>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">🗺️</span>
+            <h3 class="counter" data-target="25">0</h3>
+            <p>Districts Covered</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEW: Sri Lanka at a Glance (Bento Box) -->
+    <section class="insights-section scroll-reveal" style="background: #EDF2F7;">
+      <div class="container">
+        <h2 class="section-title" style="text-align: center; margin-bottom: 40px;">Live Travel Insights</h2>
+        
+        <div class="bento-grid">
+          
+          <!-- Live Weather -->
+          <div class="bento-item bento-weather">
+            <h3 class="bento-title">🌤️ Live Weather</h3>
+            <div class="weather-grid">
+              <div class="weather-card"><span>Colombo</span><span>☀️ 30°C</span></div>
+              <div class="weather-card"><span>Kandy</span><span>🌦️ 24°C</span></div>
+              <div class="weather-card"><span>Ella</span><span>🌧️ 19°C</span></div>
+              <div class="weather-card"><span>Galle</span><span>☀️ 31°C</span></div>
+            </div>
+          </div>
+
+          <!-- Trending Destinations -->
+          <div class="bento-item bento-trending">
+            <h3 class="bento-title">🔥 Trending Today</h3>
+            <ul class="trending-list">
+              <li><span class="trending-rank">1</span> Sigiriya</li>
+              <li><span class="trending-rank">2</span> Ella</li>
+              <li><span class="trending-rank">3</span> Mirissa</li>
+              <li><span class="trending-rank">4</span> Galle Fort</li>
+              <li><span class="trending-rank">5</span> Yala</li>
+            </ul>
+          </div>
+
+          <!-- Transport Hub Arrivals -->
+          <div class="bento-item bento-flights">
+            <h3 class="bento-title">🛬 Daily Arrivals</h3>
+            <div class="transport-badge">
+              <span>✈️ Flights</span>
+              <h4 class="counter" data-target="124">0</h4>
+            </div>
+            <div class="transport-badge">
+              <span>🚢 Cruises</span>
+              <h4 class="counter" data-target="18">0</h4>
+            </div>
+          </div>
+
+          <!-- Averages -->
+          <div class="bento-item bento-costs">
+            <div>
+              <p style="color: #718096; font-weight: 600; margin-bottom: 5px;">Average Daily Budget</p>
+              <h2 style="font-family: var(--font-display); color: #2B6CB0; font-size: 2.5rem; margin: 0;">$58<span style="font-size: 1rem; color: #4A5568;">/day</span></h2>
+            </div>
+            <div style="width: 1px; height: 60px; background: #E2E8F0;"></div>
+            <div>
+              <p style="color: #718096; font-weight: 600; margin-bottom: 5px;">Average Stay</p>
+              <h2 style="font-family: var(--font-display); color: #2B6CB0; font-size: 2.5rem; margin: 0;">6.4<span style="font-size: 1rem; color: #4A5568;"> Days</span></h2>
+            </div>
+          </div>
+
+          <!-- Languages Spoken -->
+          <div class="bento-item bento-languages">
+            <h3 class="bento-title">🌐 Languages Spoken</h3>
+            
+            <div class="lang-bar">
+              <div class="lang-label"><span>English</span><span>65%</span></div>
+              <div class="lang-track"><div class="lang-fill" style="width: 65%;"></div></div>
+            </div>
+            <div class="lang-bar">
+              <div class="lang-label"><span>Chinese</span><span>12%</span></div>
+              <div class="lang-track"><div class="lang-fill" style="width: 12%; background: #E53E3E;"></div></div>
+            </div>
+            <div class="lang-bar">
+              <div class="lang-label"><span>German</span><span>8%</span></div>
+              <div class="lang-track"><div class="lang-fill" style="width: 8%; background: #D69E2E;"></div></div>
+            </div>
+            <div class="lang-bar">
+              <div class="lang-label"><span>French</span><span>5%</span></div>
+              <div class="lang-track"><div class="lang-fill" style="width: 5%; background: #3182CE;"></div></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- UPDATED: Upcoming Festival Countdown -->
+    <section class="monthly-special section-padding scroll-reveal">
+      <div class="container monthly-grid">
+        <div class="monthly-image" style="position: relative;">
+          <img src="images/Esala.jpg" alt="Esala Perahera" onerror="this.src='https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=800'">
+          <div style="position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, transparent 100%);"></div>
+          
+          <!-- Countdown Overlay -->
+          <div style="position: absolute; bottom: 20px; left: 20px; right: 20px;">
+            <p style="color: #fff; font-weight: 700; margin-bottom: 5px;">Starts In:</p>
+            <div class="countdown-wrapper">
+              <div class="cd-box"><span id="cd-days">15</span><p>Days</p></div>
+              <div class="cd-box"><span id="cd-hours">08</span><p>Hours</p></div>
+              <div class="cd-box"><span id="cd-mins">42</span><p>Mins</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="monthly-content">
+          <span class="badge-special">Upcoming Festival 🎉</span>
+          <h2>Kandy Esala Perahera</h2>
+          <p>Experience the grand festival of the sacred tooth relic. Witness a mesmerizing pageant of elephants, traditional dancers, and fire breathers illuminating the historic streets of Kandy. A cultural spectacle you cannot miss.</p>
+          <button type="button" class="btn-primary">Get Event Tickets</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Popular Locations Section -->
+    <section class="popular-locations section-padding">
+      <div class="container">
+        <h2 class="section-title scroll-reveal">Popular Locations</h2>
+        <div class="locations-grid">
+          
+          <div class="location-card scroll-reveal" style="transition-delay: 0.1s" onclick="openModal('Sigiriya', 'The ancient rock fortress and palace ruin, considered by locals as the Eighth Wonder of the World.')">
+            <div class="card-img"><img src="images/Sigiriya1.jpg" onerror="this.src='https://images.unsplash.com/photo-1579693155106-96a92ec2c4eb?q=80&w=600'" alt="Sigiriya"></div>
+            <div class="card-info">
+              <h3>Sigiriya</h3>
+              <div class="rating"><span>⭐ 4.9</span> (2.4k reviews)</div>
+            </div>
+          </div>
+
+          <div class="location-card scroll-reveal" style="transition-delay: 0.2s" onclick="openModal('Ella', 'A small town in the Badulla District known for its breathtaking views, tea plantations, and waterfalls.')">
+            <div class="card-img"><img src="images/Ella1.jpg" onerror="this.src='https://images.unsplash.com/photo-1589139618174-a63e9c7042a9?q=80&w=600'" alt="Ella"></div>
+            <div class="card-info">
+              <h3>Ella</h3>
+              <div class="rating"><span>⭐ 4.8</span> (1.8k reviews)</div>
+            </div>
+          </div>
+
+          <div class="location-card scroll-reveal" style="transition-delay: 0.3s" onclick="openModal('Galle Fort', 'A historical, archaeological and architectural heritage monument first built by the Portuguese.')">
+            <div class="card-img"><img src="images/gallfort1.jpg" onerror="this.src='https://images.unsplash.com/photo-1585807519105-0967fc03bb69?q=80&w=600'" alt="Galle Fort"></div>
+            <div class="card-info">
+              <h3>Galle Fort</h3>
+              <div class="rating"><span>⭐ 4.7</span> (3.1k reviews)</div>
+            </div>
+          </div>
+
+          <div class="location-card scroll-reveal" style="transition-delay: 0.4s" onclick="openModal('Yala National Park', 'The most visited and second largest national park in Sri Lanka, famous for its leopards.')">
+            <div class="card-img"><img src="images/Yala1.jpg" onerror="this.src='https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=600'" alt="Yala National Park"></div>
+            <div class="card-info">
+              <h3>Yala National Park</h3>
+              <div class="rating"><span>⭐ 4.8</span> (1.2k reviews)</div>
+            </div>
+          </div>
+
+          <div class="location-card scroll-reveal" style="transition-delay: 0.1s" onclick="openModal('Nuwara Eliya', 'Often referred to as Little England, this city offers a cool climate and stunning tea estates.')">
+            <div class="card-img"><img src="images/NuwaraEliya1.jpg" onerror="this.src='https://images.unsplash.com/photo-1588612140409-a78c187d95cb?q=80&w=600'" alt="Nuwara Eliya"></div>
+            <div class="card-info">
+              <h3>Nuwara Eliya</h3>
+              <div class="rating"><span>⭐ 4.6</span> (1.5k reviews)</div>
+            </div>
+          </div>
+
+          <div class="location-card scroll-reveal" style="transition-delay: 0.2s" onclick="openModal('Mirissa Beach', 'A stunning crescent beach located in the south coast, renowned for its whale watching tours.')">
+            <div class="card-img"><img src="images/Mirissa1.jpg" onerror="this.src='https://images.unsplash.com/photo-1533587851505-d119e13bf0b5?q=80&w=600'" alt="Mirissa Beach"></div>
+            <div class="card-info">
+              <h3>Mirissa Beach</h3>
+              <div class="rating"><span>⭐ 4.9</span> (2.9k reviews)</div>
+            </div>
+          </div>
+
+          <div class="location-card scroll-reveal" style="transition-delay: 0.3s" onclick="openModal('Adam\'s Peak', 'A tall conical mountain located in central Sri Lanka, well known for the Sri Pada sacred footprint.')">
+            <div class="card-img"><img src="images/AdamsPeak1.jpg" onerror="this.src='https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=600'" alt="Adam's Peak"></div>
+            <div class="card-info">
+              <h3>Adam's Peak</h3>
+              <div class="rating"><span>⭐ 4.7</span> (900 reviews)</div>
+            </div>
+          </div>
+
+          <div class="location-card scroll-reveal" style="transition-delay: 0.4s" onclick="openModal('Arugam Bay', 'A moon-shaped curl of soft sand, internationally renowned as one of the best surfing destinations.')">
+            <div class="card-img"><img src="images/ArugamBay1.jpg" onerror="this.src='https://images.unsplash.com/photo-1574041011853-4bfec6b62719?q=80&w=600'" alt="Arugam Bay"></div>
+            <div class="card-info">
+              <h3>Arugam Bay</h3>
+              <div class="rating"><span>⭐ 4.8</span> (1.4k reviews)</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- NEW: Live Tourist Distribution Map -->
+    <section class="distribution-section scroll-reveal">
+      <div class="container dist-grid">
+        <div>
+          <h2 class="section-title" style="color: #fff; margin-bottom: 30px;">Live Tourist Distribution</h2>
+          <p style="color: #A0AEC0; margin-bottom: 30px; font-size: 1.1rem; line-height: 1.6;">See where travelers are exploring right now. Our dynamic heat map tracks active bookings and check-ins across the island.</p>
+          
+          <div class="dist-bars">
+            <div class="lang-bar">
+              <div class="lang-label"><span>Colombo</span><span>High Activity</span></div>
+              <div class="lang-track"><div class="lang-fill glow-bar" style="width: 85%;"></div></div>
+            </div>
+            <div class="lang-bar">
+              <div class="lang-label"><span>Galle</span><span>High Activity</span></div>
+              <div class="lang-track"><div class="lang-fill glow-bar" style="width: 75%;"></div></div>
+            </div>
+            <div class="lang-bar">
+              <div class="lang-label"><span>Kandy</span><span>Moderate</span></div>
+              <div class="lang-track"><div class="lang-fill glow-bar" style="width: 60%; background: #F6AD55; box-shadow: 0 0 10px #F6AD55;"></div></div>
+            </div>
+            <div class="lang-bar">
+              <div class="lang-label"><span>Ella</span><span>Moderate</span></div>
+              <div class="lang-track"><div class="lang-fill glow-bar" style="width: 50%; background: #F6AD55; box-shadow: 0 0 10px #F6AD55;"></div></div>
+            </div>
+            <div class="lang-bar">
+              <div class="lang-label"><span>Jaffna</span><span>Growing</span></div>
+              <div class="lang-track"><div class="lang-fill glow-bar" style="width: 30%; background: #63B3ED; box-shadow: 0 0 10px #63B3ED;"></div></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <!-- Silhouette/Vector map placeholder -->
+          <img src="assets/Map.jpg" alt="Sri Lanka Map" class="dist-map-img" style="filter: drop-shadow(0 0 20px rgba(66, 153, 225, 0.5))  ;">
+        </div>
+      </div>
+    </section>
+
+    <!-- NEW: Sustainability Banner -->
+    <div class="container scroll-reveal">
+      <section class="sustainability-banner">
+        <h2 style="font-family: var(--font-display); font-size: 2.2rem; margin-bottom: 10px;">💚 Roamly Sustainability Impact</h2>
+        <p style="font-size: 1.1rem; opacity: 0.9;">Travel responsibly. We contribute a portion of all bookings towards eco-initiatives.</p>
+        
+        <div class="sus-grid">
+          <div class="sus-stat">
+            <span>🌱 <span class="counter" data-target="24800">0</span></span>
+            Trees Planted
+          </div>
+          <div class="sus-stat">
+            <span>♻️ <span class="counter" data-target="15">0</span>.8 Tons</span>
+            Plastic Saved
+          </div>
+        </div>
+      </section>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="assets/logo.png" alt="Brand logo">
+        <p>Community-driven travel discovery for Sri Lanka — built by travellers, for travellers.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="map.html">Map</a></li>
+          <li><a href="bookings.html">Bookings</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="about.html">About Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Emergency Numbers</h4>
+        <ul class="emergency-list">
+          <li><span>Police Emergency</span><a href="tel:119">119</a></li>
+          <li><span>Ambulance (Suwa Seriya)</span><a href="tel:1990">1990</a></li>
+          <li><span>Tourist Police Hotline</span><a href="tel:1912">1912</a></li>
+          <li><span>Fire &amp; Rescue</span><a href="tel:110">110</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Cookie Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-divider"></div>
+    <div class="footer-bottom">
+      <p>© 2026 Roamly. All rights reserved.</p>
+      <p class="footer-note">ICT 2022 — Full Stack Development Project</p>
+    </div>
+  </footer>
+
+  <!-- UPGRADED POPUP MODAL -->
+  <div class="modal-overlay" id="locationModal">
+    <div class="modal-content">
+      <button class="btn-close" onclick="closeModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+      
+      <div class="slideshow-container">
+        
+        <!-- Live Weather Badge -->
+        <div class="modal-weather" id="modalWeather">
+          <span id="weatherIcon">☀️</span>
+          <span id="weatherTemp">--°C</span>
+        </div>
+
+        <!-- Wishlist Toggle Button -->
+        <button class="modal-wishlist" id="modalWishlistBtn" onclick="toggleWishlist()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/>
+          </svg>
+        </button>
+
+        <div class="slides" id="modalSlides">
+          <img class="slide active" src="" alt="Slide 1">
+          <img class="slide" src="" alt="Slide 2">
+          <img class="slide" src="" alt="Slide 3">
+        </div>
+        <button class="slide-btn prev" onclick="moveSlide(-1)">&#10094;</button>
+        <button class="slide-btn next" onclick="moveSlide(1)">&#10095;</button>
+      </div>
+
+      <div class="modal-info">
+        <h2 id="modalTitle">Location Title</h2>
+        <p id="modalDesc">Location description goes here.</p>
+        <div class="modal-actions">
+          <a href="#" onclick="alert('Booking system currently not available.'); return false;" class="btn-book-special">
+            <span>Book Now</span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+          
+          <a href="#" id="modalDirectionBtn" target="_blank" class="btn-direction-special">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <span>Get Directions</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+
+  <!-- Interactive Modal & Dashboard Widgets Logic -->
+  <script>
+    /* =========================================
+       COUNTER ANIMATIONS (Intersection Observer)
+       ========================================= */
+    const speed = 200; // The lower the slower
+    const counters = document.querySelectorAll('.counter');
+    
+    const animateCounters = (entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const counter = entry.target;
+          const target = +counter.getAttribute('data-target');
+          
+          const updateCount = () => {
+            const count = +counter.innerText.replace(/,/g, '');
+            const inc = target / speed;
+            
+            if (count < target) {
+              counter.innerText = Math.ceil(count + inc).toLocaleString();
+              setTimeout(updateCount, 10);
+            } else {
+              counter.innerText = target.toLocaleString() + (target > 100 ? '+' : '');
+            }
+          };
+          updateCount();
+          observer.unobserve(counter);
+        }
+      });
+    };
+
+    const counterObserver = new IntersectionObserver(animateCounters, {
+      threshold: 0.5
+    });
+
+    counters.forEach(counter => {
+      counterObserver.observe(counter);
+    });
+
+    /* =========================================
+       FESTIVAL COUNTDOWN LOGIC
+       ========================================= */
+    function updateCountdown() {
+      // Mocking 15 days, 8 hours, 42 minutes from load
+      let days = parseInt(document.getElementById('cd-days').innerText);
+      let hours = parseInt(document.getElementById('cd-hours').innerText);
+      let mins = parseInt(document.getElementById('cd-mins').innerText);
+      
+      mins--;
+      if(mins < 0) { mins = 59; hours--; }
+      if(hours < 0) { hours = 23; days--; }
+      if(days < 0) { days = 0; hours = 0; mins = 0; }
+      
+      document.getElementById('cd-days').innerText = days.toString().padStart(2, '0');
+      document.getElementById('cd-hours').innerText = hours.toString().padStart(2, '0');
+      document.getElementById('cd-mins').innerText = mins.toString().padStart(2, '0');
+    }
+    setInterval(updateCountdown, 60000); // Update every minute
+
+    /* =========================================
+       EXISTING MODAL LOGIC (Preserved)
+       ========================================= */
+    const locationCoords = {
+      "Sigiriya": {lat: 7.9570, lng: 80.7603},
+      "Ella": {lat: 6.8711, lng: 81.0440},
+      "Galle Fort": {lat: 6.0264, lng: 80.2168},
+      "Yala National Park": {lat: 6.3686, lng: 81.5173},
+      "Nuwara Eliya": {lat: 6.9497, lng: 80.7828},
+      "Mirissa Beach": {lat: 5.9483, lng: 80.4716},
+      "Adam's Peak": {lat: 6.8096, lng: 80.4994},
+      "Arugam Bay": {lat: 6.8436, lng: 81.8284}
+    };
+
+    function getWeatherEmoji(code) {
+      if (code === 0) return '☀️';
+      if (code > 0 && code <= 3) return '⛅';
+      if (code >= 51 && code <= 67) return '🌧️';
+      if (code >= 80 && code <= 82) return '🌦️';
+      if (code >= 95) return '⛈️';
+      return '🌡️';
+    }
+
+    let slideIndex = 0;
+    window.moveSlide = (step) => {
+      const slides = document.querySelectorAll('#modalSlides .slide');
+      slideIndex += step;
+      if (slideIndex >= slides.length) slideIndex = 0;
+      if (slideIndex < 0) slideIndex = slides.length - 1;
+      slides.forEach((s, idx) => {
+        if(idx === slideIndex) s.classList.add('active');
+        else s.classList.remove('active');
+      });
+    }
+
+    window.openModal = async (title, desc) => {
+      const modal = document.getElementById('locationModal');
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalDesc').textContent = desc;
+      
+      const directionBtn = document.getElementById('modalDirectionBtn');
+      directionBtn.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(title + ' Sri Lanka')}`;
+
+      const slides = document.querySelectorAll('#modalSlides .slide');
+      const cleanTitle = title.replace(/\s+/g, '').toLowerCase();
+      slides.forEach((img, i) => {
+        img.src = `https://picsum.photos/seed/${cleanTitle}${i}/800/500`;
+      });
+      slideIndex = 0;
+      moveSlide(0);
+
+      const wishlistBtn = document.getElementById('modalWishlistBtn');
+      wishlistBtn.classList.remove('active');
+
+      const weatherTemp = document.getElementById('weatherTemp');
+      const weatherIcon = document.getElementById('weatherIcon');
+      weatherTemp.textContent = "Loading...";
+      weatherIcon.textContent = "⏳";
+      
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+
+      const coords = locationCoords[title];
+      if (coords) {
+        try {
+          const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lng}&current_weather=true`);
+          const data = await res.json();
+          const temp = Math.round(data.current_weather.temperature);
+          const code = data.current_weather.weathercode;
+          weatherTemp.textContent = `${temp}°C`;
+          weatherIcon.textContent = getWeatherEmoji(code);
+        } catch (e) {
+          weatherTemp.textContent = "N/A";
+          weatherIcon.textContent = "⚠️";
+        }
+      } else {
+        weatherTemp.textContent = "28°C"; 
+        weatherIcon.textContent = "☀️";
+      }
+    };
+
+    window.closeModal = () => {
+      document.getElementById('locationModal').classList.remove('active');
+      document.body.style.overflow = '';
+    };
+
+    window.toggleWishlist = () => {
+      const btn = document.getElementById('modalWishlistBtn');
+      btn.classList.toggle('active');
+      
+      const badge = document.querySelector('.icon-btn[aria-label="Wishlist"] .badge');
+      let count = parseInt(badge.textContent) || 0;
+      
+      if (btn.classList.contains('active')) {
+        badge.textContent = count + 1;
+        btn.style.transform = "scale(1.2)";
+        setTimeout(() => btn.style.transform = "", 200);
+      } else {
+        badge.textContent = Math.max(0, count - 1);
+      }
+    };
+  </script>
+</body>
+</html>
