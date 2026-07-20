@@ -440,7 +440,7 @@
           <p>Tell our AI Travel Assistant what you want, and we'll craft the perfect Sri Lankan itinerary.</p>
         </div>
 
-        <form id="planForm">
+        <form onsubmit="event.preventDefault(); alert('Generating your personalized itinerary...');">
           <div class="form-grid">
             <div class="form-group">
               <label>Destination / Region</label>
@@ -714,46 +714,6 @@
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         this.classList.add('active');
       });
-    });
-
-    document.getElementById('planForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      
-      const form = this;
-      const inputs = form.querySelectorAll('input, select');
-      inputs.forEach((input, index) => {
-        if (!input.name) {
-          let name = input.placeholder?.replace(/\s+/g, '_').toLowerCase();
-          if (!name) {
-            const label = input.closest('.form-group')?.querySelector('label')?.textContent;
-            if (label) name = label.replace(/[\s\(\)]+/g, '_').toLowerCase();
-          }
-          input.name = name || `field_${index}`;
-        }
-      });
-      
-      const formData = new FormData(form);
-      const submitBtn = form.querySelector('button[type="submit"]');
-      const originalBtnText = submitBtn.textContent;
-      
-      submitBtn.textContent = 'Generating...';
-      submitBtn.disabled = true;
-
-      try {
-        const response = await fetch('/api/plan', {
-          method: 'POST',
-          body: formData
-        });
-        const result = await response.json();
-        if (result.success) {
-           alert(result.message);
-        }
-      } catch (error) {
-        console.error('Error:', error);
-      } finally {
-        submitBtn.textContent = originalBtnText;
-        submitBtn.disabled = false;
-      }
     });
   </script>
 </body>

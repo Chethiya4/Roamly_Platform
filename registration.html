@@ -489,62 +489,22 @@
   <script src="script.js"></script>
     <!-- Form Submission Handler -->
   <script>
-    document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+    document.getElementById('registrationForm').addEventListener('submit', function(e) {
       e.preventDefault(); // Stop the page from refreshing
       
-      const form = this;
+      // 1. Hide the entire form
+      this.style.display = 'none';
       
-      // Auto-assign names to inputs if missing so FormData works
-      const inputs = form.querySelectorAll('input, select, textarea');
-      inputs.forEach((input, index) => {
-        if (!input.name) {
-            let name = input.placeholder?.replace(/\s+/g, '_').toLowerCase();
-            if (!name) {
-                const label = input.closest('.form-group')?.querySelector('label')?.textContent;
-                if (label) name = label.replace(/[\s\(\)]+/g, '_').toLowerCase();
-            }
-            input.name = name || `field_${index}`;
-        }
-      });
+      // 2. Hide the main page title (Optional, makes the screen look cleaner)
+      document.querySelector('.form-container h1').style.display = 'none';
+      document.querySelector('.form-container p').style.display = 'none';
 
-      const formData = new FormData(form);
-      const submitBtn = form.querySelector('button[type="submit"]');
-      const originalBtnText = submitBtn.textContent;
+      // 3. Show the success message screen
+      const successMsg = document.getElementById('successMessage');
+      successMsg.style.display = 'block';
       
-      submitBtn.textContent = 'Submitting...';
-      submitBtn.disabled = true;
-
-      try {
-        const response = await fetch('/api/register', {
-          method: 'POST',
-          body: formData
-        });
-        const result = await response.json();
-        
-        if (result.success) {
-          // 1. Hide the entire form
-          form.style.display = 'none';
-          
-          // 2. Hide the main page title
-          document.querySelector('.form-container h1').style.display = 'none';
-          document.querySelector('.form-container p').style.display = 'none';
-
-          // 3. Show the success message screen
-          const successMsg = document.getElementById('successMessage');
-          successMsg.style.display = 'block';
-          
-          // 4. Smoothly scroll to the very top
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else {
-          alert('Submission failed: ' + (result.message || 'Unknown error'));
-        }
-      } catch (error) {
-        console.error('Error submitting form:', error);
-        alert('An error occurred. Please try again.');
-      } finally {
-        submitBtn.textContent = originalBtnText;
-        submitBtn.disabled = false;
-      }
+      // 4. Smoothly scroll to the very top so the user sees the green tick perfectly centered
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   </script>
   

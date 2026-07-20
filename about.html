@@ -432,38 +432,26 @@
       }
 
       // 4. Handle Form Submission to add new review instantly
-      document.getElementById('reviewForm').addEventListener('submit', async function(e) {
+      document.getElementById('reviewForm').addEventListener('submit', function(e) {
         e.preventDefault(); // Prevent page refresh
         
         const name = document.getElementById('reviewerName').value;
         const text = document.getElementById('reviewText').value;
         const rating = parseInt(document.getElementById('reviewRating').value);
         
-        try {
-          const response = await fetch('/api/review', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, text, rating })
-          });
-          const result = await response.json();
-          if (result.success) {
-            // Push new review to the array
-            reviews.push({ name, text, rating });
-            // Re-render
-            renderReviews();
-            // Reset the form
-            document.getElementById('reviewerName').value = '';
-            document.getElementById('reviewText').value = '';
-            ratingInput.value = 5;
-            stars.forEach(s => s.classList.add('active'));
-            alert('Thank you! Your review has been posted successfully.');
-          } else {
-            alert('Submission failed: ' + (result.message || 'Unknown error'));
-          }
-        } catch (error) {
-          console.error('Error:', error);
-          alert('An error occurred. Please try again.');
-        }
+        // Push new review to the array
+        reviews.push({ name, text, rating });
+        
+        // Re-render
+        renderReviews();
+        
+        // Reset the form
+        document.getElementById('reviewerName').value = '';
+        document.getElementById('reviewText').value = '';
+        ratingInput.value = 5;
+        stars.forEach(s => s.classList.add('active'));
+        
+        alert('Thank you! Your review has been posted successfully.');
       });
 
       // Initial Render
