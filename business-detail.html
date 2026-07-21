@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <title>Business — Roamly</title>
+  <meta name="description" content="View this Roamly business listing." />
+  <style>
+    .detail-hero { position: relative; height: 340px; background: var(--navy-900); overflow: hidden; }
+    .detail-hero img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
+    .detail-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,27,51,0.88) 0%, transparent 60%); }
+    .detail-hero-content { position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%); width: 100%; max-width: 1240px; padding: 0 28px; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
+    .detail-title { font-family: var(--font-display); font-size: 2.6rem; color: #fff; }
+    .detail-sub   { color: rgba(255,255,255,0.7); font-size: 0.95rem; margin-top: 4px; }
+    .biz-logo { width: 72px; height: 72px; border-radius: var(--radius-md); object-fit: cover; border: 3px solid rgba(255,255,255,0.2); flex-shrink: 0; }
+
+    .wish-heart { width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,0.15); backdrop-filter: blur(4px); border: 1.5px solid rgba(255,255,255,0.3); color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; flex-shrink: 0; }
+    .wish-heart:hover, .wish-heart.active { background: var(--red); border-color: var(--red); }
+    .wish-heart svg { width: 22px; height: 22px; }
+    .wish-heart.active svg { fill: #fff; }
+
+    .detail-grid { display: grid; grid-template-columns: 1fr 380px; gap: 32px; max-width: 1240px; margin: 0 auto; padding: 40px 28px; }
+    @media(max-width:860px) { .detail-grid { grid-template-columns: 1fr; } }
+
+    .info-chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); font-size: 0.82rem; font-weight: 600; color: var(--ink-soft); margin: 0 6px 8px 0; }
+    .price-tag { display: inline-block; background: rgba(215,38,61,0.1); color: var(--red); font-weight: 700; padding: 4px 12px; border-radius: 999px; font-size: 0.82rem; }
+
+    .listings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; margin-top: 18px; }
+    .listing-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 18px; box-shadow: var(--shadow-sm); transition: 0.2s; }
+    .listing-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+    .listing-card h4 { font-family: var(--font-display); font-size: 1rem; margin-bottom: 6px; }
+    .listing-card p  { font-size: 0.85rem; color: var(--ink-soft); line-height: 1.4; }
+
+    .review-panel { background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--line); padding: 24px; box-shadow: var(--shadow-sm); }
+    .review-panel h3 { font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 16px; }
+    .review-form textarea { width: 100%; min-height: 90px; padding: 12px; border: 1px solid var(--line); border-radius: var(--radius-sm); font-family: inherit; font-size: 0.9rem; resize: vertical; color: var(--ink); background: var(--bg); }
+    .review-form textarea:focus { outline: 2px solid var(--red); }
+    .star-row { display: flex; gap: 6px; margin: 12px 0; }
+    .star-btn { font-size: 1.4rem; color: #d1d5db; cursor: pointer; transition: 0.1s; background: none; border: none; }
+    .star-btn.lit { color: #f59e0b; }
+    .review-list { margin-top: 24px; display: flex; flex-direction: column; gap: 14px; }
+    .review-item { padding: 14px; background: var(--bg); border-radius: var(--radius-sm); border: 1px solid var(--line); }
+    .review-item .rev-head { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.82rem; }
+    .review-item .rev-name { font-weight: 700; color: var(--ink); }
+    .review-item .rev-stars { color: #f59e0b; font-size: 0.9rem; }
+    .review-item p { font-size: 0.88rem; color: var(--ink-soft); line-height: 1.5; }
+
+    .avg-badge { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+    .avg-num { font-family: var(--font-display); font-size: 2.2rem; color: var(--ink); }
+    .avg-stars { color: #f59e0b; font-size: 1.1rem; }
+    .avg-count { font-size: 0.82rem; color: var(--ink-faint); }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="index.html" class="logo"><img src="assets/logo.png" alt="Roamly logo" /></a>
+    <div class="header-actions">
+      <button type="button" class="btn-signin" id="authBtn" onclick="window.location.href='auth.html'">Sign In</button>
+      <button type="button" class="icon-btn" id="darkModeToggle" aria-label="Toggle dark mode">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+<nav class="navbar">
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="map.html">Map</a></li>
+    <li><a href="bookings.html">Bookings</a></li>
+    <li><a href="emergency.html">Emergency</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="about.html">About Us</a></li>
+  </ul>
+</nav>
+
+<div class="detail-hero">
+  <img id="heroCover" src="https://picsum.photos/seed/business/1240/340" alt="Business cover" />
+  <div class="detail-hero-overlay"></div>
+  <div class="detail-hero-content">
+    <div style="display:flex;align-items:flex-end;gap:16px">
+      <img id="bizLogo" class="biz-logo" src="https://picsum.photos/seed/logo/72/72" alt="Logo" />
+      <div>
+        <h1 class="detail-title" id="bizName">Loading…</h1>
+        <p class="detail-sub" id="bizSub"></p>
+      </div>
+    </div>
+    <button class="wish-heart" id="wishBtn" title="Add to wishlist">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+    </button>
+  </div>
+</div>
+
+<div class="detail-grid">
+  <!-- Left -->
+  <div>
+    <!-- Meta chips -->
+    <div id="metaChips" style="margin-bottom:20px"></div>
+    <p id="bizDesc" style="color:var(--ink-soft);font-size:1.05rem;line-height:1.7;margin-bottom:32px"></p>
+
+    <h2 style="font-family:var(--font-display);font-size:1.5rem;margin-bottom:6px">Listings & Services</h2>
+    <div class="listings-grid" id="listingsGrid">
+      <p style="color:var(--ink-faint)">Loading listings…</p>
+    </div>
+  </div>
+
+  <!-- Right: reviews -->
+  <div>
+    <div class="review-panel">
+      <h3>Reviews</h3>
+      <div class="avg-badge">
+        <span class="avg-num" id="avgRating">–</span>
+        <span class="avg-stars" id="avgStars"></span>
+        <span class="avg-count" id="reviewCount"></span>
+      </div>
+      <div id="reviewFormWrap">
+        <div class="review-form" id="reviewForm" style="display:none">
+          <div class="star-row" id="starRow"></div>
+          <textarea id="reviewComment" placeholder="Share your experience…"></textarea>
+          <div id="reviewErr" style="color:var(--red);font-size:0.82rem;margin:6px 0;display:none"></div>
+          <button class="btn-primary" id="submitReview" style="width:100%;margin-top:10px;padding:11px;border-radius:999px;font-size:0.9rem">Submit Review</button>
+        </div>
+        <p id="reviewLoginPrompt" style="font-size:0.85rem;color:var(--ink-faint);text-align:center;margin-bottom:16px">
+          <a href="auth.html" style="color:var(--red);font-weight:700">Sign in</a> to leave a review.
+        </p>
+      </div>
+      <div class="review-list" id="reviewList"><p style="color:var(--ink-faint);font-size:0.85rem">No reviews yet.</p></div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-bottom" style="max-width:1240px;margin:0 auto;padding:24px 28px;text-align:center;color:rgba(255,255,255,0.5);font-size:0.78rem">
+    © 2026 Roamly. All rights reserved.
+  </div>
+</footer>
+
+<script src="script.js"></script>
+<script>
+const params = new URLSearchParams(location.search);
+const BIZ_ID = params.get('id');
+const user   = JSON.parse(localStorage.getItem('roamlyUser') || 'null');
+const TOKEN  = user?.token;
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function stars(n) { return '★'.repeat(n)+'☆'.repeat(5-n); }
+
+document.getElementById('darkModeToggle')?.addEventListener('click', () => document.body.classList.toggle('dark-mode'));
+if (user) document.getElementById('authBtn').textContent = user.name || 'Dashboard';
+
+async function load() {
+  if (!BIZ_ID) { document.getElementById('bizName').textContent = 'No business specified.'; return; }
+
+  const res  = await fetch(`/api/businesses/${BIZ_ID}`);
+  const body = await res.json();
+  if (!body.success) { document.getElementById('bizName').textContent = 'Not found.'; return; }
+
+  const b = body.data;
+  document.title = `${b.name} — Roamly`;
+  document.getElementById('bizName').textContent = b.name;
+  document.getElementById('bizSub').textContent  = `${b.category} · ${b.destination?.name || ''}`;
+  document.getElementById('bizDesc').textContent = b.description || '';
+  if (b.images?.cover)  document.getElementById('heroCover').src = b.images.cover;
+  if (b.images?.logo)   document.getElementById('bizLogo').src   = b.images.logo;
+
+  document.getElementById('avgRating').textContent = b.averageRating ?? '–';
+  document.getElementById('avgStars').textContent  = b.averageRating ? stars(Math.round(b.averageRating)) : '';
+  document.getElementById('reviewCount').textContent = b.reviewCount ? `(${b.reviewCount} reviews)` : '(no reviews yet)';
+
+  // Meta chips
+  const chips = [];
+  if (b.priceTier) chips.push(`💰 ${esc(b.priceTier)}`);
+  if (b.contact?.phone) chips.push(`📞 ${esc(b.contact.phone)}`);
+  if (b.contact?.businessEmail) chips.push(`✉ ${esc(b.contact.businessEmail)}`);
+  document.getElementById('metaChips').innerHTML = chips.map(c => `<span class="info-chip">${c}</span>`).join('');
+
+  // Listings
+  const listings = b.listings || [];
+  const grid = document.getElementById('listingsGrid');
+  if (listings.length) {
+    grid.innerHTML = listings.map(l => `
+      <div class="listing-card">
+        <h4>${esc(l.title)}</h4>
+        <p>${esc(l.description?.slice(0,100) || '')}${(l.description||'').length>100?'…':''}</p>
+        ${l.price ? `<div style="margin-top:8px;font-weight:700;color:var(--red)">LKR ${esc(String(l.price))}</div>` : ''}
+      </div>`).join('');
+  } else {
+    grid.innerHTML = '<p style="color:var(--ink-faint)">No listings yet.</p>';
+  }
+
+  loadReviews();
+}
+
+// Wishlist
+document.getElementById('wishBtn').addEventListener('click', async () => {
+  if (!user) { window.location.href = 'auth.html'; return; }
+  const btn = document.getElementById('wishBtn');
+  const res  = await fetch('/api/wishlist', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${TOKEN}` },
+    body: JSON.stringify({ itemType: 'business', itemId: BIZ_ID })
+  });
+  const body = await res.json();
+  if (body.success) {
+    btn.classList.toggle('active', body.data.saved);
+    btn.title = body.data.saved ? 'Remove from wishlist' : 'Add to wishlist';
+  }
+});
+
+// Review form
+let selectedRating = 0;
+if (user && user.role === 'visitor') {
+  document.getElementById('reviewLoginPrompt').style.display = 'none';
+  document.getElementById('reviewForm').style.display = 'block';
+  const starRow = document.getElementById('starRow');
+  for (let i = 1; i <= 5; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'star-btn'; btn.textContent = '★'; btn.dataset.val = i;
+    btn.addEventListener('click', () => {
+      selectedRating = i;
+      starRow.querySelectorAll('.star-btn').forEach(b => b.classList.toggle('lit', Number(b.dataset.val) <= i));
+    });
+    starRow.appendChild(btn);
+  }
+  document.getElementById('submitReview').addEventListener('click', async () => {
+    const comment = document.getElementById('reviewComment').value.trim();
+    const errEl   = document.getElementById('reviewErr');
+    errEl.style.display = 'none';
+    if (!selectedRating) { errEl.textContent = 'Please select a star rating.'; errEl.style.display = 'block'; return; }
+    const res  = await fetch('/api/reviews', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${TOKEN}` },
+      body: JSON.stringify({ targetType: 'business', targetId: BIZ_ID, rating: selectedRating, comment })
+    });
+    const body = await res.json();
+    if (body.success) {
+      document.getElementById('reviewComment').value = ''; selectedRating = 0;
+      document.getElementById('starRow').querySelectorAll('.star-btn').forEach(b => b.classList.remove('lit'));
+      loadReviews(); load();
+    } else {
+      errEl.textContent = body.message || 'Failed to submit review.'; errEl.style.display = 'block';
+    }
+  });
+} else if (!user) {
+  document.getElementById('reviewLoginPrompt').style.display = 'block';
+}
+
+async function loadReviews() {
+  const res  = await fetch(`/api/reviews?targetType=business&targetId=${BIZ_ID}`);
+  const body = await res.json();
+  const list = document.getElementById('reviewList');
+  if (!body.success || !body.data.length) { list.innerHTML = '<p style="color:var(--ink-faint);font-size:0.85rem">No reviews yet. Be the first!</p>'; return; }
+  list.innerHTML = body.data.map(r => `
+    <div class="review-item">
+      <div class="rev-head">
+        <span class="rev-name">${esc(r.user?.name || 'Anonymous')}</span>
+        <span class="rev-stars">${stars(r.rating)}</span>
+      </div>
+      <p>${esc(r.comment || '')}</p>
+    </div>`).join('');
+}
+
+load();
+</script>
+</body>
+</html>

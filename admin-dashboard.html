@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard — Roamly</title>
+  <meta name="description" content="Roamly platform administration — manage businesses, spots, users, and reviews." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    /* ── Admin-specific tokens (all reuse root CSS vars) ── */
+    .adm-shell   { display: flex; min-height: 100vh; }
+
+    /* Sidebar */
+    .adm-sidebar {
+      width: 230px; flex-shrink: 0;
+      background: var(--navy-900);
+      display: flex; flex-direction: column;
+      position: sticky; top: 0; height: 100vh;
+      overflow-y: auto;
+    }
+    .adm-logo {
+      padding: 22px 20px 18px;
+      font-family: var(--font-display);
+      font-size: 1.4rem; color: #fff;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .adm-logo span { color: var(--red); }
+    .adm-nav      { flex: 1; padding: 14px 0; }
+    .adm-nav-btn  {
+      display: flex; align-items: center; gap: 12px;
+      width: 100%; padding: 12px 20px;
+      color: rgba(255,255,255,0.65); font-size: 0.9rem; font-weight: 600;
+      border-radius: 0; transition: 0.15s; border-left: 3px solid transparent;
+      background: none; border-top: none; border-right: none; border-bottom: none;
+      cursor: pointer; font-family: inherit; text-align: left;
+    }
+    .adm-nav-btn:hover  { color: #fff; background: rgba(255,255,255,0.06); }
+    .adm-nav-btn.active { color: #fff; border-left-color: var(--red); background: rgba(255,255,255,0.1); }
+    .adm-nav-btn svg    { width: 18px; height: 18px; flex-shrink: 0; }
+    .adm-nav-divider    { border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 8px 20px; }
+    .adm-sidebar-foot   { padding: 16px 20px; }
+    .adm-sign-out {
+      width: 100%; padding: 10px 16px; background: rgba(215,38,61,0.18);
+      color: var(--red); border-radius: var(--radius-sm); font-weight: 700;
+      font-size: 0.85rem; border: 1px solid rgba(215,38,61,0.3);
+      cursor: pointer; font-family: inherit; transition: 0.2s; display: flex; align-items: center; gap: 8px;
+    }
+    .adm-sign-out:hover { background: var(--red); color: #fff; }
+
+    /* Main area */
+    .adm-main  { flex: 1; background: var(--bg); overflow-y: auto; }
+    .adm-topbar {
+      position: sticky; top: 0; z-index: 10;
+      background: var(--surface); border-bottom: 1px solid var(--line);
+      padding: 14px 32px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .adm-topbar h1 { font-family: var(--font-display); font-size: 1.4rem; color: var(--ink); }
+    .adm-badge-role {
+      padding: 5px 14px; border-radius: 999px;
+      background: var(--red); color: #fff; font-size: 0.75rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .adm-content { padding: 32px; }
+
+    /* Tab sections */
+    .adm-section { display: none; }
+    .adm-section.active { display: block; }
+
+    /* Stat cards */
+    .adm-stats-grid {
+      display: grid; gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      margin-bottom: 32px;
+    }
+    .adm-stat {
+      background: var(--surface); border-radius: var(--radius-md);
+      padding: 22px 20px; border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .adm-stat-label { font-size: 0.78rem; font-weight: 700; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.5px; }
+    .adm-stat-value { font-family: var(--font-display); font-size: 2.2rem; color: var(--ink); line-height: 1; }
+    .adm-stat-sub   { font-size: 0.78rem; color: var(--ink-faint); margin-top: 4px; }
+    .adm-stat-value.red { color: var(--red); }
+
+    /* Tables */
+    .adm-table-wrap { overflow-x: auto; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); background: var(--surface); border: 1px solid var(--line); }
+    .adm-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    .adm-table th { background: var(--navy-900); color: rgba(255,255,255,0.8); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; padding: 12px 16px; text-align: left; white-space: nowrap; }
+    .adm-table td { padding: 12px 16px; border-bottom: 1px solid var(--line); vertical-align: middle; color: var(--ink); }
+    .adm-table tr:last-child td { border-bottom: none; }
+    .adm-table tr:hover td { background: rgba(10,27,51,0.03); }
+
+    /* Status badges */
+    .status-badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 0.73rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; }
+    .status-pending  { background: rgba(245,158,11,0.15);  color: #b45309; }
+    .status-approved { background: rgba(16,185,129,0.15);  color: #047857; }
+    .status-rejected { background: rgba(215,38,61,0.12);   color: var(--red); }
+    .status-active   { background: rgba(16,185,129,0.15);  color: #047857; }
+    .status-inactive { background: rgba(215,38,61,0.12);   color: var(--red); }
+
+    /* Section headers */
+    .adm-section-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 18px; flex-wrap: wrap; gap: 10px;
+    }
+    .adm-section-head h2 { font-family: var(--font-display); font-size: 1.45rem; color: var(--ink); }
+
+    /* Action buttons — small table variants */
+    .btn-approve, .btn-reject, .btn-danger, .btn-neutral, .btn-role-save {
+      padding: 6px 14px; border-radius: var(--radius-sm);
+      font-size: 0.78rem; font-weight: 700; cursor: pointer;
+      border: none; font-family: inherit; transition: 0.15s; white-space: nowrap;
+    }
+    .btn-approve    { background: rgba(16,185,129,0.15); color: #047857; border: 1px solid rgba(16,185,129,0.3); }
+    .btn-approve:hover { background: #10b981; color: #fff; }
+    .btn-reject     { background: rgba(215,38,61,0.1);  color: var(--red); border: 1px solid rgba(215,38,61,0.25); }
+    .btn-reject:hover  { background: var(--red); color: #fff; }
+    .btn-danger     { background: rgba(215,38,61,0.1);  color: var(--red); border: 1px solid rgba(215,38,61,0.25); }
+    .btn-danger:hover  { background: var(--red); color: #fff; }
+    .btn-neutral    { background: var(--bg); color: var(--ink-soft); border: 1px solid var(--line); }
+    .btn-neutral:hover { background: var(--line); }
+    .btn-role-save  { background: var(--navy-700); color: #fff; }
+    .btn-role-save:hover { background: var(--navy-900); }
+    .btn-gap { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+    /* Role select */
+    .role-select { padding: 5px 8px; border-radius: var(--radius-sm); border: 1px solid var(--line); background: var(--bg); color: var(--ink); font-size: 0.82rem; font-family: inherit; }
+
+    /* Reason modal */
+    .reason-modal-overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(10,27,51,0.85); backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; visibility: hidden; transition: 0.25s;
+    }
+    .reason-modal-overlay.active { opacity: 1; visibility: visible; }
+    .reason-modal-box {
+      background: var(--surface); border-radius: var(--radius-lg);
+      padding: 32px; width: 100%; max-width: 480px;
+      box-shadow: 0 28px 50px rgba(0,0,0,0.4);
+      transform: translateY(20px) scale(0.96); transition: 0.25s;
+    }
+    .reason-modal-overlay.active .reason-modal-box { transform: none; }
+    .reason-modal-box h3 { font-family: var(--font-display); font-size: 1.4rem; margin-bottom: 6px; }
+    .reason-modal-box p  { color: var(--ink-soft); font-size: 0.88rem; margin-bottom: 18px; }
+    .reason-textarea {
+      width: 100%; min-height: 90px; padding: 12px; border-radius: var(--radius-sm);
+      border: 1px solid var(--line); font-family: inherit; font-size: 0.9rem;
+      resize: vertical; color: var(--ink); background: var(--bg);
+    }
+    .reason-textarea:focus { outline: 2px solid var(--red); border-color: transparent; }
+    .reason-modal-actions { display: flex; gap: 10px; margin-top: 16px; justify-content: flex-end; }
+
+    /* Toast */
+    #adm-toast {
+      position: fixed; bottom: 28px; right: 28px; z-index: 2000;
+      background: var(--navy-900); color: #fff;
+      padding: 13px 22px; border-radius: var(--radius-md);
+      font-size: 0.88rem; font-weight: 600;
+      box-shadow: var(--shadow); border-left: 4px solid var(--red);
+      opacity: 0; transform: translateY(10px);
+      transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none; max-width: 340px;
+    }
+    #adm-toast.show { opacity: 1; transform: translateY(0); }
+    #adm-toast.success { border-left-color: #10b981; }
+
+    /* Empty state */
+    .adm-empty { text-align: center; padding: 48px 20px; color: var(--ink-faint); font-size: 0.95rem; }
+    .adm-empty svg { width: 48px; height: 48px; margin: 0 auto 12px; opacity: 0.35; display: block; }
+
+    /* Responsive sidebar collapse */
+    @media (max-width: 768px) {
+      .adm-sidebar { width: 64px; }
+      .adm-logo { padding: 18px 0; justify-content: center; }
+      .adm-logo .logo-text { display: none; }
+      .adm-nav-btn .nav-label { display: none; }
+      .adm-nav-btn { padding: 14px; justify-content: center; }
+      .adm-sidebar-foot { display: none; }
+      .adm-topbar h1 { font-size: 1.1rem; }
+      .adm-content { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ Reject / Reason Modal ══════════════════════════════════════════════════ -->
+<div class="reason-modal-overlay" id="reasonModal" role="dialog" aria-modal="true" aria-labelledby="reasonModalTitle">
+  <div class="reason-modal-box">
+    <h3 id="reasonModalTitle">Reject — Enter Reason</h3>
+    <p id="reasonModalSubtitle">This reason will be stored and visible to the owner.</p>
+    <textarea class="reason-textarea" id="reasonText" placeholder="e.g. Missing business license…" rows="4"></textarea>
+    <div class="reason-modal-actions">
+      <button class="btn-neutral" onclick="closeReasonModal()">Cancel</button>
+      <button class="btn-danger"  id="reasonConfirmBtn">Confirm Rejection</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Toast ══════════════════════════════════════════════════════════════════ -->
+<div id="adm-toast" role="alert" aria-live="polite"></div>
+
+<!-- ══ Shell ══════════════════════════════════════════════════════════════════ -->
+<div class="adm-shell">
+
+  <!-- Sidebar -->
+  <aside class="adm-sidebar">
+    <div class="adm-logo">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      <span class="logo-text">Roamly <span>Admin</span></span>
+    </div>
+
+    <nav class="adm-nav" aria-label="Admin sections">
+      <button class="adm-nav-btn active" data-section="overview" id="nav-overview">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        <span class="nav-label">Overview</span>
+      </button>
+      <button class="adm-nav-btn" data-section="businesses" id="nav-businesses">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span class="nav-label">Businesses</span>
+      </button>
+      <button class="adm-nav-btn" data-section="spots" id="nav-spots">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span class="nav-label">Spots</span>
+      </button>
+      <hr class="adm-nav-divider"/>
+      <button class="adm-nav-btn" data-section="users" id="nav-users">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span class="nav-label">Users</span>
+      </button>
+      <button class="adm-nav-btn" data-section="reviews" id="nav-reviews">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span class="nav-label">Reviews</span>
+      </button>
+    </nav>
+
+    <div class="adm-sidebar-foot">
+      <button class="adm-sign-out" id="signOutBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="adm-main">
+    <div class="adm-topbar">
+      <h1 id="topbarTitle">Overview</h1>
+      <span class="adm-badge-role" id="adminName">Admin</span>
+    </div>
+
+    <div class="adm-content">
+
+      <!-- ── OVERVIEW ───────────────────────────────────────────────────── -->
+      <section class="adm-section active" id="section-overview">
+        <div class="adm-stats-grid" id="statsGrid">
+          <!-- Filled by JS -->
+          <div class="adm-stat"><div class="adm-stat-label">Loading…</div></div>
+        </div>
+      </section>
+
+      <!-- ── BUSINESSES ─────────────────────────────────────────────────── -->
+      <section class="adm-section" id="section-businesses">
+        <div class="adm-section-head">
+          <h2>Pending Businesses</h2>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <label for="bizStatusFilter" style="font-size:0.85rem;font-weight:600;color:var(--ink-soft);">Filter:</label>
+            <select id="bizStatusFilter" class="role-select" onchange="loadBusinesses()">
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+              <option value="">All</option>
+            </select>
+          </div>
+        </div>
+        <div class="adm-table-wrap">
+          <table class="adm-table" id="bizTable">
+            <thead>
+              <tr>
+                <th>Business</th>
+                <th>Owner</th>
+                <th>Category</th>
+                <th>Destination</th>
+                <th>Status</th>
+                <th>Submitted</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="bizTbody"><tr><td colspan="7" class="adm-empty">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ── SPOTS ──────────────────────────────────────────────────────── -->
+      <section class="adm-section" id="section-spots">
+        <div class="adm-section-head">
+          <h2>Tourist Spot Submissions</h2>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <label for="spotStatusFilter" style="font-size:0.85rem;font-weight:600;color:var(--ink-soft);">Filter:</label>
+            <select id="spotStatusFilter" class="role-select" onchange="loadSpots()">
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+              <option value="">All</option>
+            </select>
+          </div>
+        </div>
+        <div class="adm-table-wrap">
+          <table class="adm-table" id="spotsTable">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Submitted By</th>
+                <th>Category</th>
+                <th>Destination</th>
+                <th>Status</th>
+                <th>Submitted</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="spotsTbody"><tr><td colspan="7" class="adm-empty">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ── USERS ──────────────────────────────────────────────────────── -->
+      <section class="adm-section" id="section-users">
+        <div class="adm-section-head">
+          <h2>User Management</h2>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <label for="userRoleFilter" style="font-size:0.85rem;font-weight:600;color:var(--ink-soft);">Role:</label>
+            <select id="userRoleFilter" class="role-select" onchange="loadUsers()">
+              <option value="">All</option>
+              <option value="visitor">Visitor</option>
+              <option value="business_owner">Business Owner</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+        </div>
+        <div class="adm-table-wrap">
+          <table class="adm-table" id="usersTable">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Current Role</th>
+                <th>Status</th>
+                <th>Joined</th>
+                <th>Change Role</th>
+                <th>Active</th>
+              </tr>
+            </thead>
+            <tbody id="usersTbody"><tr><td colspan="7" class="adm-empty">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ── REVIEWS ────────────────────────────────────────────────────── -->
+      <section class="adm-section" id="section-reviews">
+        <div class="adm-section-head">
+          <h2>Review Moderation</h2>
+          <button class="btn-neutral" onclick="loadReviews()" style="font-size:0.82rem;">↺ Refresh</button>
+        </div>
+        <div class="adm-table-wrap">
+          <table class="adm-table" id="reviewsTable">
+            <thead>
+              <tr>
+                <th>Reviewer</th>
+                <th>Target Type</th>
+                <th>Target ID</th>
+                <th>Rating</th>
+                <th>Comment</th>
+                <th>Date</th>
+                <th>Delete</th>
+              </tr>
+            </thead>
+            <tbody id="reviewsTbody"><tr><td colspan="7" class="adm-empty">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+    </div><!-- /adm-content -->
+  </main>
+</div><!-- /adm-shell -->
+
+<script>
+// ── Auth guard ────────────────────────────────────────────────────────────────
+const stored = JSON.parse(localStorage.getItem('roamlyUser') || localStorage.getItem('businessUser') || 'null');
+if (!stored || !stored.token || stored.role !== 'admin') {
+  window.location.href = 'auth.html?tab=admin';
+}
+const TOKEN   = stored.token;
+const HEADERS = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${TOKEN}` };
+
+document.getElementById('adminName').textContent = stored.name || 'Admin';
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+let toastTimer;
+function toast(msg, ok = true) {
+  const el = document.getElementById('adm-toast');
+  el.textContent = msg;
+  el.className = ok ? 'show success' : 'show';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.className = ''; }, 3500);
+}
+
+// ── API helper ────────────────────────────────────────────────────────────────
+async function api(path, opts = {}) {
+  const res = await fetch('/api' + path, { headers: HEADERS, ...opts });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(body.message || `HTTP ${res.status}`);
+  return body;
+}
+
+// ── Sidebar tab navigation ────────────────────────────────────────────────────
+const sections = ['overview', 'businesses', 'spots', 'users', 'reviews'];
+const loaders  = { overview: loadStats, businesses: loadBusinesses, spots: loadSpots, users: loadUsers, reviews: loadReviews };
+const titles   = { overview: 'Overview', businesses: 'Business Approvals', spots: 'Spot Submissions', users: 'User Management', reviews: 'Review Moderation' };
+
+function switchSection(name) {
+  sections.forEach(s => {
+    document.getElementById('section-' + s).classList.toggle('active', s === name);
+    document.getElementById('nav-' + s).classList.toggle('active', s === name);
+  });
+  document.getElementById('topbarTitle').textContent = titles[name];
+  loaders[name]?.();
+}
+
+document.querySelectorAll('.adm-nav-btn[data-section]').forEach(btn => {
+  btn.addEventListener('click', () => switchSection(btn.dataset.section));
+});
+
+document.getElementById('signOutBtn').addEventListener('click', () => {
+  localStorage.removeItem('roamlyUser');
+  localStorage.removeItem('businessUser');
+  window.location.href = 'auth.html?tab=admin';
+});
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function statusBadge(s) {
+  const cls = { pending: 'status-pending', approved: 'status-approved', rejected: 'status-rejected' };
+  return `<span class="status-badge ${cls[s] || ''}">${s}</span>`;
+}
+function fmt(d) { return d ? new Date(d).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) : '—'; }
+function stars(n) { return '★'.repeat(n) + '☆'.repeat(5 - n); }
+
+// ── OVERVIEW / STATS ──────────────────────────────────────────────────────────
+async function loadStats() {
+  try {
+    const { data } = await api('/admin/stats');
+    const bs = data.businessesByStatus;
+    const ss = data.spotsByStatus;
+    const us = data.usersByRole;
+
+    const cards = [
+      { label: 'Total Users',         value: Object.values(us).reduce((a,b)=>a+b,0), sub: `${us.admin||0} admin · ${us.business_owner||0} owners` },
+      { label: 'Visitors',            value: us.visitor || 0,  sub: 'Registered' },
+      { label: 'Businesses',          value: Object.values(bs).reduce((a,b)=>a+b,0), sub: `${bs.pending||0} pending` },
+      { label: 'Pending Businesses',  value: bs.pending || 0,  sub: 'Awaiting review', red: (bs.pending||0)>0 },
+      { label: 'Tourist Spots',       value: Object.values(ss).reduce((a,b)=>a+b,0), sub: `${ss.pending||0} pending` },
+      { label: 'Pending Spots',       value: ss.pending || 0,  sub: 'Awaiting review', red: (ss.pending||0)>0 },
+      { label: 'Destinations',        value: data.totalDestinations, sub: 'Sri Lanka districts' },
+      { label: 'Total Reviews',       value: data.totalReviews, sub: 'Platform-wide' },
+    ];
+
+    document.getElementById('statsGrid').innerHTML = cards.map(c => `
+      <div class="adm-stat">
+        <div class="adm-stat-label">${c.label}</div>
+        <div class="adm-stat-value ${c.red ? 'red' : ''}">${c.value}</div>
+        <div class="adm-stat-sub">${c.sub}</div>
+      </div>
+    `).join('');
+  } catch(e) { toast('Failed to load stats: ' + e.message, false); }
+}
+
+// ── BUSINESSES ────────────────────────────────────────────────────────────────
+async function loadBusinesses() {
+  const status = document.getElementById('bizStatusFilter').value;
+  const qs = status ? `?status=${status}` : '';
+  try {
+    const { data } = await api('/admin/businesses' + qs);
+    const tbody = document.getElementById('bizTbody');
+    if (!data.length) { tbody.innerHTML = `<tr><td colspan="7"><div class="adm-empty">No businesses found for this filter.</div></td></tr>`; return; }
+    tbody.innerHTML = data.map(b => `
+      <tr>
+        <td><strong>${esc(b.name)}</strong></td>
+        <td>${esc(b.owner?.name || '—')}<br><small style="color:var(--ink-faint)">${esc(b.owner?.email || '')}</small></td>
+        <td>${esc(b.category)}</td>
+        <td>${esc(b.destination?.name || b.destination || '—')}</td>
+        <td>${statusBadge(b.status)}</td>
+        <td>${fmt(b.createdAt)}</td>
+        <td>
+          <div class="btn-gap">
+            ${b.status !== 'approved' ? `<button class="btn-approve" onclick="approveBusiness('${b._id}')">Approve</button>` : ''}
+            ${b.status !== 'rejected' ? `<button class="btn-reject"  onclick="openReject('business','${b._id}')">Reject</button>` : ''}
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  } catch(e) { toast('Failed to load businesses: ' + e.message, false); }
+}
+
+async function approveBusiness(id) {
+  try {
+    await api(`/admin/businesses/${id}/approve`, { method: 'PUT' });
+    toast('Business approved ✓');
+    loadBusinesses();
+    loadStats();
+  } catch(e) { toast(e.message, false); }
+}
+
+// ── SPOTS ─────────────────────────────────────────────────────────────────────
+async function loadSpots() {
+  const status = document.getElementById('spotStatusFilter').value;
+  const qs = status ? `?status=${status}` : '';
+  try {
+    const { data } = await api('/admin/spots' + qs);
+    const tbody = document.getElementById('spotsTbody');
+    if (!data.length) { tbody.innerHTML = `<tr><td colspan="7"><div class="adm-empty">No spots found.</div></td></tr>`; return; }
+    tbody.innerHTML = data.map(s => `
+      <tr>
+        <td><strong>${esc(s.name)}</strong></td>
+        <td>${esc(s.submittedBy?.name || '—')}<br><small style="color:var(--ink-faint)">${esc(s.submittedBy?.email || '')}</small></td>
+        <td>${esc(s.category)}</td>
+        <td>${esc(s.destination?.name || '—')}</td>
+        <td>${statusBadge(s.status)}</td>
+        <td>${fmt(s.createdAt)}</td>
+        <td>
+          <div class="btn-gap">
+            ${s.status !== 'approved' ? `<button class="btn-approve" onclick="approveSpot('${s._id}')">Approve</button>` : ''}
+            ${s.status !== 'rejected' ? `<button class="btn-reject"  onclick="openReject('spot','${s._id}')">Reject</button>` : ''}
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  } catch(e) { toast('Failed to load spots: ' + e.message, false); }
+}
+
+async function approveSpot(id) {
+  try {
+    await api(`/admin/spots/${id}/approve`, { method: 'PUT' });
+    toast('Spot approved ✓');
+    loadSpots();
+    loadStats();
+  } catch(e) { toast(e.message, false); }
+}
+
+// ── REJECT MODAL (shared between biz & spot) ──────────────────────────────────
+let _rejectType = null;
+let _rejectId   = null;
+
+function openReject(type, id) {
+  _rejectType = type;
+  _rejectId   = id;
+  document.getElementById('reasonText').value = '';
+  document.getElementById('reasonModal').classList.add('active');
+  document.getElementById('reasonText').focus();
+}
+function closeReasonModal() {
+  document.getElementById('reasonModal').classList.remove('active');
+  _rejectType = null; _rejectId = null;
+}
+
+document.getElementById('reasonConfirmBtn').addEventListener('click', async () => {
+  const reason = document.getElementById('reasonText').value.trim();
+  if (!reason) { toast('Please enter a rejection reason.', false); return; }
+
+  try {
+    const endpoint = _rejectType === 'business'
+      ? `/admin/businesses/${_rejectId}/reject`
+      : `/admin/spots/${_rejectId}/reject`;
+
+    await api(endpoint, { method: 'PUT', body: JSON.stringify({ reason }) });
+    toast(`${_rejectType === 'business' ? 'Business' : 'Spot'} rejected.`);
+    closeReasonModal();
+    _rejectType === 'business' ? loadBusinesses() : loadSpots();
+    loadStats();
+  } catch(e) { toast(e.message, false); }
+});
+
+// Close on overlay click
+document.getElementById('reasonModal').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('reasonModal')) closeReasonModal();
+});
+
+// ── USERS ─────────────────────────────────────────────────────────────────────
+async function loadUsers() {
+  const role = document.getElementById('userRoleFilter').value;
+  const qs = role ? `?role=${role}` : '';
+  try {
+    const { data } = await api('/admin/users' + qs);
+    const tbody = document.getElementById('usersTbody');
+    if (!data.length) { tbody.innerHTML = `<tr><td colspan="7"><div class="adm-empty">No users found.</div></td></tr>`; return; }
+    tbody.innerHTML = data.map(u => `
+      <tr id="user-row-${u._id}">
+        <td><strong>${esc(u.name)}</strong></td>
+        <td style="font-size:0.82rem;color:var(--ink-soft)">${esc(u.email)}</td>
+        <td>${statusBadge(u.role)}</td>
+        <td><span class="status-badge ${u.active ? 'status-active' : 'status-inactive'}">${u.active ? 'Active' : 'Inactive'}</span></td>
+        <td>${fmt(u.createdAt)}</td>
+        <td>
+          <div class="btn-gap">
+            <select class="role-select" id="rolesel-${u._id}">
+              <option value="visitor"        ${u.role==='visitor'?'selected':''}>Visitor</option>
+              <option value="business_owner" ${u.role==='business_owner'?'selected':''}>Business Owner</option>
+              <option value="admin"          ${u.role==='admin'?'selected':''}>Admin</option>
+            </select>
+            <button class="btn-role-save" onclick="saveRole('${u._id}')">Save</button>
+          </div>
+        </td>
+        <td>
+          ${u.active
+            ? `<button class="btn-reject" onclick="setActive('${u._id}',false)">Deactivate</button>`
+            : `<button class="btn-approve" onclick="setActive('${u._id}',true)">Reactivate</button>`
+          }
+        </td>
+      </tr>
+    `).join('');
+  } catch(e) { toast('Failed to load users: ' + e.message, false); }
+}
+
+async function saveRole(id) {
+  const role = document.getElementById('rolesel-' + id).value;
+  try {
+    await api(`/admin/users/${id}/role`, { method: 'PUT', body: JSON.stringify({ role }) });
+    toast(`Role updated to "${role}" ✓`);
+    loadUsers();
+    loadStats();
+  } catch(e) { toast(e.message, false); }
+}
+
+async function setActive(id, active) {
+  const endpoint = active ? `/admin/users/${id}/reactivate` : `/admin/users/${id}/deactivate`;
+  try {
+    await api(endpoint, { method: 'PUT' });
+    toast(active ? 'User reactivated ✓' : 'User deactivated ✓');
+    loadUsers();
+  } catch(e) { toast(e.message, false); }
+}
+
+// ── REVIEWS ───────────────────────────────────────────────────────────────────
+async function loadReviews() {
+  try {
+    const { data } = await api('/admin/reviews');
+    const tbody = document.getElementById('reviewsTbody');
+    if (!data.length) { tbody.innerHTML = `<tr><td colspan="7"><div class="adm-empty">No reviews to moderate.</div></td></tr>`; return; }
+    tbody.innerHTML = data.map(r => `
+      <tr>
+        <td><strong>${esc(r.user?.name || '—')}</strong><br><small style="color:var(--ink-faint)">${esc(r.user?.email || '')}</small></td>
+        <td><span class="status-badge status-pending">${esc(r.targetType)}</span></td>
+        <td><span style="font-size:0.75rem;font-family:monospace;color:var(--ink-faint)">${String(r.targetId).slice(-8)}</span></td>
+        <td style="color:#f59e0b;font-weight:700">${stars(r.rating)}</td>
+        <td style="max-width:220px;white-space:pre-wrap;word-break:break-word">${esc(r.comment || '—')}</td>
+        <td>${fmt(r.createdAt)}</td>
+        <td><button class="btn-danger" onclick="deleteReview('${r._id}')">Delete</button></td>
+      </tr>
+    `).join('');
+  } catch(e) { toast('Failed to load reviews: ' + e.message, false); }
+}
+
+async function deleteReview(id) {
+  if (!confirm('Delete this review? This will recalculate the target's rating.')) return;
+  try {
+    await api(`/admin/reviews/${id}`, { method: 'DELETE' });
+    toast('Review deleted and rating recalculated ✓');
+    loadReviews();
+    loadStats();
+  } catch(e) { toast(e.message, false); }
+}
+
+// ── XSS-safe escape ───────────────────────────────────────────────────────────
+function esc(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Boot ─────────────────────────────────────────────────────────────────────
+loadStats();
+</script>
+</body>
+</html>

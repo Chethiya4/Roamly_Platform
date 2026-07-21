@@ -830,3 +830,29 @@ body.dark-mode .btn-direction-special {
 body.dark-mode .btn-direction-special:hover {
   border-color: #fff;
 }
+
+/* ── Shared destination/spot card (map modal, search results, district page) ── */
+.dest-card {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.dest-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+.dest-card h4    { font-family: var(--font-display); font-size: 1rem; color: var(--ink); margin-bottom: 4px; }
+.dest-card p     { font-size: 0.82rem; color: var(--ink-soft); line-height: 1.4; }
+
+.rating-badge {
+  display: inline-block;
+  color: #f59e0b;
+  font-size: 0.8rem;
+  margin-left: 6px;
+}
+
+/* ── Modal overlay active state (referenced from script.js map handler) ── */
+.modal-overlay.active {
+  display: flex;
+}

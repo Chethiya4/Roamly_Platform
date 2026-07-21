@@ -7,7 +7,7 @@ const ListingSchema = new mongoose.Schema({
     price: { type: Number },
     availability: { type: Boolean, default: true },
     photos: [{ type: String }],
-    status: { type: String, default: 'active' }
+    status: { type: String, enum: ['active', 'inactive'], default: 'active' }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Listing', ListingSchema);

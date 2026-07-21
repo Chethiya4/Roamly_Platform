@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  
+  <title>Roamly — Business Login</title>
+  <style>
+    .login-container {
+      max-width: 400px;
+      margin: 80px auto;
+      background: var(--surface);
+      padding: 40px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--line);
+    }
+    .form-group { margin-bottom: 24px; }
+    .form-group label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--ink-soft); margin-bottom: 8px; text-transform: uppercase; }
+    .form-input { width: 100%; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--bg); color: var(--ink); font-family: inherit; font-size: 1rem; }
+    .form-input:focus { outline: none; border-color: var(--red); box-shadow: 0 0 0 3px rgba(215, 38, 61, 0.15); }
+    #errorBanner { display: none; background: #ffebee; color: #c62828; padding: 12px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="business.html" class="logo"><img src="assets/logo.png" alt="Brand logo"></a>
+      <div class="header-actions">
+        <button type="button" class="btn-signin" style="background: var(--red); border-color: var(--red);" onclick="window.location.href='business.html'">Back to Portal</button>
+      </div>
+    </div>
+  </header>
+
+  <main style="background: var(--bg); min-height: 80vh;">
+    <div class="login-container scroll-reveal">
+      <h2 style="font-family: var(--font-display); font-size: 2rem; margin-bottom: 24px; text-align: center;">Business Login</h2>
+      <div id="errorBanner"></div>
+      <form id="loginForm">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="email" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="password" class="form-input" required>
+        </div>
+        <button type="submit" class="btn-primary" style="width: 100%; padding: 16px; font-size: 1.1rem; border-radius: 999px;">Log In</button>
+      </form>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const errorBanner = document.getElementById('errorBanner');
+      errorBanner.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        
+        if (!res.ok) {
+          throw new Error(data.message || 'Login failed');
+        }
+
+        if (data.user.role !== 'business_owner') {
+          throw new Error('This login is for business accounts only');
+        }
+
+        localStorage.setItem('roamly_token', data.token);
+        window.location.href = 'business-dashboard.html';
+      } catch (err) {
+        errorBanner.textContent = err.message;
+        errorBanner.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

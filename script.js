@@ -129,97 +129,98 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-/* ---------------- HIGHCHARTS MAP ---------------- */
-document.addEventListener("DOMContentLoaded", () => {
-    if (!document.getElementById("srilanka-map")) return;
 
-    const mapData = Highcharts.maps["countries/lk/lk-all"];
+/* ---- SVG DISTRICT MAP (map.html) ----------------------------------------- */
+/* The Highcharts block has been removed — #srilanka-map never existed on the  */
+/* page. This block wires the real SVG paths to the existing #districtModal.   */
+document.addEventListener('DOMContentLoaded', () => {
+  /* SVG label → official DB name mapping (hardcoded as per spec) */
+  const DISTRICT_MAP = {
+    "Trinkomalee":"Trincomalee","Mulativ":"Mullaitivu","Jaffna":"Jaffna",
+    "Kilinochchi":"Kilinochchi","Mannarama":"Mannar","Puttalama":"Puttalam",
+    "Gampaha":"Gampaha","Colombo":"Colombo","Kaluthara":"Kalutara","Galle":"Galle",
+    "Matara":"Matara","Hambanthota":"Hambantota","Ampara":"Ampara",
+    "Madakalapuwa":"Batticaloa","Ratnapura":"Ratnapura","Monaragala":"Monaragala",
+    "Kegalle":"Kegalle","Badulla":"Badulla","Matale":"Matale","Polonnaruwa":"Polonnaruwa",
+    "Kurunegala":"Kurunegala","Anuradapura":"Anuradhapura","Nuwara Eliya":"Nuwara Eliya",
+    "Vavuniyawa":"Vavuniya","Mahanuwara":"Kandy"
+  };
 
-    if (!mapData) {
-        alert("Sri Lanka map data not loaded.");
-        return;
-    }
+  const overlay    = document.getElementById('districtModal');
+  const nameEl     = document.getElementById('modalDistrictName');
+  const listEl     = document.getElementById('destinationsList');
 
-    const destinationsDB = {
-        "Colombo":[
-            {name:"Galle Face Green",desc:"Urban ocean-side park.",rating:"4.5"},
-            {name:"Gangaramaya Temple",desc:"Beautiful Buddhist temple.",rating:"4.8"},
-            {name:"National Museum",desc:"Largest museum in Sri Lanka.",rating:"4.6"}
-        ],
-        "Kandy":[
-            {name:"Temple of the Tooth",desc:"UNESCO Heritage.",rating:"4.9"},
-            {name:"Kandy Lake",desc:"Beautiful city lake.",rating:"4.6"},
-            {name:"Royal Botanical Garden",desc:"Peradeniya Garden.",rating:"4.8"}
-        ],
-        "Galle":[
-            {name:"Galle Fort",desc:"Dutch Fort.",rating:"4.8"},
-            {name:"Unawatuna Beach",desc:"Popular beach.",rating:"4.7"}
-        ]
-    };
+  if (!overlay || !nameEl || !listEl) return; // Not on map.html
 
-    // Create data automatically from map
-    const data = mapData.features.map(feature => ({
-        "hc-key": feature.properties["hc-key"],
-        value: 1
-    }));
+  /* ── Close handler ── */
+  window.closeDistrictModal = () => {
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+  };
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) window.closeDistrictModal();
+  });
 
-    Highcharts.mapChart("srilanka-map", {
-        chart: {
-            map: mapData,
-            backgroundColor: "transparent"
-        },
-        title: {
-            text: null
-        },
-        credits: {
-            enabled: false
-        },
-        mapNavigation: {
-            enabled: true
-        },
-        tooltip: {
-            headerFormat: "",
-            pointFormat: "<b>{point.name}</b>"
-        },
-        plotOptions: {
-            series: {
-                point: {
-                    events: {
-                        click: function () {
-                            const districtName = this.name;
-                            let desc = "Explore beautiful destinations in " + districtName + ".";
-                            
-                            // Check if we have specific destinations in the DB for this district
-                            if (destinationsDB[districtName]) {
-                                const spots = destinationsDB[districtName].map(spot => spot.name).join(', ');
-                                desc = "Top spots include: " + spots + ".";
-                            }
-                            
-                            if (window.openModal) {
-                                window.openModal(districtName, desc);
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        series: [{
-            data: data,
-            name: "Districts",
-            allowPointSelect: true,
-            cursor: 'pointer',
-            states: {
-                hover: {
-                    color: '#D7263D'
-                },
-                select: {
-                    color: '#A81B2E'
-                }
-            },
-            dataLabels: {
-                enabled: true,
-                format: '{point.name}'
-            }
-        }]
+  /* ── Style SVG paths for interactivity ── */
+  const paths = document.querySelectorAll('svg path.district');
+  paths.forEach(path => {
+    path.style.cursor = 'pointer';
+    path.style.transition = 'fill 0.2s ease';
+    path.addEventListener('mouseenter', () => { path.style.fill = '#D7263D'; });
+    path.addEventListener('mouseleave', () => { path.style.fill = ''; });
+
+    path.addEventListener('click', async () => {
+      const svgName      = path.getAttribute('name') || path.id;
+      const officialName = DISTRICT_MAP[svgName];
+      if (!officialName) return;
+
+      nameEl.textContent = officialName;
+      listEl.innerHTML   = '<p style="color:var(--ink-faint);text-align:center;padding:20px">Loading…</p>';
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+
+      try {
+        const res  = await fetch(`/api/destinations/by-name/${encodeURIComponent(officialName)}`);
+        const body = await res.json();
+
+        if (!body.success || !body.data) {
+          listEl.innerHTML = '<p style="color:var(--ink-faint);text-align:center;padding:20px">Destination not found.</p>';
+          return;
+        }
+
+        const dest = body.data;
+
+        /* Destination description */
+        let html = '';
+        if (dest.description) {
+          html += `<p style="color:var(--ink-soft);font-size:1rem;line-height:1.6;margin-bottom:20px">${esc(dest.description)}</p>`;
+        }
+
+        /* Approved tourist spots (populated via virtual from backend) */
+        const spots = Array.isArray(dest.touristSpots) ? dest.touristSpots.filter(s => s.status === 'approved') : [];
+        if (spots.length) {
+          html += `<h4 style="font-family:var(--font-display);font-size:1.1rem;margin-bottom:14px;color:var(--ink)">Tourist Spots (${spots.length})</h4>`;
+          spots.forEach(s => {
+            const stars = '★'.repeat(Math.round(s.averageRating || 0)) + '☆'.repeat(5 - Math.round(s.averageRating || 0));
+            html += `
+              <div class="dest-card" onclick="window.location.href='destination-detail.html?id=${esc(dest._id)}'">
+                <h4>${esc(s.name)} <span class="rating-badge">${stars}</span></h4>
+                <p>${esc(s.category)} ${s.description ? '· ' + esc(s.description.slice(0, 100)) + (s.description.length > 100 ? '…' : '') : ''}</p>
+              </div>`;
+          });
+        } else {
+          html += '<p style="color:var(--ink-faint);text-align:center;padding:16px 0">No approved tourist spots yet for this district.</p>';
+        }
+
+        html += `<a href="destination-detail.html?id=${esc(dest._id)}" class="btn-primary" style="margin-top:16px;display:block;text-align:center">View Full Destination →</a>`;
+        listEl.innerHTML = html;
+      } catch {
+        listEl.innerHTML = '<p style="color:var(--red);text-align:center;padding:20px">Failed to load destination data.</p>';
+      }
     });
+  });
+
+  function esc(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
 });
