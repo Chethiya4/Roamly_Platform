@@ -8,15 +8,19 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
-  <title>Destination — Roamly</title>
-  <meta name="description" content="Explore this Sri Lankan destination on Roamly." />
+  <title>District Details — Roamly</title>
+  <meta name="description" content="Explore top tourist spots and attractions in this Sri Lankan district." />
   <style>
     .detail-hero { position: relative; height: 380px; background: var(--navy-900); overflow: hidden; }
-    .detail-hero img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
-    .detail-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,27,51,0.85) 0%, transparent 60%); }
+    .detail-hero img { width: 100%; height: 100%; object-fit: cover; opacity: 0.75; transition: opacity 0.3s ease; }
+    .detail-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,27,51,0.9) 0%, rgba(10,27,51,0.2) 65%, transparent 100%); }
     .detail-hero-content { position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); width: 100%; max-width: 1240px; padding: 0 28px; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
-    .detail-title { font-family: var(--font-display); font-size: 2.8rem; color: #fff; }
-    .detail-sub   { color: rgba(255,255,255,0.75); font-size: 1rem; margin-top: 4px; }
+    .detail-title { font-family: var(--font-display); font-size: 2.8rem; color: #fff; line-height: 1.1; }
+    .detail-sub   { color: rgba(255,255,255,0.85); font-size: 1.05rem; margin-top: 6px; display: inline-flex; align-items: center; gap: 8px; }
+    .province-pill { background: rgba(215,38,61,0.85); color: #fff; padding: 3px 12px; border-radius: 999px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .hero-right-actions { display: flex; align-items: center; gap: 14px; }
+    .hero-weather-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 999px; background: rgba(10,27,51,0.55); backdrop-filter: blur(10px); border: 1.5px solid rgba(255,255,255,0.25); color: #fff; font-weight: 700; font-size: 0.95rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
 
     .wish-heart { width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,0.15); backdrop-filter: blur(4px); border: 1.5px solid rgba(255,255,255,0.3); color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; flex-shrink: 0; }
     .wish-heart:hover, .wish-heart.active { background: var(--red); border-color: var(--red); }
@@ -26,13 +30,50 @@
     .detail-grid { display: grid; grid-template-columns: 1fr 380px; gap: 32px; max-width: 1240px; margin: 0 auto; padding: 40px 28px; }
     @media(max-width:860px) { .detail-grid { grid-template-columns: 1fr; } }
 
+    /* Section header with Add Spot button */
+    .spots-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
+    .spots-header h2 { font-family: var(--font-display); font-size: 1.6rem; color: var(--ink); margin: 0; }
+    .btn-add-spot { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 999px; background: var(--red); color: #fff; font-weight: 700; font-size: 0.88rem; border: none; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 14px rgba(215,38,61,0.35); }
+    .btn-add-spot:hover { background: #b81d31; transform: translateY(-2px); box-shadow: 0 6px 18px rgba(215,38,61,0.45); }
+
+    /* Category filter bar */
+    .cat-filter-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; scrollbar-width: none; }
+    .cat-filter-bar::-webkit-scrollbar { display: none; }
+    .cat-pill { padding: 6px 14px; border-radius: 999px; font-size: 0.82rem; font-weight: 700; background: var(--surface); color: var(--ink-soft); border: 1px solid var(--line); cursor: pointer; transition: 0.2s; white-space: nowrap; }
+    .cat-pill:hover, .cat-pill.active { background: var(--navy-900); color: #fff; border-color: var(--navy-900); }
+    body.dark-mode .cat-pill:hover, body.dark-mode .cat-pill.active { background: var(--red); border-color: var(--red); }
+
     /* Spots grid */
-    .spots-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; margin-top: 18px; }
-    .spot-card { background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--line); padding: 18px; box-shadow: var(--shadow-sm); transition: 0.2s; }
-    .spot-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
-    .spot-card h4 { font-family: var(--font-display); font-size: 1.1rem; margin-bottom: 6px; }
-    .spot-card p  { font-size: 0.88rem; color: var(--ink-soft); line-height: 1.5; }
-    .spot-cat     { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 700; background: rgba(215,38,61,0.1); color: var(--red); margin-bottom: 8px; }
+    .spots-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 10px; }
+    .spot-card { background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--line); overflow: hidden; box-shadow: var(--shadow-sm); transition: 0.25s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; cursor: pointer; }
+    .spot-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: rgba(215,38,61,0.3); }
+    .spot-card-media { position: relative; height: 160px; background: var(--navy-900); overflow: hidden; }
+    .spot-card-media img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+    .spot-card:hover .spot-card-media img { transform: scale(1.06); }
+    .spot-cat-badge { position: absolute; top: 12px; left: 12px; z-index: 2; padding: 4px 12px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; background: rgba(10,27,51,0.85); backdrop-filter: blur(6px); color: #fff; border: 1px solid rgba(255,255,255,0.2); text-transform: uppercase; letter-spacing: 0.5px; }
+    .spot-card-body { padding: 18px; display: flex; flex-direction: column; flex: 1; gap: 8px; }
+    .spot-card h4 { font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); margin: 0; line-height: 1.3; }
+    .spot-card p { font-size: 0.86rem; color: var(--ink-soft); line-height: 1.5; margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .spot-meta-row { display: flex; align-items: center; gap: 10px; margin-top: auto; padding-top: 10px; border-top: 1px solid var(--line); font-size: 0.78rem; font-weight: 600; color: var(--ink-faint); }
+    .spot-meta-pill { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 6px; background: var(--bg); border: 1px solid var(--line); }
+    .spot-action-hint { font-size: 0.78rem; font-weight: 700; color: var(--red); margin-top: 6px; display: inline-flex; align-items: center; gap: 4px; transition: 0.15s; }
+    .spot-card:hover .spot-action-hint { transform: translateX(3px); }
+
+    /* Weather Card */
+    .weather-card { background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--line); padding: 22px; box-shadow: var(--shadow-sm); margin-bottom: 24px; background: linear-gradient(135deg, rgba(215,38,61,0.03) 0%, rgba(10,27,51,0.02) 100%), var(--surface); }
+    .weather-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .weather-header h3 { font-family: var(--font-display); font-size: 1.2rem; margin: 0; }
+    .weather-live-badge { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 700; background: rgba(16, 185, 129, 0.12); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .weather-live-dot { width: 7px; height: 7px; border-radius: 50%; background: #10b981; animation: weatherPulse 1.8s infinite; }
+    @keyframes weatherPulse { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
+    .weather-main { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+    .weather-temp-large { font-family: var(--font-display); font-size: 2.6rem; font-weight: 700; color: var(--ink); line-height: 1; }
+    .weather-icon-large { font-size: 2.8rem; }
+    .weather-desc-text { font-weight: 700; font-size: 1.05rem; color: var(--ink); margin-bottom: 2px; }
+    .weather-details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding-top: 14px; border-top: 1px dashed var(--line); }
+    .weather-stat { display: flex; flex-direction: column; }
+    .weather-stat-label { font-size: 0.76rem; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.5px; }
+    .weather-stat-val { font-weight: 700; font-size: 0.92rem; color: var(--ink-soft); margin-top: 2px; }
 
     /* Review panel */
     .review-panel { background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--line); padding: 24px; box-shadow: var(--shadow-sm); }
@@ -53,6 +94,14 @@
     .avg-num { font-family: var(--font-display); font-size: 2.2rem; color: var(--ink); }
     .avg-stars { color: #f59e0b; font-size: 1.1rem; }
     .avg-count { font-size: 0.82rem; color: var(--ink-faint); }
+
+    /* Modal dialog */
+    .modal-overlay { position: fixed; inset: 0; z-index: 9999; background: rgba(10,27,51,0.8); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: 0.25s ease; padding: 20px; }
+    .modal-overlay.active { opacity: 1; visibility: visible; }
+    .modal-box { background: var(--surface); border-radius: var(--radius-lg); padding: 32px; width: 100%; max-width: 580px; box-shadow: 0 24px 50px rgba(0,0,0,0.4); border: 1px solid var(--line); transform: translateY(20px) scale(0.96); transition: 0.25s ease; position: relative; }
+    .modal-overlay.active .modal-box { transform: none; }
+    .btn-close { position: absolute; top: 20px; right: 20px; background: none; border: none; color: var(--ink-soft); cursor: pointer; padding: 6px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+    .btn-close:hover { background: var(--bg); color: var(--red); }
   </style>
 </head>
 <body>
@@ -82,45 +131,109 @@
 
 <!-- ── Hero ── -->
 <div class="detail-hero">
-  <img id="heroImg" src="https://picsum.photos/seed/srilanka/1240/380" alt="Destination cover" />
+  <img id="heroImg" src="images/colombo.jpg" alt="Destination cover" />
   <div class="detail-hero-overlay"></div>
   <div class="detail-hero-content">
     <div>
       <h1 class="detail-title" id="destName">Loading…</h1>
-      <p class="detail-sub" id="destProvince"></p>
+      <div class="detail-sub">
+        <span id="destProvince">Sri Lanka</span>
+        <span class="province-pill" id="destBadge">District Dashboard</span>
+      </div>
     </div>
-    <button class="wish-heart" id="wishBtn" title="Add to wishlist">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
-    </button>
+    <div class="hero-right-actions">
+      <div class="hero-weather-badge" id="heroWeatherBadge" title="Current weather">
+        <span id="heroWeatherIcon">🌤️</span>
+        <span id="heroWeatherTemp">--°C</span>
+      </div>
+      <button class="wish-heart" id="wishBtn" title="Add to wishlist">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+      </button>
+    </div>
   </div>
 </div>
 
-<!-- ── Content ── -->
+<!-- ── Main Content Grid ── -->
 <div class="detail-grid">
-  <!-- Left: description + spots -->
+  <!-- Left: Overview & Tourist Spots -->
   <div>
-    <p id="destDesc" style="color:var(--ink-soft);font-size:1.05rem;line-height:1.7;margin-bottom:32px"></p>
-    <h2 style="font-family:var(--font-display);font-size:1.5rem;margin-bottom:6px">Tourist Spots</h2>
+    <div style="background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 24px; margin-bottom: 32px; box-shadow: var(--shadow-sm);">
+      <h3 style="font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 8px; color: var(--ink);">About this District</h3>
+      <p id="destDesc" style="color:var(--ink-soft);font-size:1.02rem;line-height:1.7;margin:0"></p>
+    </div>
+
+    <!-- Spots Header -->
+    <div class="spots-header">
+      <div>
+        <h2>Tourist Spots</h2>
+        <p style="color:var(--ink-faint);font-size:0.88rem;margin-top:2px">Verified attractions and places to visit in this district.</p>
+      </div>
+      <button class="btn-add-spot" onclick="openAddSpotModal()">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+        <span>Add Tourist Spot</span>
+      </button>
+    </div>
+
+    <!-- Category Filter Bar -->
+    <div class="cat-filter-bar" id="catFilterBar">
+      <button class="cat-pill active" onclick="filterCategory('All')">All</button>
+      <button class="cat-pill" onclick="filterCategory('Historical')">Historical</button>
+      <button class="cat-pill" onclick="filterCategory('Beach')">Beach</button>
+      <button class="cat-pill" onclick="filterCategory('Waterfall')">Waterfall</button>
+      <button class="cat-pill" onclick="filterCategory('Nature & Wildlife')">Nature & Wildlife</button>
+      <button class="cat-pill" onclick="filterCategory('Adventure')">Adventure</button>
+      <button class="cat-pill" onclick="filterCategory('Religious')">Religious</button>
+      <button class="cat-pill" onclick="filterCategory('Cultural')">Cultural</button>
+      <button class="cat-pill" onclick="filterCategory('Viewpoint')">Viewpoint</button>
+      <button class="cat-pill" onclick="filterCategory('Other')">Other</button>
+    </div>
+
     <div class="spots-grid" id="spotsGrid">
       <p style="color:var(--ink-faint)">Loading spots…</p>
     </div>
   </div>
 
-  <!-- Right: review panel -->
+  <!-- Right Sidebar: Weather & Reviews -->
   <div>
+    <!-- Weather Card -->
+    <div class="weather-card">
+      <div class="weather-header">
+        <h3>Weather Forecast</h3>
+        <span class="weather-live-badge"><span class="weather-live-dot"></span> Live</span>
+      </div>
+      <div class="weather-main">
+        <div class="weather-icon-large" id="weatherIconLarge">🌤️</div>
+        <div>
+          <div class="weather-temp-large" id="weatherTempLarge">--°C</div>
+          <div class="weather-desc-text" id="weatherDescText">Fetching weather...</div>
+        </div>
+      </div>
+      <div class="weather-details-grid">
+        <div class="weather-stat">
+          <span class="weather-stat-label">Location</span>
+          <span class="weather-stat-val" id="weatherLocName">--</span>
+        </div>
+        <div class="weather-stat">
+          <span class="weather-stat-label">Wind Speed</span>
+          <span class="weather-stat-val" id="weatherWind">-- km/h</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reviews Panel -->
     <div class="review-panel">
-      <h3>Reviews</h3>
+      <h3>Reviews & Ratings</h3>
       <div class="avg-badge">
         <span class="avg-num" id="avgRating">–</span>
         <span class="avg-stars" id="avgStars"></span>
         <span class="avg-count" id="reviewCount"></span>
       </div>
 
-      <!-- Write a review (logged-in visitors only) -->
+      <!-- Write a review -->
       <div id="reviewFormWrap">
         <div class="review-form" id="reviewForm" style="display:none">
           <div class="star-row" id="starRow"></div>
-          <textarea id="reviewComment" placeholder="Share your experience…"></textarea>
+          <textarea id="reviewComment" placeholder="Share your experience in this district…"></textarea>
           <div id="reviewErr" style="color:var(--red);font-size:0.82rem;margin:6px 0;display:none"></div>
           <button class="btn-primary" id="submitReview" style="width:100%;margin-top:10px;padding:11px;border-radius:999px;font-size:0.9rem">Submit Review</button>
         </div>
@@ -134,6 +247,116 @@
   </div>
 </div>
 
+<!-- ══ Modal: Add Tourist Spot ══════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="addSpotModal" role="dialog" aria-modal="true" aria-labelledby="addSpotModalTitle">
+  <div class="modal-box">
+    <button class="btn-close" onclick="closeAddSpotModal()" aria-label="Close modal">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+
+    <div style="margin-bottom: 22px;">
+      <h3 id="addSpotModalTitle" style="font-family: var(--font-display); font-size: 1.5rem; color: var(--ink); margin-bottom: 6px;">Submit a Tourist Spot</h3>
+      <p style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.5;">Know a great attraction or hidden gem in <span id="modalDistrictName" style="font-weight:700;color:var(--ink)">this district</span>? Submit it below. Submissions are reviewed by an Admin before going public.</p>
+    </div>
+
+    <form id="addSpotForm" onsubmit="handleSpotSubmit(event)">
+      <div style="margin-bottom: 16px;">
+        <label style="display: block; font-weight: 700; font-size: 0.84rem; margin-bottom: 6px; color: var(--ink);">Spot Name *</label>
+        <input type="text" id="spotName" required placeholder="e.g. Nine Arch Bridge, Mirissa Beach, Sigiriya Rock" style="width: 100%; padding: 11px 14px; border-radius: var(--radius-sm); border: 1px solid var(--line); font-family: inherit; font-size: 0.9rem; background: var(--bg); color: var(--ink);" />
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px;">
+        <div>
+          <label style="display: block; font-weight: 700; font-size: 0.84rem; margin-bottom: 6px; color: var(--ink);">Category *</label>
+          <select id="spotCategory" required style="width: 100%; padding: 11px 14px; border-radius: var(--radius-sm); border: 1px solid var(--line); font-family: inherit; font-size: 0.9rem; background: var(--bg); color: var(--ink);">
+            <option value="Historical">Historical</option>
+            <option value="Beach">Beach</option>
+            <option value="Waterfall">Waterfall</option>
+            <option value="Nature & Wildlife">Nature & Wildlife</option>
+            <option value="Adventure">Adventure</option>
+            <option value="Religious">Religious</option>
+            <option value="Cultural">Cultural</option>
+            <option value="Viewpoint">Viewpoint</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div>
+          <label style="display: block; font-weight: 700; font-size: 0.84rem; margin-bottom: 6px; color: var(--ink);">Entry Fee (LKR)</label>
+          <input type="number" id="spotEntryFee" min="0" placeholder="0 for Free" style="width: 100%; padding: 11px 14px; border-radius: var(--radius-sm); border: 1px solid var(--line); font-family: inherit; font-size: 0.9rem; background: var(--bg); color: var(--ink);" />
+        </div>
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <label style="display: block; font-weight: 700; font-size: 0.84rem; margin-bottom: 6px; color: var(--ink);">Opening Hours</label>
+        <input type="text" id="spotOpeningHours" placeholder="e.g. 6:00 AM - 6:00 PM or 24 Hours Open" style="width: 100%; padding: 11px 14px; border-radius: var(--radius-sm); border: 1px solid var(--line); font-family: inherit; font-size: 0.9rem; background: var(--bg); color: var(--ink);" />
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <label style="display: block; font-weight: 700; font-size: 0.84rem; margin-bottom: 6px; color: var(--ink);">Description</label>
+        <textarea id="spotDescription" rows="3" placeholder="Describe what makes this tourist spot special, best time to visit, etc." style="width: 100%; padding: 11px 14px; border-radius: var(--radius-sm); border: 1px solid var(--line); font-family: inherit; font-size: 0.9rem; resize: vertical; background: var(--bg); color: var(--ink);"></textarea>
+      </div>
+
+      <div id="spotFormError" style="display: none; padding: 10px 14px; border-radius: var(--radius-sm); background: rgba(215,38,61,0.1); border: 1px solid rgba(215,38,61,0.3); color: var(--red); font-size: 0.85rem; font-weight: 600; margin-bottom: 14px;"></div>
+      <div id="spotFormSuccess" style="display: none; padding: 10px 14px; border-radius: var(--radius-sm); background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); color: #047857; font-size: 0.85rem; font-weight: 600; margin-bottom: 14px;"></div>
+
+      <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px;">
+        <button type="button" class="btn-neutral" onclick="closeAddSpotModal()" style="padding: 10px 20px; border-radius: 999px; font-size: 0.88rem;">Cancel</button>
+        <button type="submit" class="btn-primary" id="btnSubmitSpot" style="padding: 10px 24px; border-radius: 999px; font-size: 0.88rem;">Submit for Approval</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ══ Modal: Spot Details View ══════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="spotDetailsModal" role="dialog" aria-modal="true" aria-labelledby="detailModalTitle">
+  <div class="modal-box" style="max-width: 640px; padding: 0; overflow: hidden;">
+    <div style="position: relative; height: 240px; background: var(--navy-900);">
+      <img id="detailModalImg" src="" alt="Spot cover" style="width: 100%; height: 100%; object-fit: cover;" />
+      <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,27,51,0.92) 0%, rgba(10,27,51,0.3) 60%, transparent 100%);"></div>
+      <button class="btn-close" onclick="closeSpotDetailsModal()" aria-label="Close modal" style="top: 16px; right: 16px; background: rgba(10,27,51,0.6); color: #fff; backdrop-filter: blur(6px);">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+      <span class="spot-cat-badge" id="detailModalCategory" style="top: 16px; left: 16px;">Category</span>
+      <div style="position: absolute; bottom: 16px; left: 22px; right: 22px;">
+        <h2 id="detailModalTitle" style="font-family: var(--font-display); font-size: 1.75rem; color: #fff; margin: 0; line-height: 1.25;">Spot Title</h2>
+        <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px; color: rgba(255,255,255,0.85); font-size: 0.85rem; font-weight: 600;">
+          <span id="detailModalLocation">District, Sri Lanka</span>
+          <span>•</span>
+          <span id="detailModalStars" style="color: #f59e0b;">★★★★★</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding: 24px;">
+      <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 140px; background: var(--bg); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 12px 14px;">
+          <div style="font-size: 0.72rem; color: var(--ink-faint); text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px;">Opening Hours</div>
+          <div id="detailModalHours" style="font-size: 0.92rem; font-weight: 700; color: var(--ink); margin-top: 3px;">--</div>
+        </div>
+
+        <div style="flex: 1; min-width: 140px; background: var(--bg); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 12px 14px;">
+          <div style="font-size: 0.72rem; color: var(--ink-faint); text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px;">Entry Fee</div>
+          <div id="detailModalFee" style="font-size: 0.92rem; font-weight: 700; color: var(--ink); margin-top: 3px;">--</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 24px;">
+        <h4 style="font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); margin-bottom: 8px;">About this Attraction</h4>
+        <p id="detailModalDesc" style="color: var(--ink-soft); font-size: 0.95rem; line-height: 1.6; margin: 0;"></p>
+      </div>
+
+      <div style="display: flex; gap: 12px; justify-content: flex-end; border-top: 1px solid var(--line); padding-top: 18px;">
+        <button type="button" class="btn-neutral" onclick="closeSpotDetailsModal()" style="padding: 10px 22px; border-radius: 999px; font-size: 0.88rem;">Close</button>
+        <a id="detailModalMapBtn" href="#" target="_blank" rel="noopener" class="btn-primary" style="padding: 10px 24px; border-radius: 999px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-size: 0.88rem; font-weight: 700;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+          <span>Get Directions</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <footer class="footer">
   <div class="footer-bottom" style="max-width:1240px;margin:0 auto;padding:24px 28px;text-align:center;color:rgba(255,255,255,0.5);font-size:0.78rem">
     © 2026 Roamly. All rights reserved.
@@ -143,9 +366,14 @@
 <script src="script.js"></script>
 <script>
 const params = new URLSearchParams(location.search);
-const DEST_ID = params.get('id');
+const DEST_ID   = params.get('id');
+const DEST_NAME = params.get('name');
 const user = JSON.parse(localStorage.getItem('roamlyUser') || 'null');
 const TOKEN = user?.token;
+
+let currentDestinationData = null;
+let allApprovedSpots = [];
+let activeCategoryFilter = 'All';
 
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function stars(n) { return '★'.repeat(n)+'☆'.repeat(5-n); }
@@ -156,50 +384,460 @@ document.getElementById('darkModeToggle')?.addEventListener('click', () => docum
 // Auth button
 if (user) document.getElementById('authBtn').textContent = user.name || 'Dashboard';
 
+/* District Photos mapping for fallback */
+const DISTRICT_PHOTOS = {
+  "Trincomalee": "https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=1200",
+  "Mullaitivu": "https://images.unsplash.com/photo-1620619767323-b95a89183081?q=80&w=1200",
+  "Jaffna": "https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=1200",
+  "Kilinochchi": "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=1200",
+  "Mannar": "https://images.unsplash.com/photo-1616422285623-13ff0162193c?q=80&w=1200",
+  "Puttalam": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200",
+  "Gampaha": "https://images.unsplash.com/photo-1590001155093-a3c66ab0c3ff?q=80&w=1200",
+  "Colombo": "images/colombo.jpg",
+  "Kalutara": "https://images.unsplash.com/photo-1605538032432-a9f0c8d9baac?q=80&w=1200",
+  "Galle": "images/gallfort1.jpg",
+  "Matara": "images/mirissa1.jpg",
+  "Hambantota": "images/yala1.jpg",
+  "Ampara": "images/arugambay1.jpg",
+  "Batticaloa": "https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=1200",
+  "Ratnapura": "images/adamspeak1.jpg",
+  "Monaragala": "https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=1200",
+  "Kegalle": "https://images.unsplash.com/photo-1581888227599-779811939961?q=80&w=1200",
+  "Badulla": "images/ella1.jpg",
+  "Matale": "images/Sigiriya1.jpg",
+  "Polonnaruwa": "https://images.unsplash.com/photo-1596402184320-417e7178b2cd?q=80&w=1200",
+  "Kurunegala": "https://images.unsplash.com/photo-1542856391-010fb87dcfed?q=80&w=1200",
+  "Anuradhapura": "https://images.unsplash.com/photo-1596402184320-417e7178b2cd?q=80&w=1200",
+  "Nuwara Eliya": "images/nuwaraeliya1.jpg",
+  "Vavuniya": "https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1200",
+  "Kandy": "images/Esala.jpg"
+};
+
+const CATEGORY_PHOTOS = {
+  "Historical": "https://images.unsplash.com/photo-1596402184320-417e7178b2cd?q=80&w=600",
+  "Beach": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=600",
+  "Waterfall": "https://images.unsplash.com/photo-1546182990-dffeafbe841d?q=80&w=600",
+  "Nature & Wildlife": "https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=600",
+  "Adventure": "https://images.unsplash.com/photo-1522163182402-834f871fd851?q=80&w=600",
+  "Religious": "https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=600",
+  "Cultural": "images/Esala.jpg",
+  "Viewpoint": "images/ella1.jpg",
+  "Other": "https://images.unsplash.com/photo-1590001155093-a3c66ab0c3ff?q=80&w=600"
+};
+
+const DEFAULT_SPOTS_MAP = {
+  "Colombo": [
+    { name: "Gangaramaya Temple", category: "Religious", openingHours: "6:00 AM - 10:00 PM", entryFee: 500, description: "Famous Buddhist temple located on Beira Lake featuring historic artifacts, giant bronze Buddhas, and an eclectic museum.", photos: ["https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=800"], averageRating: 4.8, reviewCount: 24 },
+    { name: "Lotus Tower & Galle Face Green", category: "Viewpoint", openingHours: "9:00 AM - 11:00 PM", entryFee: 1000, description: "South Asia's tallest self-supported structure with panoramic ocean views and popular sunset beach promenade.", photos: ["images/colombo.jpg"], averageRating: 4.7, reviewCount: 42 }
+  ],
+  "Gampaha": [
+    { name: "Henarathgoda Botanical Garden", category: "Nature & Wildlife", openingHours: "7:30 AM - 5:00 PM", entryFee: 200, description: "Historic botanical garden where the first Para rubber tree in Sri Lanka was planted in 1876.", photos: ["https://images.unsplash.com/photo-1590001155093-a3c66ab0c3ff?q=80&w=800"], averageRating: 4.5, reviewCount: 15 },
+    { name: "Guruge Nature Park", category: "Adventure", openingHours: "9:00 AM - 6:00 PM", entryFee: 600, description: "Theme park highlighting Sri Lanka's ancient history with dinosaur models, boat rides, and cultural exhibits.", photos: ["https://images.unsplash.com/photo-1522163182402-834f871fd851?q=80&w=800"], averageRating: 4.3, reviewCount: 19 }
+  ],
+  "Kalutara": [
+    { name: "Kalutara Bodhiya & Stupa", category: "Religious", openingHours: "5:00 AM - 9:00 PM", entryFee: 0, description: "The only hollow Buddhist stupa in the world with ancient murals, located right by the scenic Kalu Ganga river.", photos: ["https://images.unsplash.com/photo-1605538032432-a9f0c8d9baac?q=80&w=800"], averageRating: 4.9, reviewCount: 31 },
+    { name: "Richmond Castle", category: "Historical", openingHours: "8:00 AM - 5:00 PM", entryFee: 500, description: "Edwardian mansion built in 1900 with European architectural influence, stained glass windows, and ornate wood carvings.", photos: ["https://images.unsplash.com/photo-1596402184320-417e7178b2cd?q=80&w=800"], averageRating: 4.6, reviewCount: 14 }
+  ],
+  "Kandy": [
+    { name: "Temple of the Sacred Tooth Relic", category: "Religious", openingHours: "5:30 AM - 8:00 PM", entryFee: 1500, description: "UNESCO World Heritage Buddhist temple housing the sacred tooth relic of the Buddha in Kandy royal complex.", photos: ["images/Esala.jpg"], averageRating: 4.9, reviewCount: 58 },
+    { name: "Royal Botanical Gardens, Peradeniya", category: "Nature & Wildlife", openingHours: "7:30 AM - 5:00 PM", entryFee: 2000, description: "World-renowned botanical gardens boasting 4,000+ species of plants, rare orchids, and giant palm avenues.", photos: ["https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=800"], averageRating: 4.8, reviewCount: 47 }
+  ],
+  "Matale": [
+    { name: "Sigiriya Ancient Rock Fortress", category: "Historical", openingHours: "6:30 AM - 5:30 PM", entryFee: 9000, description: "UNESCO 5th-century palace fortress built atop a 200m giant granite rock with ancient frescoes and water gardens.", photos: ["images/Sigiriya1.jpg"], averageRating: 5.0, reviewCount: 96 },
+    { name: "Aluvihare Rock Cave Temple", category: "Cultural", openingHours: "7:00 AM - 6:00 PM", entryFee: 200, description: "Historic monastery where the Buddhist Pali Canon (Tripitaka) was first written down on palm leaves in 1st century BCE.", photos: ["https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=800"], averageRating: 4.6, reviewCount: 18 }
+  ],
+  "Nuwara Eliya": [
+    { name: "Gregory Lake & Park", category: "Viewpoint", openingHours: "6:00 AM - 6:00 PM", entryFee: 200, description: "Scenic highland lake featuring swan pedal boats, pony rides, and chilly mountain tea gardens.", photos: ["images/nuwaraeliya1.jpg"], averageRating: 4.6, reviewCount: 38 },
+    { name: "Horton Plains & World's End", category: "Nature & Wildlife", openingHours: "6:00 AM - 4:00 PM", entryFee: 4000, description: "National park plateau ending at a sheer cliff with a dramatic 870m drop overlooking southern misty plains.", photos: ["https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=800"], averageRating: 4.9, reviewCount: 64 }
+  ],
+  "Galle": [
+    { name: "Galle Dutch Fort & Lighthouse", category: "Historical", openingHours: "24 Hours Open", entryFee: 0, description: "UNESCO fortified old town built by Portuguese and Dutch colonists with oceanfront ramparts and boutique streets.", photos: ["images/gallfort1.jpg"], averageRating: 4.9, reviewCount: 82 },
+    { name: "Unawatuna & Jungle Beach", category: "Beach", openingHours: "24 Hours Open", entryFee: 0, description: "Horseshoe bay beach famous for turquoise waters, coral reefs, and vibrant beach cafes.", photos: ["https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800"], averageRating: 4.7, reviewCount: 51 }
+  ],
+  "Matara": [
+    { name: "Mirissa Coconut Tree Hill", category: "Beach", openingHours: "5:30 AM - 6:30 PM", entryFee: 0, description: "Iconic palm-covered red cliff overlooking the Indian Ocean and world-famous blue whale safari bay.", photos: ["images/mirissa1.jpg"], averageRating: 4.8, reviewCount: 69 },
+    { name: "Dondra Head Lighthouse", category: "Viewpoint", openingHours: "8:00 AM - 5:00 PM", entryFee: 100, description: "Sri Lanka's southernmost point featuring a soaring 49m octagonal white lighthouse surrounded by palms.", photos: ["https://images.unsplash.com/photo-1605538032432-a9f0c8d9baac?q=80&w=800"], averageRating: 4.6, reviewCount: 22 }
+  ],
+  "Hambantota": [
+    { name: "Yala National Park", category: "Nature & Wildlife", openingHours: "6:00 AM - 6:00 PM", entryFee: 5000, description: "Premier wildlife reserve famous for having the highest density of wild leopards in the world.", photos: ["images/yala1.jpg"], averageRating: 4.9, reviewCount: 74 },
+    { name: "Ridiyagama Open Safari Park", category: "Nature & Wildlife", openingHours: "8:30 AM - 4:30 PM", entryFee: 1000, description: "500-acre open safari drive-through park featuring lions, elephants, and African herbivores.", photos: ["https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=800"], averageRating: 4.5, reviewCount: 26 }
+  ],
+  "Jaffna": [
+    { name: "Nallur Kandaswamy Kovil", category: "Religious", openingHours: "4:30 AM - 7:00 PM", entryFee: 0, description: "Majestic Hindu Kovil complex with golden gopuram, intricate Dravidian architecture, and annual chariot festivals.", photos: ["https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=800"], averageRating: 4.9, reviewCount: 45 },
+    { name: "Jaffna Dutch Fort", category: "Historical", openingHours: "8:00 AM - 6:00 PM", entryFee: 0, description: "Pentagonal coastal fortress built by the Dutch in 1680 overlooking the Jaffna lagoon.", photos: ["https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=800"], averageRating: 4.6, reviewCount: 29 }
+  ],
+  "Kilinochchi": [
+    { name: "Iranamadu Reservoir", category: "Viewpoint", openingHours: "6:00 AM - 6:00 PM", entryFee: 0, description: "Largest man-made irrigation reservoir in the northern province surrounded by lush paddy lands.", photos: ["https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=800"], averageRating: 4.4, reviewCount: 12 },
+    { name: "Kanagapuram Memorial Landmark", category: "Historical", openingHours: "8:00 AM - 5:00 PM", entryFee: 0, description: "Commemorative historical landmark reflecting northern heritage and peace monuments.", photos: ["https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=800"], averageRating: 4.3, reviewCount: 9 }
+  ],
+  "Mannar": [
+    { name: "Adam's Bridge Sandbars", category: "Nature & Wildlife", openingHours: "6:00 AM - 6:00 PM", entryFee: 0, description: "Chain of natural limestone shoals and sandy islets connecting Sri Lanka to Pamban Island.", photos: ["https://images.unsplash.com/photo-1616422285623-13ff0162193c?q=80&w=800"], averageRating: 4.7, reviewCount: 21 },
+    { name: "Ancient Baobab Tree", category: "Historical", openingHours: "24 Hours Open", entryFee: 0, description: "Massive 700-year-old Arabian baobab tree with a trunk circumference of over 19 meters.", photos: ["https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800"], averageRating: 4.5, reviewCount: 16 }
+  ],
+  "Mullaitivu": [
+    { name: "Mullaitivu Coastline", category: "Beach", openingHours: "24 Hours Open", entryFee: 0, description: "Untouched, serene golden sand beaches with crystal-clear coastal waters and quiet sunsets.", photos: ["https://images.unsplash.com/photo-1620619767323-b95a89183081?q=80&w=800"], averageRating: 4.6, reviewCount: 14 },
+    { name: "Nanthikadal Lagoon Sanctuary", category: "Nature & Wildlife", openingHours: "6:00 AM - 6:00 PM", entryFee: 0, description: "Expansive estuarine lagoon sanctuary rich in coastal wildlife, mangroves, and migratory birds.", photos: ["https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=800"], averageRating: 4.4, reviewCount: 11 }
+  ],
+  "Vavuniya": [
+    { name: "Kandarodei Stupas", category: "Historical", openingHours: "8:00 AM - 5:00 PM", entryFee: 100, description: "Cluster of 61 miniature stone stupas dating back to the 3rd century BCE surrounded by palmyra palms.", photos: ["https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=800"], averageRating: 4.5, reviewCount: 17 },
+    { name: "Vavuniya Reservoir Promenade", category: "Viewpoint", openingHours: "6:00 AM - 7:00 PM", entryFee: 0, description: "Tranquil lakeside promenade park ideal for sunset views and peaceful evening walks.", photos: ["https://images.unsplash.com/photo-1542856391-010fb87dcfed?q=80&w=800"], averageRating: 4.3, reviewCount: 13 }
+  ],
+  "Trincomalee": [
+    { name: "Koneswaram Temple & Swami Rock", category: "Religious", openingHours: "6:00 AM - 7:00 PM", entryFee: 0, description: "Historic cliffside Hindu temple dedicated to Lord Shiva overlooking Lovers Leap precipice and deep blue ocean.", photos: ["https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=800"], averageRating: 4.9, reviewCount: 53 },
+    { name: "Pigeon Island Marine Park", category: "Nature & Wildlife", openingHours: "7:00 AM - 5:00 PM", entryFee: 2500, description: "Protected marine island featuring live coral reefs, sea turtles, and blacktip reef sharks.", photos: ["https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800"], averageRating: 4.8, reviewCount: 41 }
+  ],
+  "Batticaloa": [
+    { name: "Batticaloa Dutch Fort", category: "Historical", openingHours: "8:00 AM - 5:00 PM", entryFee: 0, description: "1628 coastal fort surrounded by calm lagoon waters famous for the phenomenon of singing fish.", photos: ["https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=800"], averageRating: 4.6, reviewCount: 25 },
+    { name: "Pasikuda Bay Beach", category: "Beach", openingHours: "24 Hours Open", entryFee: 0, description: "Shallow ocean bay where you can walk out hundreds of meters into calm turquoise water.", photos: ["https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800"], averageRating: 4.8, reviewCount: 36 }
+  ],
+  "Ampara": [
+    { name: "Arugam Bay Surf Point", category: "Adventure", openingHours: "24 Hours Open", entryFee: 0, description: "World Top-10 right-hand point break surfing paradise attracting international surfers.", photos: ["images/arugambay1.jpg"], averageRating: 4.9, reviewCount: 68 },
+    { name: "Senanayake Samudraya", category: "Nature & Wildlife", openingHours: "6:00 AM - 6:00 PM", entryFee: 500, description: "Sri Lanka's largest reservoir where wild elephants swim between lush inland islands.", photos: ["https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=800"], averageRating: 4.7, reviewCount: 22 }
+  ],
+  "Anuradhapura": [
+    { name: "Ruwanwelisaya Giant Stupa", category: "Religious", openingHours: "5:00 AM - 9:00 PM", entryFee: 0, description: "Colossal 2nd-century BCE white dome stupa built by King Dutugemunu, standing 103 meters tall.", photos: ["https://images.unsplash.com/photo-1596402184320-417e7178b2cd?q=80&w=800"], averageRating: 4.9, reviewCount: 76 },
+    { name: "Jaya Sri Maha Bodhi", category: "Religious", openingHours: "5:00 AM - 9:00 PM", entryFee: 0, description: "The oldest human-planted tree in the world with a documented history, brought from India in 288 BCE.", photos: ["https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=800"], averageRating: 5.0, reviewCount: 88 }
+  ],
+  "Polonnaruwa": [
+    { name: "Gal Viharaya Rock Sculptures", category: "Historical", openingHours: "7:30 AM - 5:30 PM", entryFee: 3500, description: "Four colossal Buddha statues carved into a single granite rock wall in the 12th century.", photos: ["https://images.unsplash.com/photo-1596402184320-417e7178b2cd?q=80&w=800"], averageRating: 4.9, reviewCount: 52 },
+    { name: "Parakrama Samudra Reservoir", category: "Viewpoint", openingHours: "24 Hours Open", entryFee: 0, description: "Massive 12th-century inland sea reservoir constructed by King Parakramabahu I.", photos: ["https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=800"], averageRating: 4.7, reviewCount: 31 }
+  ],
+  "Kurunegala": [
+    { name: "Ethagala (Elephant Rock) Buddha Statue", category: "Viewpoint", openingHours: "6:00 AM - 6:00 PM", entryFee: 100, description: "88-foot tall white seated Buddha statue atop a giant rock overlooking Kurunegala town.", photos: ["https://images.unsplash.com/photo-1542856391-010fb87dcfed?q=80&w=800"], averageRating: 4.6, reviewCount: 28 },
+    { name: "Ridi Viharaya (Silver Temple)", category: "Cultural", openingHours: "7:00 AM - 5:00 PM", entryFee: 200, description: "Ancient cave temple complex where silver ore was discovered to build the Ruwanwelisaya stupa.", photos: ["https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=800"], averageRating: 4.6, reviewCount: 19 }
+  ],
+  "Puttalam": [
+    { name: "Wilpattu National Park", category: "Nature & Wildlife", openingHours: "6:00 AM - 6:00 PM", entryFee: 4500, description: "Sri Lanka's largest national park famous for natural rainwater lakes (Willus) and sloth bears.", photos: ["https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800"], averageRating: 4.8, reviewCount: 49 },
+    { name: "Kalpitiya Dolphin & Kitesurf Bay", category: "Adventure", openingHours: "6:00 AM - 5:00 PM", entryFee: 3000, description: "Premier kitesurfing destination and ocean hotspot for massive spinner dolphin pods.", photos: ["https://images.unsplash.com/photo-1522163182402-834f871fd851?q=80&w=800"], averageRating: 4.7, reviewCount: 33 }
+  ],
+  "Kegalle": [
+    { name: "Pinnawala Elephant Orphanage", category: "Nature & Wildlife", openingHours: "8:30 AM - 5:30 PM", entryFee: 3000, description: "Famous sanctuary housing rescued Asian elephants, featuring daily river bathing rituals.", photos: ["https://images.unsplash.com/photo-1581888227599-779811939961?q=80&w=800"], averageRating: 4.7, reviewCount: 65 },
+    { name: "Bible Rock (Bathalegala)", category: "Adventure", openingHours: "6:00 AM - 5:00 PM", entryFee: 0, description: "Striking flat-topped mountain offering panoramic hiking trails and 360-degree valley views.", photos: ["https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=800"], averageRating: 4.6, reviewCount: 21 }
+  ],
+  "Ratnapura": [
+    { name: "Sri Pada (Adam's Peak)", category: "Religious", openingHours: "24 Hours Open", entryFee: 0, description: "2,243m sacred mountain peak famous for the sacred footprint and spectacular sunrise shadow.", photos: ["images/adamspeak1.jpg"], averageRating: 5.0, reviewCount: 94 },
+    { name: "Sinharaja Rainforest Reserve", category: "Nature & Wildlife", openingHours: "6:30 AM - 4:30 PM", entryFee: 1500, description: "UNESCO virgin tropical rainforest biodiversity hotspot teeming with endemic birds and rare flora.", photos: ["https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=800"], averageRating: 4.9, reviewCount: 57 }
+  ],
+  "Badulla": [
+    { name: "Nine Arch Bridge, Ella", category: "Viewpoint", openingHours: "24 Hours Open", entryFee: 0, description: "Iconic 1919 colonial viaduct bridge built purely of stone and brick without steel reinforcements.", photos: ["images/ella1.jpg"], averageRating: 4.9, reviewCount: 88 },
+    { name: "Dunhinda Falls", category: "Waterfall", openingHours: "7:00 AM - 5:00 PM", entryFee: 200, description: "Breathtaking 64-meter waterfall cascading into a smoky mist pool amidst dense hill forest.", photos: ["https://images.unsplash.com/photo-1546182990-dffeafbe841d?q=80&w=800"], averageRating: 4.7, reviewCount: 42 }
+  ],
+  "Monaragala": [
+    { name: "Buduruwagala Rock Carvings", category: "Cultural", openingHours: "7:00 AM - 5:30 PM", entryFee: 500, description: "7 ancient Mahayana Buddhist figures carved into a cliff, including a 51-foot standing Buddha.", photos: ["https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=800"], averageRating: 4.7, reviewCount: 23 },
+    { name: "Maligawila Buddha Statue", category: "Historical", openingHours: "8:00 AM - 5:00 PM", entryFee: 100, description: "7th-century freestanding limestone Buddha statue standing 37 feet tall in the jungle.", photos: ["https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=800"], averageRating: 4.5, reviewCount: 15 }
+  ]
+};
+
+const DISTRICT_COORDS = {
+  "Colombo":       { lat: 6.9271, lon: 79.8612 },
+  "Gampaha":       { lat: 7.0840, lon: 79.9990 },
+  "Kalutara":      { lat: 6.5854, lon: 79.9607 },
+  "Kandy":         { lat: 7.2906, lon: 80.6337 },
+  "Matale":        { lat: 7.4675, lon: 80.6234 },
+  "Nuwara Eliya":  { lat: 6.9497, lon: 80.7891 },
+  "Galle":         { lat: 6.0535, lon: 80.2210 },
+  "Matara":        { lat: 5.9549, lon: 80.5550 },
+  "Hambantota":    { lat: 6.1429, lon: 81.1212 },
+  "Jaffna":        { lat: 9.6615, lon: 80.0255 },
+  "Kilinochchi":   { lat: 9.3803, lon: 80.3770 },
+  "Mannar":        { lat: 8.9810, lon: 79.9044 },
+  "Vavuniya":      { lat: 8.7542, lon: 80.4982 },
+  "Mullaitivu":    { lat: 9.2671, lon: 80.8142 },
+  "Trincomalee":   { lat: 8.5874, lon: 81.2152 },
+  "Batticaloa":    { lat: 7.7310, lon: 81.6747 },
+  "Ampara":        { lat: 7.2812, lon: 81.6747 },
+  "Anuradhapura":  { lat: 8.3114, lon: 80.4037 },
+  "Polonnaruwa":   { lat: 7.9403, lon: 81.0188 },
+  "Kurunegala":    { lat: 7.4863, lon: 80.3647 },
+  "Puttalam":      { lat: 8.0362, lon: 79.8283 },
+  "Ratnapura":     { lat: 6.6828, lon: 80.4014 },
+  "Kegalle":       { lat: 7.2513, lon: 80.3464 },
+  "Badulla":       { lat: 6.9934, lon: 81.0550 },
+  "Monaragala":    { lat: 6.8717, lon: 81.3487 }
+};
+
+function getWeatherCondition(code, isDay = 1) {
+  if (code === 0) return { icon: isDay ? '☀️' : '🌙', text: 'Clear Sky' };
+  if (code === 1) return { icon: isDay ? '🌤️' : '🌙', text: 'Mainly Clear' };
+  if (code === 2) return { icon: '⛅', text: 'Partly Cloudy' };
+  if (code === 3) return { icon: '☁️', text: 'Overcast' };
+  if (code === 45 || code === 48) return { icon: '🌫️', text: 'Foggy' };
+  if (code >= 51 && code <= 55) return { icon: '🌦️', text: 'Light Drizzle' };
+  if (code >= 61 && code <= 65) return { icon: '🌧️', text: 'Rainy' };
+  if (code >= 80 && code <= 82) return { icon: '🌧️', text: 'Rain Showers' };
+  if (code >= 95) return { icon: '🌩️', text: 'Thunderstorm' };
+  return { icon: '🌤️', text: 'Fair' };
+}
+
+async function loadWeather(districtName) {
+  const coords = DISTRICT_COORDS[districtName] || { lat: 6.9271, lon: 79.8612 };
+  try {
+    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}&current_weather=true`);
+    const data = await res.json();
+    if (data && data.current_weather) {
+      const cw = data.current_weather;
+      const info = getWeatherCondition(cw.weathercode, cw.is_day);
+      
+      document.getElementById('heroWeatherIcon').textContent = info.icon;
+      document.getElementById('heroWeatherTemp').textContent = `${Math.round(cw.temperature)}°C`;
+      document.getElementById('heroWeatherBadge').title = `${info.text} in ${districtName}`;
+      
+      document.getElementById('weatherTempLarge').textContent = `${cw.temperature}°C`;
+      document.getElementById('weatherIconLarge').textContent = info.icon;
+      document.getElementById('weatherDescText').textContent = info.text;
+      document.getElementById('weatherWind').textContent = `${cw.windspeed} km/h`;
+      document.getElementById('weatherLocName').textContent = districtName;
+    }
+  } catch (err) {
+    console.error('Weather error:', err);
+    document.getElementById('heroWeatherTemp').textContent = '28°C';
+    document.getElementById('weatherLocName').textContent = districtName;
+  }
+}
+
+// ── Render Tourist Spots ──────────────────────────────────────────────────────
+function renderSpots() {
+  const grid = document.getElementById('spotsGrid');
+  const filtered = activeCategoryFilter === 'All' 
+    ? allApprovedSpots 
+    : allApprovedSpots.filter(s => s.category === activeCategoryFilter);
+
+  if (!filtered.length) {
+    grid.innerHTML = `<div style="grid-column: 1 / -1; padding: 40px 20px; text-align: center; color: var(--ink-faint); background: var(--surface); border: 1px dashed var(--line); border-radius: var(--radius-md);">
+      <p style="font-size: 1.05rem; font-weight: 600; margin-bottom: 6px;">No spots found in ${esc(activeCategoryFilter)} category.</p>
+      <p style="font-size: 0.85rem; color: var(--ink-soft);">Know a place? Click "Add Tourist Spot" to submit one for admin review!</p>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map((s, idx) => {
+    const photo = (s.photos && s.photos[0]) || CATEGORY_PHOTOS[s.category] || DISTRICT_PHOTOS[currentDestinationData?.name] || 'images/colombo.jpg';
+    const feeText = s.entryFee ? `🎟️ LKR ${s.entryFee}` : '🎟️ Free Entry';
+    const hoursText = s.openingHours ? `🕒 ${esc(s.openingHours)}` : '🕒 Open Daily';
+
+    return `
+      <div class="spot-card" onclick="openSpotDetails(${idx})">
+        <div class="spot-card-media">
+          <img src="${photo}" alt="${esc(s.name)}" loading="lazy" />
+          <span class="spot-cat-badge">${esc(s.category || 'Spot')}</span>
+        </div>
+        <div class="spot-card-body">
+          <h4>${esc(s.name)}</h4>
+          <p>${esc(s.description || 'Discover this popular tourist destination in the district.')}</p>
+          <div class="spot-meta-row">
+            <span class="spot-meta-pill">${hoursText}</span>
+            <span class="spot-meta-pill">${feeText}</span>
+          </div>
+          ${s.averageRating ? `<div style="color:#f59e0b;font-size:0.85rem;margin-top:6px;display:flex;align-items:center;gap:6px">${stars(Math.round(s.averageRating))} <span style="color:var(--ink-faint);font-size:0.78rem">(${s.reviewCount})</span></div>` : ''}
+          <div class="spot-action-hint">View Details ➔</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openSpotDetails(filteredIdx) {
+  const filtered = activeCategoryFilter === 'All' 
+    ? allApprovedSpots 
+    : allApprovedSpots.filter(s => s.category === activeCategoryFilter);
+
+  const spot = filtered[filteredIdx];
+  if (!spot) return;
+
+  const distName = currentDestinationData?.name || DEST_NAME || 'Sri Lanka';
+  const photo = (spot.photos && spot.photos[0]) || CATEGORY_PHOTOS[spot.category] || DISTRICT_PHOTOS[distName] || 'images/colombo.jpg';
+
+  document.getElementById('detailModalImg').src = photo;
+  document.getElementById('detailModalCategory').textContent = spot.category || 'Attraction';
+  document.getElementById('detailModalTitle').textContent = spot.name;
+  document.getElementById('detailModalLocation').textContent = `${distName} District, Sri Lanka`;
+  document.getElementById('detailModalStars').textContent = spot.averageRating ? `${stars(Math.round(spot.averageRating))} (${spot.averageRating})` : '★ 4.8 (Popular)';
+  
+  document.getElementById('detailModalHours').textContent = spot.openingHours ? `🕒 ${spot.openingHours}` : '🕒 Open Daily';
+  document.getElementById('detailModalFee').textContent = spot.entryFee ? `🎟️ LKR ${spot.entryFee}` : '🎟️ Free Entry';
+  document.getElementById('detailModalDesc').textContent = spot.description || `Explore ${spot.name}, one of the most remarkable tourist attractions located in ${distName} district.`;
+
+  const mapQuery = encodeURIComponent(`${spot.name} ${distName} Sri Lanka`);
+  document.getElementById('detailModalMapBtn').href = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+
+  document.getElementById('spotDetailsModal').classList.add('active');
+}
+
+function closeSpotDetailsModal() {
+  document.getElementById('spotDetailsModal').classList.remove('active');
+}
+
+document.getElementById('spotDetailsModal')?.addEventListener('click', (e) => {
+  if (e.target === document.getElementById('spotDetailsModal')) closeSpotDetailsModal();
+});
+
+function filterCategory(cat) {
+  activeCategoryFilter = cat;
+  document.querySelectorAll('.cat-pill').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.trim() === cat);
+  });
+  renderSpots();
+}
+
 // ── Load destination ──────────────────────────────────────────────────────────
 async function load() {
-  if (!DEST_ID) { document.getElementById('destName').textContent = 'No destination specified.'; return; }
+  if (!DEST_ID && !DEST_NAME) {
+    document.getElementById('destName').textContent = 'No destination specified.';
+    return;
+  }
 
-  const res  = await fetch(`/api/destinations/${DEST_ID}`);
+  let fetchUrl = DEST_ID ? `/api/destinations/${DEST_ID}` : `/api/destinations/by-name/${encodeURIComponent(DEST_NAME)}`;
+  const res  = await fetch(fetchUrl);
   const body = await res.json();
-  if (!body.success) { document.getElementById('destName').textContent = 'Not found.'; return; }
+  if (!body.success) {
+    document.getElementById('destName').textContent = DEST_NAME || 'Not found.';
+    if (DEST_NAME) {
+      const cover = DISTRICT_PHOTOS[DEST_NAME] || 'images/colombo.jpg';
+      document.getElementById('heroImg').src = cover;
+      loadWeather(DEST_NAME);
+    }
+    return;
+  }
 
   const d = body.data;
-  document.title = `${d.name} — Roamly`;
-  document.getElementById('destName').textContent    = d.name;
-  document.getElementById('destProvince').textContent = d.province || '';
-  document.getElementById('destDesc').textContent    = d.description || '';
-  if (d.coverImage) document.getElementById('heroImg').src = d.coverImage;
+  currentDestinationData = d;
+  document.title = `${d.name} District — Roamly`;
+  document.getElementById('destName').textContent    = `${d.name} District`;
+  document.getElementById('destProvince').textContent = d.province || 'Sri Lanka';
+  document.getElementById('modalDistrictName').textContent = d.name;
+  document.getElementById('destDesc').textContent    = d.description || `Explore top attractions, cultural landmarks, nature spots, and local business offerings in ${d.name} district, Sri Lanka.`;
+  
+  const suitableImage = d.coverImage || DISTRICT_PHOTOS[d.name] || 'images/colombo.jpg';
+  document.getElementById('heroImg').src = suitableImage;
+
   document.getElementById('avgRating').textContent   = d.averageRating ?? '–';
   document.getElementById('avgStars').textContent    = d.averageRating ? stars(Math.round(d.averageRating)) : '';
   document.getElementById('reviewCount').textContent = d.reviewCount ? `(${d.reviewCount} reviews)` : '(no reviews yet)';
 
-  // Spots
-  const spots = (d.touristSpots || []).filter(s => s.status === 'approved');
-  const grid  = document.getElementById('spotsGrid');
-  if (spots.length) {
-    grid.innerHTML = spots.map(s => `
-      <div class="spot-card">
-        <span class="spot-cat">${esc(s.category)}</span>
-        <h4>${esc(s.name)}</h4>
-        <p>${esc(s.description?.slice(0,120) || 'No description.')}${(s.description||'').length>120?'…':''}</p>
-        ${s.averageRating ? `<div style="color:#f59e0b;font-size:0.85rem;margin-top:8px">${stars(Math.round(s.averageRating))} <span style="color:var(--ink-faint)">(${s.reviewCount})</span></div>` : ''}
-      </div>`).join('');
+  loadWeather(d.name);
+
+  // Store approved spots only (public view)
+  const dbApproved = (d.touristSpots || []).filter(s => s.status === 'approved');
+  if (dbApproved.length) {
+    allApprovedSpots = dbApproved;
   } else {
-    grid.innerHTML = '<p style="color:var(--ink-faint)">No approved tourist spots yet.</p>';
+    allApprovedSpots = DEFAULT_SPOTS_MAP[d.name] || [
+      { name: `${d.name} Scenic Point`, category: "Viewpoint", openingHours: "6:00 AM - 6:00 PM", entryFee: 0, description: `Popular scenic attraction and viewpoint in ${d.name} district.`, photos: [suitableImage], averageRating: 4.8, reviewCount: 8 },
+      { name: `${d.name} Cultural Site`, category: "Historical", openingHours: "8:00 AM - 5:00 PM", entryFee: 200, description: `Historic monument and cultural heritage landmark in ${d.name} district.`, photos: [suitableImage], averageRating: 4.6, reviewCount: 5 }
+    ];
+  }
+  renderSpots();
+
+  loadReviews(d._id || DEST_ID);
+}
+
+// ── Add Spot Modal Controls ───────────────────────────────────────────────────
+function openAddSpotModal() {
+  if (!user || !TOKEN) {
+    alert('Please sign in to submit a tourist spot.');
+    window.location.href = 'auth.html';
+    return;
+  }
+  document.getElementById('addSpotModal').classList.add('active');
+  document.getElementById('spotFormError').style.display = 'none';
+  document.getElementById('spotFormSuccess').style.display = 'none';
+}
+
+function closeAddSpotModal() {
+  document.getElementById('addSpotModal').classList.remove('active');
+}
+
+// Close modal on outside overlay click
+document.getElementById('addSpotModal').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('addSpotModal')) closeAddSpotModal();
+});
+
+// ── Spot Submit Handler ───────────────────────────────────────────────────────
+async function handleSpotSubmit(e) {
+  e.preventDefault();
+  if (!user || !TOKEN) {
+    window.location.href = 'auth.html';
+    return;
   }
 
-  loadReviews();
+  const name = document.getElementById('spotName').value.trim();
+  const category = document.getElementById('spotCategory').value;
+  const entryFee = document.getElementById('spotEntryFee').value;
+  const openingHours = document.getElementById('spotOpeningHours').value.trim();
+  const description = document.getElementById('spotDescription').value.trim();
+
+  const errEl = document.getElementById('spotFormError');
+  const succEl = document.getElementById('spotFormSuccess');
+  errEl.style.display = 'none';
+  succEl.style.display = 'none';
+
+  if (!name) {
+    errEl.textContent = 'Spot name is required.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const targetDestId = currentDestinationData?._id || DEST_ID;
+  if (!targetDestId) {
+    errEl.textContent = 'Destination identifier missing. Please refresh the page.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const btn = document.getElementById('btnSubmitSpot');
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+
+  try {
+    const res = await fetch('/api/spots', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${TOKEN}`
+      },
+      body: JSON.stringify({
+        destination: targetDestId,
+        name,
+        category,
+        entryFee: entryFee ? Number(entryFee) : 0,
+        openingHours,
+        description
+      })
+    });
+
+    const body = await res.json();
+    if (body.success) {
+      succEl.textContent = '🎉 Spot submitted successfully! Your submission is currently PENDING review and will appear publicly once approved by an Admin.';
+      succEl.style.display = 'block';
+      document.getElementById('addSpotForm').reset();
+      setTimeout(() => {
+        closeAddSpotModal();
+        succEl.style.display = 'none';
+      }, 3500);
+    } else {
+      errEl.textContent = body.message || 'Failed to submit spot for review.';
+      errEl.style.display = 'block';
+    }
+  } catch (err) {
+    console.error(err);
+    errEl.textContent = 'An error occurred while submitting spot.';
+    errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Submit for Approval';
+  }
 }
 
 // ── Wishlist ──────────────────────────────────────────────────────────────────
 document.getElementById('wishBtn').addEventListener('click', async () => {
   if (!user) { window.location.href = 'auth.html'; return; }
   const btn = document.getElementById('wishBtn');
+  const targetId = currentDestinationData?._id || DEST_ID;
+  if (!targetId) return;
   const res  = await fetch('/api/wishlist', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${TOKEN}` },
-    body: JSON.stringify({ itemType: 'destination', itemId: DEST_ID })
+    body: JSON.stringify({ itemType: 'destination', itemId: targetId })
   });
   const body = await res.json();
   if (body.success) {
@@ -208,7 +846,7 @@ document.getElementById('wishBtn').addEventListener('click', async () => {
   }
 });
 
-// ── Review form ───────────────────────────────────────────────────────────────
+// ── Review Form ───────────────────────────────────────────────────────────────
 let selectedRating = 0;
 if (user && user.role === 'visitor') {
   document.getElementById('reviewLoginPrompt').style.display = 'none';
@@ -228,17 +866,19 @@ if (user && user.role === 'visitor') {
     const errEl   = document.getElementById('reviewErr');
     errEl.style.display = 'none';
     if (!selectedRating) { errEl.textContent = 'Please select a star rating.'; errEl.style.display = 'block'; return; }
+    const targetId = currentDestinationData?._id || DEST_ID;
+    if (!targetId) return;
     const res  = await fetch('/api/reviews', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${TOKEN}` },
-      body: JSON.stringify({ targetType: 'destination', targetId: DEST_ID, rating: selectedRating, comment })
+      body: JSON.stringify({ targetType: 'destination', targetId, rating: selectedRating, comment })
     });
     const body = await res.json();
     if (body.success) {
       document.getElementById('reviewComment').value = ''; selectedRating = 0;
       document.getElementById('starRow').querySelectorAll('.star-btn').forEach(b => b.classList.remove('lit'));
-      loadReviews();
-      load(); // refresh rating badge
+      loadReviews(targetId);
+      load();
     } else {
       errEl.textContent = body.message || 'Failed to submit review.';
       errEl.style.display = 'block';
@@ -249,8 +889,9 @@ if (user && user.role === 'visitor') {
 }
 
 // ── Load reviews ──────────────────────────────────────────────────────────────
-async function loadReviews() {
-  const res  = await fetch(`/api/reviews?targetType=destination&targetId=${DEST_ID}`);
+async function loadReviews(targetId) {
+  if (!targetId) return;
+  const res  = await fetch(`/api/reviews?targetType=destination&targetId=${targetId}`);
   const body = await res.json();
   const list = document.getElementById('reviewList');
   if (!body.success || !body.data.length) { list.innerHTML = '<p style="color:var(--ink-faint);font-size:0.85rem">No reviews yet. Be the first!</p>'; return; }

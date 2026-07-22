@@ -540,16 +540,36 @@ svg{
     height:auto;
 }
 
-.district{
-    fill:#dfe8f4;
-    stroke:#445;
-    stroke-width:1;
-    cursor:pointer;
-    transition:.25s;
+.district {
+    fill: rgba(223, 232, 244, 0.85); /* Translucent fill to let background photos subtly shine through */
+    stroke: #4a5568;
+    stroke-width: 1.2px;
+    cursor: pointer;
+    vector-effect: non-scaling-stroke;
+    transition: fill 0.25s ease, stroke 0.25s ease, stroke-width 0.25s ease, filter 0.25s ease, opacity 0.25s ease;
 }
 
-.district:hover{
-    fill:#D7263D;
+body.dark-mode .district {
+    fill: rgba(30, 41, 59, 0.8); /* Slate semi-transparent for dark mode */
+    stroke: rgba(255, 255, 255, 0.25);
+}
+
+.district:hover,
+.district.district-hover {
+    fill: rgba(215, 38, 61, 0.9) !important;
+    stroke: #FFD700 !important; /* Luminous glowing gold border light */
+    stroke-width: 3px !important;
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.95)) drop-shadow(0 0 14px rgba(215, 38, 61, 0.75));
+    opacity: 1;
+}
+
+body.dark-mode .district:hover,
+body.dark-mode .district.district-hover {
+    fill: rgba(225, 29, 72, 0.9) !important;
+    stroke: #00F0FF !important; /* Luminous cyan glowing border light in dark mode */
+    stroke-width: 3px !important;
+    filter: drop-shadow(0 0 9px rgba(0, 240, 255, 0.95)) drop-shadow(0 0 16px rgba(225, 29, 72, 0.8));
+    opacity: 1;
 }
 
 /* ---------- ADDITIONAL SERVICES GRID ---------- */
@@ -855,4 +875,209 @@ body.dark-mode .btn-direction-special:hover {
 /* ── Modal overlay active state (referenced from script.js map handler) ── */
 .modal-overlay.active {
   display: flex;
+}
+
+/* ── Interactive Map Tooltip & Viewport Right-Aligned Destination Card ── */
+.map-tooltip {
+  position: fixed;
+  right: 24px;
+  top: 120px;
+  width: 310px;
+  pointer-events: none;
+  z-index: 10000;
+  padding: 0;
+  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45), 0 0 25px rgba(215, 38, 61, 0.25);
+  color: #fff;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(20px) scale(0.95);
+  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
+              transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
+              visibility 0.25s ease;
+  overflow: hidden;
+}
+
+.map-tooltip.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0) scale(1);
+}
+
+@media (max-width: 900px) {
+  .map-tooltip {
+    position: fixed;
+    top: auto !important;
+    bottom: 20px !important;
+    right: 16px !important;
+    left: 16px !important;
+    width: auto;
+    z-index: 10000;
+    transform: translateY(20px) scale(0.95);
+  }
+  .map-tooltip.visible {
+    transform: translateY(0) scale(1);
+  }
+}
+
+.district-popup-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.popup-card-media {
+  position: relative;
+  width: 100%;
+  height: 130px;
+  overflow: hidden;
+  background: #0f172a;
+}
+
+.popup-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.map-tooltip.visible .popup-card-media img {
+  transform: scale(1.06);
+}
+
+.popup-card-media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.2) 60%, transparent 100%);
+}
+
+.popup-card-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
+  background: rgba(215, 38, 61, 0.88);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.popup-card-body {
+  padding: 14px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.popup-card-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.popup-card-title {
+  font-family: var(--font-display, 'Fraunces', serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.popup-card-sub {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #FFD700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.popup-card-desc {
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.popup-card-footer {
+  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.popup-card-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 4px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.popup-card-action svg {
+  transition: transform 0.2s ease;
+  stroke: #FFD700;
+}
+
+.map-tooltip.visible .popup-card-action svg {
+  transform: translateX(3px);
+}
+
+/* ── Interactive Map Background Photo ── */
+.map-wrapper {
+  position: relative;
+  overflow: hidden;
+  transition: background 0.5s ease;
+}
+
+.map-bg-image {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  filter: saturate(1.8) contrast(1.2) brightness(0.95);
+  transition: background-image 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.map-bg-image.visible {
+  opacity: 0.45; /* Much clearer background photo with high visibility */
+}
+
+body.dark-mode .map-bg-image.visible {
+  opacity: 0.35; /* Clear and visible in dark mode */
+  filter: saturate(2.0) contrast(1.3) brightness(0.65);
+}
+
+/* Disable mouse pointer events on SVG circles/labels to prevent them from blocking district hover/click actions */
+#points, #label_points {
+  pointer-events: none;
 }

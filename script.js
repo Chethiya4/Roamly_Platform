@@ -131,10 +131,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 /* ---- SVG DISTRICT MAP (map.html) ----------------------------------------- */
-/* The Highcharts block has been removed — #srilanka-map never existed on the  */
-/* page. This block wires the real SVG paths to the existing #districtModal.   */
 document.addEventListener('DOMContentLoaded', () => {
-  /* SVG label → official DB name mapping (hardcoded as per spec) */
+  /* SVG label → official DB name mapping */
   const DISTRICT_MAP = {
     "Trinkomalee":"Trincomalee","Mulativ":"Mullaitivu","Jaffna":"Jaffna",
     "Kilinochchi":"Kilinochchi","Mannarama":"Mannar","Puttalama":"Puttalam",
@@ -152,6 +150,137 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (!overlay || !nameEl || !listEl) return; // Not on map.html
 
+  /* District metadata dictionary for hover card popup */
+  const DISTRICT_DATA = {
+    "Trincomalee": {
+      province: "Eastern Province",
+      tagline: "Natural deep-water harbor, Koneswaram Temple, & Pigeon Island snorkeling.",
+      photo: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=800"
+    },
+    "Mullaitivu": {
+      province: "Northern Province",
+      tagline: "Pristine eastern beaches, scenic lagoons, & tranquil coastal shores.",
+      photo: "https://images.unsplash.com/photo-1620619767323-b95a89183081?q=80&w=800"
+    },
+    "Jaffna": {
+      province: "Northern Province",
+      tagline: "Historic Jaffna Fort, Nallur Kovil, unique culture, & northern islands.",
+      photo: "https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=800"
+    },
+    "Kilinochchi": {
+      province: "Northern Province",
+      tagline: "Iranamadu Reservoir, agricultural heritage, and serene northern landscapes.",
+      photo: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=800"
+    },
+    "Mannar": {
+      province: "Northern Province",
+      tagline: "Ancient Baobab trees, Adam's Bridge, & flamingo birdwatching sanctuaries.",
+      photo: "https://images.unsplash.com/photo-1616422285623-13ff0162193c?q=80&w=800"
+    },
+    "Puttalam": {
+      province: "North Western Province",
+      tagline: "Wilpattu National Park safari, Kalpitiya dolphin watching, & salt pans.",
+      photo: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800"
+    },
+    "Gampaha": {
+      province: "Western Province",
+      tagline: "Henarathgoda Botanical Garden, coastal resorts, & vibrant local markets.",
+      photo: "https://images.unsplash.com/photo-1590001155093-a3c66ab0c3ff?q=80&w=800"
+    },
+    "Colombo": {
+      province: "Western Province",
+      tagline: "Vibrant coastal capital, Lotus Tower, Gangaramaya & oceanfront dining.",
+      photo: "images/colombo.jpg"
+    },
+    "Kalutara": {
+      province: "Western Province",
+      tagline: "Kalutara Bodhiya stupa, river safaris, & golden palm beach resorts.",
+      photo: "https://images.unsplash.com/photo-1605538032432-a9f0c8d9baac?q=80&w=800"
+    },
+    "Galle": {
+      province: "Southern Province",
+      tagline: "UNESCO World Heritage Galle Fort, Dutch lighthouse, & coral surf beaches.",
+      photo: "images/gallfort1.jpg"
+    },
+    "Matara": {
+      province: "Southern Province",
+      tagline: "Mirissa whale watching, Dondra Head Lighthouse, & Secret Beach.",
+      photo: "images/mirissa1.jpg"
+    },
+    "Hambantota": {
+      province: "Southern Province",
+      tagline: "Yala National Park leopard safaris, Ridiyagama, & coastal salt lagoons.",
+      photo: "images/yala1.jpg"
+    },
+    "Ampara": {
+      province: "Eastern Province",
+      tagline: "World-famous Arugam Bay surfing, Senanayake Samudraya, & wildlife parks.",
+      photo: "images/arugambay1.jpg"
+    },
+    "Batticaloa": {
+      province: "Eastern Province",
+      tagline: "Famous singing fish lagoon, Dutch Fort, & Pasikuda coral bay.",
+      photo: "https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=800"
+    },
+    "Ratnapura": {
+      province: "Sabaragamuwa Province",
+      tagline: "City of Gems — Adam's Peak pilgrimage, Sinharaja & sapphire mines.",
+      photo: "images/adamspeak1.jpg"
+    },
+    "Monaragala": {
+      province: "Uva Province",
+      tagline: "Gal Oya National Park, Buduruwagala ancient rock carvings, & wilderness.",
+      photo: "https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=800"
+    },
+    "Kegalle": {
+      province: "Sabaragamuwa Province",
+      tagline: "Pinnawala Elephant Orphanage, rubber groves, & lush hill cascades.",
+      photo: "https://images.unsplash.com/photo-1581888227599-779811939961?q=80&w=800"
+    },
+    "Badulla": {
+      province: "Uva Province",
+      tagline: "Ella Gap, Nine Arch Bridge, tea plantations, & Dunhinda Falls.",
+      photo: "images/ella1.jpg"
+    },
+    "Matale": {
+      province: "Central Province",
+      tagline: "Majestic Sigiriya Rock Fortress, Pidurangala, & spice gardens.",
+      photo: "images/Sigiriya1.jpg"
+    },
+    "Polonnaruwa": {
+      province: "North Central Province",
+      tagline: "Ancient royal kingdom, Gal Viharaya rock statues, & Parakrama Samudra.",
+      photo: "https://images.unsplash.com/photo-1596402184320-417e7178b2cd?q=80&w=800"
+    },
+    "Kurunegala": {
+      province: "North Western Province",
+      tagline: "Royal rock citadel, giant Ethagala Buddha statue, & coconut groves.",
+      photo: "https://images.unsplash.com/photo-1542856391-010fb87dcfed?q=80&w=800"
+    },
+    "Anuradhapura": {
+      province: "North Central Province",
+      tagline: "UNESCO ancient sacred city, Jaya Sri Maha Bodhi, & grand stupas.",
+      photo: "https://images.unsplash.com/photo-1596402184320-417e7178b2cd?q=80&w=800"
+    },
+    "Nuwara Eliya": {
+      province: "Central Province",
+      tagline: "Little England — rolling tea estates, waterfalls, & chilly Gregory Lake.",
+      photo: "images/nuwaraeliya1.jpg"
+    },
+    "Vavuniya": {
+      province: "Northern Province",
+      tagline: "Ancient reservoirs, cultural crossroad, & historic northern monuments.",
+      photo: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=800"
+    },
+    "Kandy": {
+      province: "Central Province",
+      tagline: "Sacred Temple of the Tooth Relic, Kandy Lake, & Royal Botanical Gardens.",
+      photo: "images/Esala.jpg"
+    }
+  };
+
+  const bgImageEl = document.getElementById('mapBgImage');
+
   /* ── Close handler ── */
   window.closeDistrictModal = () => {
     overlay.classList.remove('active');
@@ -162,63 +291,127 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ── Style SVG paths for interactivity ── */
+  let tooltip = document.getElementById('map-tooltip');
+  if (!tooltip) {
+    tooltip = document.createElement('div');
+    tooltip.id = 'map-tooltip';
+    tooltip.className = 'map-tooltip';
+    document.body.appendChild(tooltip);
+  } else if (tooltip.parentNode !== document.body) {
+    document.body.appendChild(tooltip);
+  }
+
+  function updateCardViewportTop(clientY) {
+    if (!clientY) return;
+    const cardHeight = 260;
+    let topPos = clientY - 60;
+    topPos = Math.max(85, Math.min(window.innerHeight - cardHeight - 20, topPos));
+    tooltip.style.top = topPos + 'px';
+  }
+
   const paths = document.querySelectorAll('svg path.district');
   paths.forEach(path => {
     path.style.cursor = 'pointer';
-    path.style.transition = 'fill 0.2s ease';
-    path.addEventListener('mouseenter', () => { path.style.fill = '#D7263D'; });
-    path.addEventListener('mouseleave', () => { path.style.fill = ''; });
 
-    path.addEventListener('click', async () => {
-      const svgName      = path.getAttribute('name') || path.id;
+    path.addEventListener('mouseenter', (e) => {
+      const svgName      = path.id || path.getAttribute('name');
       const officialName = DISTRICT_MAP[svgName];
       if (!officialName) return;
 
-      nameEl.textContent = officialName;
-      listEl.innerHTML   = '<p style="color:var(--ink-faint);text-align:center;padding:20px">Loading…</p>';
-      overlay.classList.add('active');
-      document.body.style.overflow = 'hidden';
+      // Reset hover highlights on all other districts first
+      paths.forEach(p => p.classList.remove('district-hover'));
+      path.classList.add('district-hover');
+
+      const data = DISTRICT_DATA[officialName] || {
+        province: 'Sri Lanka',
+        tagline: `Explore top attractions and landmarks in ${officialName}.`,
+        photo: 'images/colombo.jpg'
+      };
+
+      updateCardViewportTop(e.clientY);
+
+      // Populate right-aligned destination card template
+      tooltip.innerHTML = `
+        <div class="district-popup-card">
+          <div class="popup-card-media">
+            <img src="${data.photo}" alt="${officialName}" loading="lazy" />
+            <span class="popup-card-badge">${data.province}</span>
+          </div>
+          <div class="popup-card-body">
+            <div class="popup-card-header">
+              <h4 class="popup-card-title">${officialName}</h4>
+              <span class="popup-card-sub">District</span>
+            </div>
+            <p class="popup-card-desc">${data.tagline}</p>
+            <div class="popup-card-footer">
+              <span class="popup-card-action">
+                <span>Explore Spots</span>
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              </span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      tooltip.classList.add('visible');
+
+      // Change background image of the map container
+      if (bgImageEl && data.photo) {
+        bgImageEl.style.backgroundImage = `url('${data.photo}')`;
+        bgImageEl.classList.add('visible');
+      }
+    });
+
+    path.addEventListener('mousemove', (e) => {
+      updateCardViewportTop(e.clientY);
+    });
+
+    path.addEventListener('mouseleave', () => {
+      // Instantly remove highlight and hide popup card when pointer moves off the district
+      path.classList.remove('district-hover');
+      tooltip.classList.remove('visible');
+
+      if (bgImageEl) {
+        bgImageEl.classList.remove('visible');
+      }
+    });
+
+    path.addEventListener('click', async () => {
+      const svgName      = path.id || path.getAttribute('name');
+      const officialName = DISTRICT_MAP[svgName];
+      if (!officialName) return;
+
+      paths.forEach(p => p.classList.remove('district-hover'));
+      tooltip.classList.remove('visible');
+      if (bgImageEl) bgImageEl.classList.remove('visible');
 
       try {
         const res  = await fetch(`/api/destinations/by-name/${encodeURIComponent(officialName)}`);
         const body = await res.json();
 
-        if (!body.success || !body.data) {
-          listEl.innerHTML = '<p style="color:var(--ink-faint);text-align:center;padding:20px">Destination not found.</p>';
-          return;
-        }
-
-        const dest = body.data;
-
-        /* Destination description */
-        let html = '';
-        if (dest.description) {
-          html += `<p style="color:var(--ink-soft);font-size:1rem;line-height:1.6;margin-bottom:20px">${esc(dest.description)}</p>`;
-        }
-
-        /* Approved tourist spots (populated via virtual from backend) */
-        const spots = Array.isArray(dest.touristSpots) ? dest.touristSpots.filter(s => s.status === 'approved') : [];
-        if (spots.length) {
-          html += `<h4 style="font-family:var(--font-display);font-size:1.1rem;margin-bottom:14px;color:var(--ink)">Tourist Spots (${spots.length})</h4>`;
-          spots.forEach(s => {
-            const stars = '★'.repeat(Math.round(s.averageRating || 0)) + '☆'.repeat(5 - Math.round(s.averageRating || 0));
-            html += `
-              <div class="dest-card" onclick="window.location.href='destination-detail.html?id=${esc(dest._id)}'">
-                <h4>${esc(s.name)} <span class="rating-badge">${stars}</span></h4>
-                <p>${esc(s.category)} ${s.description ? '· ' + esc(s.description.slice(0, 100)) + (s.description.length > 100 ? '…' : '') : ''}</p>
-              </div>`;
-          });
+        if (body.success && body.data) {
+          window.location.href = `destination-detail.html?id=${body.data._id}`;
         } else {
-          html += '<p style="color:var(--ink-faint);text-align:center;padding:16px 0">No approved tourist spots yet for this district.</p>';
+          window.location.href = `destination-detail.html?name=${encodeURIComponent(officialName)}`;
         }
-
-        html += `<a href="destination-detail.html?id=${esc(dest._id)}" class="btn-primary" style="margin-top:16px;display:block;text-align:center">View Full Destination →</a>`;
-        listEl.innerHTML = html;
-      } catch {
-        listEl.innerHTML = '<p style="color:var(--red);text-align:center;padding:20px">Failed to load destination data.</p>';
+      } catch (err) {
+        console.error(err);
+        window.location.href = `destination-detail.html?name=${encodeURIComponent(officialName)}`;
       }
     });
   });
+
+  // Global cleanup listener when mouse leaves the SVG map container entirely
+  const mainSvg = document.querySelector('svg');
+  if (mainSvg) {
+    mainSvg.addEventListener('mouseleave', () => {
+      paths.forEach(p => p.classList.remove('district-hover'));
+      tooltip.classList.remove('visible');
+      if (bgImageEl) bgImageEl.classList.remove('visible');
+    });
+  }
 
   function esc(str) {
     return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');

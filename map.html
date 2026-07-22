@@ -79,9 +79,15 @@
           Hover over any district to see its name. Click to view its distinct shape and registered tourist destinations!
         </p>
         
-        <div class="map-wrapper" style="background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 20px;">
+        <div class="map-wrapper" style="position: relative; overflow: hidden; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 20px;">
+          <!-- Dynamic background image under the map -->
+          <div class="map-bg-image" id="mapBgImage"></div>
+          
+          <!-- Right-aligned Destination Card Popup -->
+          <div id="map-tooltip" class="map-tooltip"></div>
+          
           <!-- The interactive map will render inside this div -->
-          <div class="map-wrapper">
+          <div class="map-wrapper" style="position: relative; z-index: 2; background: transparent;">
 
               <!-- Paste the whole SVG here -->
 
