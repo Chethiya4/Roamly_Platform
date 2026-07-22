@@ -4,6 +4,183 @@ document.addEventListener('DOMContentLoaded', () => {
   const langMenu = document.getElementById('langMenu');
   const langCode = document.getElementById('langCode');
 
+  const locationPin = document.getElementById('locationPin');
+  const mapWrapper = document.querySelector('.map-wrapper');
+
+ const districtLabel = document.getElementById('districtLabel');
+
+const districtCard = document.getElementById('districtCard');
+const districtCardName = document.getElementById('districtCardName');
+const districtCardImageOne = document.getElementById('districtCardImageOne');
+const districtCardImageTwo = document.getElementById('districtCardImageTwo');
+const districtCardPlaces = document.getElementById('districtCardPlaces');
+let cardHideTimeout;
+let districtHoverTimeout;
+let activeDistrict = null;
+
+const districts = document.querySelectorAll('.district');
+
+const districtData = {
+  Galle: {
+    images: [
+      'assets/districts/galle-1.jpg',
+      'assets/districts/galle-2.jpg'
+    ],
+    places: [
+      'Galle Fort',
+      'Unawatuna Beach',
+      'Jungle Beach'
+    ]
+  },
+
+  Colombo: {
+    images: [
+      'assets/districts/colombo-1.jpg',
+      'assets/districts/colombo-2.jpg'
+    ],
+    places: [
+      'Galle Face Green',
+      'Lotus Tower',
+      'National Museum'
+    ]
+  },
+
+  Jaffna: {
+    images: [
+      'assets/districts/jaffna-1.jpg',
+      'assets/districts/jaffna-2.jpg'
+    ],
+    places: [
+      'Jaffna Fort',
+      'Nallur Temple',
+      'Casuarina Beach'
+    ]
+  },
+
+  Mahanuwara: {
+    images: [
+      'assets/districts/kandy-1.jpg',
+      'assets/districts/kandy-2.jpg'
+    ],
+    places: [
+      'Temple of the Tooth',
+      'Kandy Lake',
+      'Peradeniya Garden'
+    ]
+  }
+};
+
+
+districts.forEach((district) => {
+  district.addEventListener('mouseenter', () => {
+    clearTimeout(cardHideTimeout);
+    clearTimeout(districtHoverTimeout);
+
+    districtHoverTimeout = setTimeout(() => {
+      activeDistrict = district;
+
+      const districtRect = district.getBoundingClientRect();
+      const mapRect = mapWrapper.getBoundingClientRect();
+
+      const x =
+        districtRect.left -
+        mapRect.left +
+        districtRect.width / 2;
+
+      const y =
+        districtRect.top -
+        mapRect.top +
+        districtRect.height / 2;
+
+      locationPin.style.left = `${x}px`;
+      locationPin.style.top = `${y}px`;
+      locationPin.classList.add('show');
+
+      const districtKey = district.id;
+      const districtName =
+        district.getAttribute('name') || districtKey;
+
+      districtLabel.textContent = districtName;
+      districtLabel.style.left = `${x + 55}px`;
+      districtLabel.style.top = `${y - 22}px`;
+      districtLabel.classList.add('show');
+
+      const cardData = districtData[districtKey] || {
+        images: [
+          'assets/districts/hero.jpg',
+          'assets/districts/beach.jpg'
+        ],
+        places: [
+          'Popular Attraction',
+          'Natural Landmark',
+          'Cultural Destination'
+        ]
+      };
+
+      districtCardName.textContent = `${districtName} District`;
+
+      districtCardImageOne.src = cardData.images[0];
+      districtCardImageTwo.src = cardData.images[1];
+
+      districtCardPlaces.innerHTML = cardData.places
+        .map((place) => `<li>${place}</li>`)
+        .join('');
+
+      const cardWidth = 320;
+      const cardHeight = districtCard.offsetHeight || 300;
+      const cardRightGap = 20;
+
+      const cardLeft =
+        mapWrapper.clientWidth -
+        cardWidth -
+        cardRightGap;
+
+      let cardTop = y;
+
+      const minimumTop = cardHeight / 2 + 20;
+      const maximumTop =
+        mapWrapper.clientHeight -
+        cardHeight / 2 -
+        20;
+
+      if (cardTop < minimumTop) {
+        cardTop = minimumTop;
+      }
+
+      if (cardTop > maximumTop) {
+        cardTop = maximumTop;
+      }
+
+      districtCard.style.left = `${cardLeft}px`;
+      districtCard.style.top = `${cardTop}px`;
+      districtCard.classList.add('show');
+    }, 300);
+  });
+
+  district.addEventListener('mouseleave', () => {
+    clearTimeout(districtHoverTimeout);
+
+    cardHideTimeout = setTimeout(() => {
+      locationPin.classList.remove('show');
+      districtLabel.classList.remove('show');
+      districtCard.classList.remove('show');
+      activeDistrict = null;
+    }, 900);
+  });
+});
+
+districtCard.addEventListener('mouseenter', () => {
+  clearTimeout(cardHideTimeout);
+  districtCard.classList.add('show');
+});
+
+districtCard.addEventListener('mouseleave', () => {
+  cardHideTimeout = setTimeout(() => {
+    districtCard.classList.remove('show');
+  }, 1200);
+});
+  
+
   if (langTrigger && langMenu && langCode) {
     langTrigger.addEventListener('click', () => {
       const isOpen = !langMenu.hidden;

@@ -82,7 +82,7 @@
         
         <div class="map-wrapper" style="background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 20px;">
           <!-- The interactive map will render inside this div -->
-          <div class="map-wrapper">
+         
 
               <!-- Paste the whole SVG here -->
 
@@ -206,6 +206,54 @@
                 </circle>
               </g>
               </svg>
+              <img src="location.png"
+                   id="locationPin"
+                   class="map-location-pin"
+                   alt="Location Pin">
+                <div id="districtLabel" class="district-label"></div>
+                <div id="districtCard" class="district-card">
+
+  <div class="district-card-title">
+    <img src="assets/districts/location.png"
+  class="district-card-pin"
+  alt="Location">
+    <h3 id="districtCardName">Galle District</h3>
+  </div>
+
+  <div class="district-card-images">
+    <img
+      id="districtCardImageOne"
+      src="assets/districts/hero.jpg"
+      alt="Galle Fort"
+    >
+
+    <img
+      id="districtCardImageTwo"
+      src="assets/districts/beach.jpg"
+      alt="Unawatuna"
+    >
+  </div>
+
+  <h4>Top Places</h4>
+
+  <ul id="districtCardPlaces">
+    
+    <li>Galle Fort</li>
+    <li>Unawatuna Beach</li>
+    <li>Jungle Beach</li>
+  </ul>
+  <div class="district-card-footer">
+  <a
+  id="districtExploreBtn"
+  class="district-explore-btn"
+  href="district.html"
+>
+  Explore
+  <span>→</span>
+</a>
+
+</div>
+
 
           </div>
         </div>
