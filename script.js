@@ -332,7 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Populate right-aligned destination card template
       tooltip.innerHTML = `
-        <div class="district-popup-card">
+        <div class="district-popup-card" style="cursor: pointer;" onclick="window.location.href='destination-detail.html?name=${encodeURIComponent(officialName)}'">
           <div class="popup-card-media">
             <img src="${data.photo}" alt="${officialName}" loading="lazy" />
             <span class="popup-card-badge">${data.province}</span>
@@ -369,13 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     path.addEventListener('mouseleave', () => {
-      // Instantly remove highlight and hide popup card when pointer moves off the district
-      path.classList.remove('district-hover');
-      tooltip.classList.remove('visible');
-
-      if (bgImageEl) {
-        bgImageEl.classList.remove('visible');
-      }
+      // Keep card and highlight visible when mouse leaves the district
     });
 
     path.addEventListener('click', async () => {
@@ -403,14 +397,37 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Global cleanup listener when mouse leaves the SVG map container entirely
+  // Global listener for SVG map
   const mainSvg = document.querySelector('svg');
   if (mainSvg) {
     mainSvg.addEventListener('mouseleave', () => {
-      paths.forEach(p => p.classList.remove('district-hover'));
-      tooltip.classList.remove('visible');
-      if (bgImageEl) bgImageEl.classList.remove('visible');
+      // Keep card visible when mouse leaves SVG container
     });
+  }
+
+  // Populate Featured District Photo Showcase Grid at bottom of map.html
+  const featuredGrid = document.getElementById('featuredDistrictsGrid');
+  if (featuredGrid) {
+    const districtsList = Object.keys(DISTRICT_DATA);
+    featuredGrid.innerHTML = districtsList.map(distName => {
+      const data = DISTRICT_DATA[distName];
+      return `
+        <div class="district-gallery-card" onclick="window.location.href='destination-detail.html?name=${encodeURIComponent(distName)}'">
+          <img src="${data.photo}" alt="${esc(distName)}" loading="lazy" />
+          <div class="district-gallery-overlay">
+            <span class="district-gallery-province">${esc(data.province)}</span>
+            <h3 class="district-gallery-title">${esc(distName)}</h3>
+            <p class="district-gallery-desc">${esc(data.tagline)}</p>
+            <div class="district-gallery-action">
+              <span>Explore Spots</span>
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
   }
 
   function esc(str) {

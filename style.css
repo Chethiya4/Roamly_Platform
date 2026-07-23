@@ -906,6 +906,7 @@ body.dark-mode .btn-direction-special:hover {
   opacity: 1;
   visibility: visible;
   transform: translateX(0) scale(1);
+  pointer-events: auto;
 }
 
 @media (max-width: 900px) {
@@ -1080,4 +1081,103 @@ body.dark-mode .map-bg-image.visible {
 /* Disable mouse pointer events on SVG circles/labels to prevent them from blocking district hover/click actions */
 #points, #label_points {
   pointer-events: none;
+}
+
+/* ── Featured District Photo Showcase Grid ── */
+.featured-districts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.district-gallery-card {
+  position: relative;
+  height: 320px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--line);
+  cursor: pointer;
+  background: var(--navy-900);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+}
+
+.district-gallery-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow);
+  border-color: rgba(215, 38, 61, 0.45);
+}
+
+.district-gallery-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease, opacity 0.3s ease;
+  opacity: 0.9;
+}
+
+.district-gallery-card:hover img {
+  transform: scale(1.08);
+  opacity: 1;
+}
+
+.district-gallery-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(10,27,51,0.92) 0%, rgba(10,27,51,0.25) 60%, transparent 100%);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  color: #fff;
+  z-index: 2;
+}
+
+.district-gallery-province {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  background: rgba(215, 38, 61, 0.85);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.district-gallery-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: #fff;
+  margin: 0 0 6px 0;
+  line-height: 1.2;
+}
+
+.district-gallery-desc {
+  font-size: 0.84rem;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0 0 14px 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.district-gallery-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #FFD700;
+  transition: gap 0.2s ease, color 0.2s ease;
+}
+
+.district-gallery-card:hover .district-gallery-action {
+  gap: 10px;
+  color: #fff;
 }
