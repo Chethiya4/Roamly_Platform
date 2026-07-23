@@ -12,18 +12,22 @@ const seedAdmin = async () => {
     try {
         await connectDB();
 
-        const email = config.ADMIN_EMAIL;
-        const password = config.ADMIN_PASSWORD;
+        // Development-only credential defaults
+        const email = config.ADMIN_EMAIL || 'admin123@gmail.com';
+        const password = config.ADMIN_PASSWORD || 'admin123';
 
         if (!email || !password) {
             console.error('Error: ADMIN_EMAIL and ADMIN_PASSWORD must be defined in .env');
             process.exit(1);
         }
 
-        const existingAdmin = await User.findOne({ email });
+        const existingAdmin = await User.findOne({ role: 'admin' });
 
         if (existingAdmin) {
-            console.log(`Admin user with email ${email} already exists.`);
+            existingAdmin.email = email;
+            existingAdmin.password = password;
+            await existingAdmin.save();
+            console.log(`Updated existing admin user to use email ${email}`);
         } else {
             await User.create({
                 name: 'System Admin',

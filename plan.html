@@ -440,21 +440,21 @@
           <p>Tell our AI Travel Assistant what you want, and we'll craft the perfect Sri Lankan itinerary.</p>
         </div>
 
-        <form onsubmit="event.preventDefault(); alert('Generating your personalized itinerary...');">
+        <form id="tripForm">
           <div class="form-grid">
             <div class="form-group">
               <label>Destination / Region</label>
-              <input type="text" class="form-control" placeholder="e.g. Ella, Mirissa, or All Sri Lanka">
+              <input type="text" id="trip-destination" class="form-control" placeholder="e.g. Ella, Mirissa, or All Sri Lanka">
             </div>
             
             <div class="form-group">
               <label>Duration (Days)</label>
-              <input type="number" class="form-control" placeholder="7" min="1">
+              <input type="number" id="trip-duration" class="form-control" placeholder="7" min="1">
             </div>
 
             <div class="form-group">
               <label>Budget</label>
-              <select class="form-control">
+              <select id="trip-budget" class="form-control">
                 <option>Backpacker (Budget)</option>
                 <option>Standard (Mid-range)</option>
                 <option>Luxury (Premium)</option>
@@ -483,7 +483,10 @@
             </div>
           </div>
 
-          <button type="submit" class="btn-generate">Generate Smart Itinerary ✨</button>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <button type="submit" class="btn-generate">Generate Smart Itinerary ✨</button>
+            <div id="trip-save-message" style="text-align: center; color: var(--brand-accent); font-weight: 600; display: none;"></div>
+          </div>
         </form>
       </div>
     </section>
@@ -714,6 +717,68 @@
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         this.classList.add('active');
       });
+    });
+
+    // Form submission and API integration
+    document.getElementById('tripForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const destination = document.getElementById('trip-destination').value.trim();
+      const durationDays = parseInt(document.getElementById('trip-duration').value, 10);
+      const budget = document.getElementById('trip-budget').value;
+      
+      const styleCard = document.querySelector('.style-card.active');
+      // Extract text content and remove emoji if any (simple approach is to remove non-word chars except spaces)
+      let travelStyle = 'Solo';
+      if (styleCard) {
+          travelStyle = styleCard.textContent.replace(/[^\w\s]/gi, '').trim();
+      }
+
+      const interestNodes = document.querySelectorAll('.interest-pill.active');
+      const interests = Array.from(interestNodes).map(node => node.textContent.replace(/[^\w\s&]/gi, '').trim());
+
+      const payload = {
+          destination,
+          durationDays: isNaN(durationDays) ? 1 : durationDays,
+          budget,
+          travelStyle,
+          interests
+      };
+
+      // Always show the original behavior alert
+      alert('Generating your personalized itinerary...');
+
+      const token = localStorage.getItem('roamly_token');
+      const msgEl = document.getElementById('trip-save-message');
+      
+      if (!token) {
+          // Show dismissible note linking to auth
+          msgEl.innerHTML = `Sign in to save this trip to your account. <a href="auth.html" style="color:var(--brand-accent); text-decoration:underline;">Sign In here</a>. <span style="cursor:pointer; color:#718096; margin-left:10px;" onclick="this.parentElement.style.display='none'">✖</span>`;
+          msgEl.style.display = 'block';
+      } else {
+          // POST to backend
+          try {
+              const res = await fetch('/api/trips', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': `Bearer ${token}`
+                  },
+                  body: JSON.stringify(payload)
+              });
+              const data = await res.json();
+              
+              if (data.success) {
+                  msgEl.innerHTML = `Saved to your account!`;
+                  msgEl.style.color = '#38A169'; // success green
+                  msgEl.style.display = 'block';
+              } else {
+                  console.error('Failed to save trip:', data.message);
+              }
+          } catch (err) {
+              console.error('Network error saving trip:', err);
+          }
+      }
     });
   </script>
 </body>
