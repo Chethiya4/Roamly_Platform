@@ -7,7 +7,7 @@ This checklist is for manual testing of the Roamly platform end-to-end, simulati
 ### 1.1 Registration & Login
 - [ ] Go to `auth.html` (make sure it defaults to the Visitor tab).
 - [ ] Fill out the Registration form with a new user (e.g. `visitor@example.com`).
-- [ ] Submit. Verify you are redirected to `visitor-dashboard.html`.
+- [ ] Submit. Verify you are redirected to `account.html`.
 - [ ] Click Logout (if a button is provided) or clear local storage.
 - [ ] Go back to `auth.html` and use the Login form to sign in.
 - [ ] Verify you are redirected to the dashboard.
@@ -15,7 +15,7 @@ This checklist is for manual testing of the Roamly platform end-to-end, simulati
 ### 1.2 Submitting a Tourist Spot
 - [ ] As a logged-in visitor, navigate to a destination page (e.g., `destination-detail.html?id=...`).
 - [ ] Submit a new tourist spot (assuming there is a form/button available, or test via API `POST /api/spots` with token if UI is pending).
-- [ ] Verify the spot appears in `visitor-dashboard.html` under a "My Submissions" tab with a `pending` badge.
+- [ ] Verify the spot appears in `account.html` under a "My Submissions" tab with a `pending` badge.
 
 ### 1.3 Admin Approval (Context Switch)
 - [ ] Open a new incognito window and go to `auth.html?tab=admin`.
@@ -29,12 +29,12 @@ This checklist is for manual testing of the Roamly platform end-to-end, simulati
 - [ ] Click on the spot to view details.
 - [ ] Write a 5-star review for the spot.
 - [ ] Verify the review appears on the page and the average rating for the spot updates.
-- [ ] Check `visitor-dashboard.html` to see if the review is listed under your reviews.
+- [ ] Check `account.html` to see if the review is listed under your reviews.
 
 ### 1.5 Wishlisting
 - [ ] On the destination page, click the Wishlist heart icon.
 - [ ] Verify the heart toggles to a filled/active state.
-- [ ] Go to `visitor-dashboard.html` and verify the destination appears in your Wishlist tab.
+- [ ] Go to `account.html` and verify the destination appears in your Wishlist tab.
 
 ---
 

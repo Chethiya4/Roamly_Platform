@@ -1,4 +1,80 @@
 document.addEventListener('DOMContentLoaded', () => {
+  /* ---------------- AUTH STATE HEADER ---------------- */
+  updateHeaderAuthState();
+
+  function updateHeaderAuthState() {
+    const token = localStorage.getItem('roamly_token');
+    const role = localStorage.getItem('roamly_role');
+    const name = localStorage.getItem('roamly_name');
+    
+    // Select all btn-signin elements (there might be multiple if mobile/desktop nav differs, usually just one)
+    const signinBtns = document.querySelectorAll('.btn-signin');
+    
+    if (token) {
+      signinBtns.forEach(btn => {
+        // Create a user menu container to replace the sign-in button
+        const userContainer = document.createElement('div');
+        userContainer.className = 'user-header-menu';
+        userContainer.style.display = 'flex';
+        userContainer.style.alignItems = 'center';
+        userContainer.style.gap = '12px';
+        
+        // Dashboard link
+        const dest = {
+          visitor: 'account.html',
+          business_owner: 'business-dashboard.html',
+          admin: 'admin-dashboard.html'
+        }[role] || 'index.html';
+        
+        const nameLink = document.createElement('a');
+        nameLink.href = dest;
+        nameLink.textContent = name || 'My Account';
+        nameLink.style.fontWeight = '700';
+        nameLink.style.color = 'var(--ink)';
+        nameLink.style.textDecoration = 'none';
+        
+        // Log out button
+        const logoutBtn = document.createElement('button');
+        logoutBtn.textContent = 'Log Out';
+        logoutBtn.className = 'btn-secondary'; // Assuming btn-secondary exists or just basic styling
+        logoutBtn.style.padding = '6px 12px';
+        logoutBtn.style.fontSize = '0.8rem';
+        logoutBtn.style.border = '1px solid var(--line)';
+        logoutBtn.style.borderRadius = 'var(--radius-sm)';
+        logoutBtn.style.background = 'transparent';
+        logoutBtn.style.cursor = 'pointer';
+        
+        logoutBtn.addEventListener('click', () => {
+          localStorage.removeItem('roamlyUser');
+          localStorage.removeItem('roamly_token');
+          localStorage.removeItem('roamly_role');
+          localStorage.removeItem('roamly_name');
+          window.location.reload();
+        });
+        
+        userContainer.appendChild(nameLink);
+        userContainer.appendChild(logoutBtn);
+        
+        // Replace the sign in button with the new container
+        btn.parentNode.replaceChild(userContainer, btn);
+      });
+    } else {
+      signinBtns.forEach(btn => {
+        // Make sure it points to auth.html if not logged in
+        btn.addEventListener('click', (e) => {
+          // If it's an anchor, href handles it. If it's a button, we set location.
+          if (btn.tagName.toLowerCase() === 'button') {
+            e.preventDefault();
+            window.location.href = 'auth.html';
+          }
+        });
+        // Also just set onclick directly as fallback for inline handlers
+        btn.setAttribute('onclick', "window.location.href='auth.html'");
+      });
+    }
+  }
+
+
   /* ---------------- LANGUAGE & CURRENCY ---------------- */
   const langTrigger = document.getElementById('langTrigger');
   const langMenu = document.getElementById('langMenu');
