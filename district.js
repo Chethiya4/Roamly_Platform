@@ -793,6 +793,458 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .join('');
   }
+  const weatherByDistrict = {
+  Ampara: {
+    current: {
+      icon: '☀️',
+      temperature: 31,
+      condition: 'Sunny',
+      humidity: 72,
+      wind: 14,
+      feelsLike: 34
+    },
+
+    forecast: [
+      {
+        day: 'Today',
+        icon: '☀️',
+        condition: 'Sunny',
+        high: 31,
+        low: 25
+      },
+
+      {
+        day: 'Tomorrow',
+        icon: '🌦️',
+        condition: 'Light rain',
+        high: 29,
+        low: 24
+      },
+
+      {
+        day: 'Friday',
+        icon: '⛅',
+        condition: 'Cloudy',
+        high: 30,
+        low: 24
+      },
+
+      {
+        day: 'Saturday',
+        icon: '🌧️',
+        condition: 'Rain',
+        high: 28,
+        low: 23
+      },
+
+      {
+        day: 'Sunday',
+        icon: '☀️',
+        condition: 'Sunny',
+        high: 31,
+        low: 24
+      }
+    ]
+  },
+
+  Galle: {
+    current: {
+      icon: '🌦️',
+      temperature: 29,
+      condition: 'Light rain',
+      humidity: 81,
+      wind: 16,
+      feelsLike: 32
+    },
+
+    forecast: [
+      {
+        day: 'Today',
+        icon: '🌦️',
+        condition: 'Light rain',
+        high: 29,
+        low: 25
+      },
+
+      {
+        day: 'Tomorrow',
+        icon: '⛅',
+        condition: 'Cloudy',
+        high: 30,
+        low: 25
+      },
+
+      {
+        day: 'Friday',
+        icon: '☀️',
+        condition: 'Sunny',
+        high: 31,
+        low: 25
+      },
+
+      {
+        day: 'Saturday',
+        icon: '🌧️',
+        condition: 'Showers',
+        high: 28,
+        low: 24
+      },
+
+      {
+        day: 'Sunday',
+        icon: '⛅',
+        condition: 'Cloudy',
+        high: 30,
+        low: 25
+      }
+    ]
+  },
+
+  Badulla: {
+    current: {
+      icon: '☁️',
+      temperature: 22,
+      condition: 'Cloudy',
+      humidity: 79,
+      wind: 9,
+      feelsLike: 22
+    },
+
+    forecast: [
+      {
+        day: 'Today',
+        icon: '☁️',
+        condition: 'Cloudy',
+        high: 22,
+        low: 16
+      },
+
+      {
+        day: 'Tomorrow',
+        icon: '🌦️',
+        condition: 'Light rain',
+        high: 21,
+        low: 15
+      },
+
+      {
+        day: 'Friday',
+        icon: '⛅',
+        condition: 'Cloudy',
+        high: 23,
+        low: 16
+      },
+
+      {
+        day: 'Saturday',
+        icon: '🌧️',
+        condition: 'Rain',
+        high: 20,
+        low: 15
+      },
+
+      {
+        day: 'Sunday',
+        icon: '☀️',
+        condition: 'Clear',
+        high: 24,
+        low: 16
+      }
+    ]
+  },
+
+  Colombo: {
+    current: {
+      icon: '⛅',
+      temperature: 30,
+      condition: 'Partly cloudy',
+      humidity: 78,
+      wind: 13,
+      feelsLike: 34
+    },
+
+    forecast: [
+      {
+        day: 'Today',
+        icon: '⛅',
+        condition: 'Cloudy',
+        high: 30,
+        low: 26
+      },
+
+      {
+        day: 'Tomorrow',
+        icon: '🌦️',
+        condition: 'Light rain',
+        high: 29,
+        low: 25
+      },
+
+      {
+        day: 'Friday',
+        icon: '☀️',
+        condition: 'Sunny',
+        high: 31,
+        low: 26
+      },
+
+      {
+        day: 'Saturday',
+        icon: '🌧️',
+        condition: 'Showers',
+        high: 28,
+        low: 25
+      },
+
+      {
+        day: 'Sunday',
+        icon: '⛅',
+        condition: 'Cloudy',
+        high: 30,
+        low: 25
+      }
+    ]
+  },
+
+  Jaffna: {
+    current: {
+      icon: '☀️',
+      temperature: 32,
+      condition: 'Sunny',
+      humidity: 68,
+      wind: 18,
+      feelsLike: 35
+    },
+
+    forecast: [
+      {
+        day: 'Today',
+        icon: '☀️',
+        condition: 'Sunny',
+        high: 32,
+        low: 27
+      },
+
+      {
+        day: 'Tomorrow',
+        icon: '☀️',
+        condition: 'Sunny',
+        high: 33,
+        low: 27
+      },
+
+      {
+        day: 'Friday',
+        icon: '⛅',
+        condition: 'Cloudy',
+        high: 32,
+        low: 27
+      },
+
+      {
+        day: 'Saturday',
+        icon: '🌦️',
+        condition: 'Light rain',
+        high: 31,
+        low: 26
+      },
+
+      {
+        day: 'Sunday',
+        icon: '☀️',
+        condition: 'Sunny',
+        high: 33,
+        low: 27
+      }
+    ]
+  },
+
+  Mahanuwara: {
+    current: {
+      icon: '🌦️',
+      temperature: 24,
+      condition: 'Light rain',
+      humidity: 84,
+      wind: 8,
+      feelsLike: 25
+    },
+
+    forecast: [
+      {
+        day: 'Today',
+        icon: '🌦️',
+        condition: 'Light rain',
+        high: 24,
+        low: 19
+      },
+
+      {
+        day: 'Tomorrow',
+        icon: '☁️',
+        condition: 'Cloudy',
+        high: 25,
+        low: 19
+      },
+
+      {
+        day: 'Friday',
+        icon: '⛅',
+        condition: 'Cloudy',
+        high: 26,
+        low: 19
+      },
+
+      {
+        day: 'Saturday',
+        icon: '🌧️',
+        condition: 'Rain',
+        high: 23,
+        low: 18
+      },
+
+      {
+        day: 'Sunday',
+        icon: '☀️',
+        condition: 'Clear',
+        high: 27,
+        low: 19
+      }
+    ]
+  }
+};
+
+const fallbackWeather = {
+  current: {
+    icon: '⛅',
+    temperature: 29,
+    condition: 'Partly cloudy',
+    humidity: 76,
+    wind: 12,
+    feelsLike: 31
+  },
+
+  forecast: [
+    {
+      day: 'Today',
+      icon: '⛅',
+      condition: 'Cloudy',
+      high: 29,
+      low: 24
+    },
+
+    {
+      day: 'Tomorrow',
+      icon: '🌦️',
+      condition: 'Light rain',
+      high: 28,
+      low: 23
+    },
+
+    {
+      day: 'Friday',
+      icon: '☀️',
+      condition: 'Sunny',
+      high: 30,
+      low: 24
+    },
+
+    {
+      day: 'Saturday',
+      icon: '🌧️',
+      condition: 'Rain',
+      high: 27,
+      low: 23
+    },
+
+    {
+      day: 'Sunday',
+      icon: '⛅',
+      condition: 'Cloudy',
+      high: 29,
+      low: 24
+    }
+  ]
+};
+
+const districtWeather =
+  weatherByDistrict[districtId] || fallbackWeather;
+
+  setText(
+  'currentWeatherLocation',
+  district.title
+);
+
+setText(
+  'currentWeatherIcon',
+  districtWeather.current.icon
+);
+
+setText(
+  'currentWeatherTemperature',
+  `${districtWeather.current.temperature}°C`
+);
+
+setText(
+  'currentWeatherCondition',
+  districtWeather.current.condition
+);
+
+setText(
+  'currentWeatherHumidity',
+  `${districtWeather.current.humidity}%`
+);
+
+setText(
+  'currentWeatherWind',
+  `${districtWeather.current.wind} km/h`
+);
+
+setText(
+  'currentWeatherFeelsLike',
+  `${districtWeather.current.feelsLike}°C`
+);
+
+const weatherForecastGrid =
+  document.getElementById(
+    'districtWeatherForecast'
+  );
+
+if (weatherForecastGrid) {
+  weatherForecastGrid.innerHTML =
+    districtWeather.forecast
+      .map((weatherItem) => {
+        return `
+          <article class="district-weather-day-card">
+
+            <span class="district-weather-day">
+              ${weatherItem.day}
+            </span>
+
+            <span class="district-weather-day-icon">
+              ${weatherItem.icon}
+            </span>
+
+            <div class="district-weather-temperatures">
+
+              <strong>
+                ${weatherItem.high}°
+              </strong>
+
+              <span>
+                ${weatherItem.low}°
+              </span>
+
+            </div>
+
+            <p>
+              ${weatherItem.condition}
+            </p>
+
+          </article>
+        `;
+      })
+      .join('');
+}
 
   const galleryGrid =
     document.getElementById('districtGalleryGrid');

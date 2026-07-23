@@ -14,6 +14,7 @@ const districtCardName = document.getElementById('districtCardName');
 const districtCardImageOne = document.getElementById('districtCardImageOne');
 const districtCardImageTwo = document.getElementById('districtCardImageTwo');
 const districtCardPlaces = document.getElementById('districtCardPlaces');
+const districtExploreBtn = document.getElementById('districtExploreBtn');
 let cardHideTimeout;
 let districtHoverTimeout;
 let activeDistrict = null;
@@ -21,15 +22,51 @@ let activeDistrict = null;
 const districts = document.querySelectorAll('.district');
 
 const districtData = {
-  Galle: {
+  Ampara: {
     images: [
-      'assets/districts/galle-1.jpg',
-      'assets/districts/galle-2.jpg'
+      'assets/districts/ampara-1.jpg',
+      'assets/districts/ampara-2.jpg'
     ],
     places: [
-      'Galle Fort',
-      'Unawatuna Beach',
-      'Jungle Beach'
+      'Arugam Bay',
+      'Kumana National Park',
+      'Muhudu Maha Viharaya'
+    ]
+  },
+
+  Anuradapura: {
+    images: [
+      'assets/districts/anuradhapura-1.jpg',
+      'assets/districts/anuradhapura-2.jpg'
+    ],
+    places: [
+      'Ruwanwelisaya',
+      'Sri Maha Bodhi',
+      'Jetavanaramaya'
+    ]
+  },
+
+  Badulla: {
+    images: [
+      'assets/districts/badulla-1.jpg',
+      'assets/districts/badulla-2.jpg'
+    ],
+    places: [
+      'Nine Arch Bridge',
+      'Dunhinda Falls',
+      "Little Adam's Peak"
+    ]
+  },
+
+  Madakalapuwa: {
+    images: [
+      'assets/districts/batticaloa-1.jpg',
+      'assets/districts/batticaloa-2.jpg'
+    ],
+    places: [
+      'Batticaloa Fort',
+      'Kallady Bridge',
+      'Pasikudah Beach'
     ]
   },
 
@@ -45,31 +82,18 @@ const districtData = {
     ]
   },
 
-  Jaffna: {
+  Galle: {
     images: [
-      'assets/districts/jaffna-1.jpg',
-      'assets/districts/jaffna-2.jpg'
+      'assets/districts/galle-1.jpg',
+      'assets/districts/galle-2.jpg'
     ],
     places: [
-      'Jaffna Fort',
-      'Nallur Temple',
-      'Casuarina Beach'
-    ]
-  },
-
-  Mahanuwara: {
-    images: [
-      'assets/districts/kandy-1.jpg',
-      'assets/districts/kandy-2.jpg'
-    ],
-    places: [
-      'Temple of the Tooth',
-      'Kandy Lake',
-      'Peradeniya Garden'
+      'Galle Fort',
+      'Unawatuna Beach',
+      'Jungle Beach'
     ]
   }
 };
-
 
 districts.forEach((district) => {
   district.addEventListener('mouseenter', () => {
@@ -97,6 +121,8 @@ districts.forEach((district) => {
       locationPin.classList.add('show');
 
       const districtKey = district.id;
+      districtExploreBtn.href =
+     `district.html?id=${encodeURIComponent(districtKey)}`;
       const districtName =
         district.getAttribute('name') || districtKey;
 
