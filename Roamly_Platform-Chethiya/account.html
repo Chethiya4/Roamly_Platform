@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <title>My Account — Roamly</title>
+  <style>
+    .account-container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    
+    .unauth-message {
+      text-align: center;
+      padding: 100px 20px;
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+    }
+    .unauth-message h2 {
+      font-family: var(--font-display);
+      color: var(--brand-blue, var(--ink));
+      margin-bottom: 20px;
+      font-size: 2rem;
+    }
+
+    .role-redirect-message {
+      text-align: center;
+      padding: 60px 20px;
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--line);
+    }
+
+    /* Dashboard Layout */
+    .dashboard-layout {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 30px;
+    }
+    @media (max-width: 900px) {
+      .dashboard-layout { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--line);
+      margin-bottom: 24px;
+    }
+    .panel-header {
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .panel-header h3 {
+      font-family: var(--font-display);
+      color: var(--ink);
+      font-size: 1.4rem;
+      margin: 0;
+    }
+
+    .profile-info p {
+      margin: 10px 0;
+      color: var(--ink-soft);
+      font-size: 0.95rem;
+    }
+    .profile-info strong {
+      color: var(--ink);
+    }
+
+    /* Form inputs for edit mode */
+    .edit-input {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0 15px 0;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+    }
+
+    .list-item {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      margin-bottom: 12px;
+      background: var(--bg);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .list-item h4 {
+      margin: 0 0 6px 0;
+      color: var(--ink);
+      font-size: 1.1rem;
+    }
+    .list-item p {
+      margin: 0 0 4px 0;
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .badge.pending { background: #F6E05E; color: #744210; }
+    .badge.approved { background: #C6F6D5; color: #22543D; }
+    .badge.rejected { background: #FED7D7; color: #742A2A; }
+
+    .btn-small {
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+    .btn-small:hover {
+      background: var(--line);
+    }
+    .btn-danger {
+      color: var(--red);
+      border-color: rgba(215, 38, 61, 0.3);
+      background: rgba(215, 38, 61, 0.05);
+    }
+    .btn-danger:hover {
+      background: rgba(215, 38, 61, 0.1);
+    }
+
+    /* Tabs for mobile layout if needed, but we stack them nicely */
+    .error-text { color: var(--red); font-size: 0.9rem; margin-top: 10px; display: none; }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <img src="assets/logo.png" alt="Brand logo">
+      </a>
+      <div class="header-actions">
+        <button type="button" class="btn-signin">Sign In</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="account-container" id="main-content">
+    <!-- Initial Loading State -->
+    <div style="text-align: center; padding: 60px; color: var(--ink-faint);">Loading account data...</div>
+  </main>
+
+  <script src="script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const token = localStorage.getItem('roamly_token');
+      const role = localStorage.getItem('roamly_role');
+      const mainContent = document.getElementById('main-content');
+
+      // 1. Check for token
+      if (!token) {
+        renderUnauth();
+        return;
+      }
+
+      // 2. Check Role Edge Case
+      if (role === 'business_owner') {
+        renderRoleRedirect('business.html', 'Business Dashboard');
+      } else if (role === 'admin') {
+        renderRoleRedirect('admin-dashboard.html', 'Admin Dashboard');
+        return;
+      }
+
+      // 3. Fetch user data (Dashboard and Trips)
+      try {
+        const [dashRes, tripsRes, meRes] = await Promise.all([
+          fetch('/api/users/me/dashboard', { headers: { 'Authorization': `Bearer ${token}` } }),
+          fetch('/api/trips/mine', { headers: { 'Authorization': `Bearer ${token}` } }),
+          fetch('/api/auth/me', { headers: { 'Authorization': `Bearer ${token}` } })
+        ]);
+
+        if (dashRes.status === 401 || meRes.status === 401) {
+          localStorage.removeItem('roamly_token');
+          renderUnauth();
+          return;
+        }
+
+        const dashData = await dashRes.json();
+        const tripsData = await tripsRes.json();
+        const meData = await meRes.json();
+
+        if (dashData.success && tripsData.success && meData.success) {
+          renderDashboard(meData.data, dashData.data, tripsData.data);
+        } else {
+          mainContent.innerHTML = `<div style="text-align:center; padding:40px; color:var(--red);">Error loading dashboard data.</div>`;
+        }
+      } catch (err) {
+        console.error("Dashboard fetch error:", err);
+        mainContent.innerHTML = `<div style="text-align:center; padding:40px; color:var(--red);">Network error loading dashboard.</div>`;
+      }
+
+      // --- Rendering Functions ---
+
+      function renderUnauth() {
+        mainContent.innerHTML = `
+          <div class="unauth-message">
+            <h2>Sign in to view your account</h2>
+            <p style="color:var(--ink-soft); margin-bottom:30px;">Access your planned trips, reviews, wishlist, and spot submissions.</p>
+            <a href="auth.html" class="btn-primary" style="display:inline-block; text-decoration:none; padding:12px 30px;">Go to Sign In</a>
+          </div>
+        `;
+      }
+
+      function renderRoleRedirect(url, name) {
+        mainContent.innerHTML = `
+          <div class="role-redirect-message">
+            <h3 style="margin-top:0;">You are logged in as a ${name.split(' ')[0]}.</h3>
+            <p>This page is for visitors. Please proceed to your portal.</p>
+            <a href="${url}" class="btn-primary" style="display:inline-block; text-decoration:none; padding:10px 24px; margin-top:20px;">Go to ${name}</a>
+          </div>
+        `;
+      }
+
+      function renderDashboard(user, dash, trips) {
+        mainContent.innerHTML = `
+          <div class="dashboard-layout">
+            
+            <!-- Left sidebar -->
+            <div>
+              <div class="panel">
+                <div class="panel-header">
+                  <h3>My Profile</h3>
+                </div>
+                
+                <div id="profile-display" class="profile-info">
+                  <p><strong>Name:</strong> <span id="disp-name">${escapeHTML(user.name)}</span></p>
+                  <p><strong>Email:</strong> <span id="disp-email">${escapeHTML(user.email)}</span></p>
+                  <button class="btn-small" style="margin-top:20px; width:100%;" onclick="toggleEditProfile(true)">Edit Profile</button>
+                </div>
+
+                <div id="profile-edit" class="profile-info" style="display:none;">
+                  <form id="editProfileForm">
+                    <label style="font-size:0.85rem; font-weight:700;">Name</label>
+                    <input type="text" id="edit-name" class="edit-input" value="${escapeHTML(user.name)}" required>
+                    
+                    <label style="font-size:0.85rem; font-weight:700;">Email</label>
+                    <input type="email" id="edit-email" class="edit-input" value="${escapeHTML(user.email)}" required>
+                    
+                    <p id="edit-err" class="error-text"></p>
+                    
+                    <div style="display:flex; gap:10px;">
+                      <button type="submit" class="btn-primary" style="flex:1; padding:8px;">Save</button>
+                      <button type="button" class="btn-small" style="flex:1;" onclick="toggleEditProfile(false)">Cancel</button>
+                    </div>
+                  </form>
+                </div>
+
+              </div>
+
+              <div class="panel">
+                <button class="btn-small btn-danger" style="width:100%; padding:12px;" onclick="handleLogout()">Log Out</button>
+              </div>
+            </div>
+
+            <!-- Right content -->
+            <div>
+              
+              <!-- Planned Trips -->
+              <div class="panel">
+                <div class="panel-header">
+                  <h3>My Planned Trips</h3>
+                </div>
+                <div id="trips-list">
+                  ${trips.length === 0 ? '<p style="color:var(--ink-faint);">No planned trips yet.</p>' : 
+                    trips.map(t => `
+                      <div class="list-item" id="trip-${t._id}">
+                        <div>
+                          <h4>${escapeHTML(t.destination) || 'Full Sri Lanka'}</h4>
+                          <p><strong>Duration:</strong> ${t.durationDays} Days · <strong>Style:</strong> ${escapeHTML(t.travelStyle)} · <strong>Budget:</strong> ${escapeHTML(t.budget)}</p>
+                          <p style="font-size:0.8rem;"><strong>Interests:</strong> ${escapeHTML(t.interests.join(', ')) || 'None'}</p>
+                          <p style="font-size:0.8rem; color:var(--ink-faint); margin-top:8px;">Planned on: ${new Date(t.createdAt).toLocaleDateString()}</p>
+                        </div>
+                        <button class="btn-small btn-danger" onclick="deleteTrip('${t._id}')">Delete</button>
+                      </div>
+                    `).join('')
+                  }
+                </div>
+              </div>
+
+              <!-- Wishlist -->
+              <div class="panel">
+                <div class="panel-header">
+                  <h3>My Wishlist</h3>
+                </div>
+                <div id="wishlist-list">
+                  ${dash.wishlist.length === 0 ? '<p style="color:var(--ink-faint);">Your wishlist is empty.</p>' : 
+                    dash.wishlist.map(w => `
+                      <div class="list-item" id="wishlist-${w._id}">
+                        <div>
+                          <h4>${escapeHTML(w.destination ? w.destination.name : 'Unknown Destination')}</h4>
+                          <p style="font-size:0.8rem; color:var(--ink-faint);">Added on: ${new Date(w.createdAt).toLocaleDateString()}</p>
+                        </div>
+                        <button class="btn-small btn-danger" onclick="removeWishlist('${w._id}')">Remove</button>
+                      </div>
+                    `).join('')
+                  }
+                </div>
+              </div>
+
+              <!-- Reviews -->
+              <div class="panel">
+                <div class="panel-header">
+                  <h3>My Reviews</h3>
+                </div>
+                <div id="reviews-list">
+                  ${dash.reviews.length === 0 ? '<p style="color:var(--ink-faint);">You haven\'t written any reviews yet.</p>' : 
+                    dash.reviews.map(r => `
+                      <div class="list-item" id="review-${r._id}">
+                        <div>
+                          <h4>${'⭐'.repeat(r.rating)}</h4>
+                          <p style="font-style:italic;">"${escapeHTML(r.comment)}"</p>
+                          <p style="font-size:0.8rem; color:var(--ink-faint); margin-top:8px;">Reviewed on: ${new Date(r.createdAt).toLocaleDateString()}</p>
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:8px;">
+                          <!-- Only delete hooked up for simple prototype, edit would require a modal -->
+                          <button class="btn-small btn-danger" onclick="deleteReview('${r._id}')">Delete</button>
+                        </div>
+                      </div>
+                    `).join('')
+                  }
+                </div>
+              </div>
+
+              <!-- Spot Submissions -->
+              <div class="panel">
+                <div class="panel-header">
+                  <h3>My Tourist Spot Submissions</h3>
+                </div>
+                <div>
+                  ${dash.spotSubmissions.length === 0 ? '<p style="color:var(--ink-faint);">You haven\'t submitted any spots.</p>' : 
+                    dash.spotSubmissions.map(s => `
+                      <div class="list-item">
+                        <div>
+                          <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+                            <h4 style="margin:0;">${escapeHTML(s.name)}</h4>
+                            <span class="badge ${s.status}">${s.status}</span>
+                          </div>
+                          <p><strong>Category:</strong> ${escapeHTML(s.category)}</p>
+                          ${s.status === 'rejected' && s.rejectionReason ? `<p style="color:var(--red); font-size:0.85rem; margin-top:6px;"><strong>Reason:</strong> ${escapeHTML(s.rejectionReason)}</p>` : ''}
+                        </div>
+                      </div>
+                    `).join('')
+                  }
+                </div>
+              </div>
+
+            </div>
+          </div>
+        `;
+
+        // Attach Profile Edit Handler
+        document.getElementById('editProfileForm').addEventListener('submit', handleProfileUpdate);
+      }
+    });
+
+    // --- Actions ---
+
+    window.toggleEditProfile = function(showForm) {
+      document.getElementById('profile-display').style.display = showForm ? 'none' : 'block';
+      document.getElementById('profile-edit').style.display = showForm ? 'block' : 'none';
+      document.getElementById('edit-err').style.display = 'none';
+    };
+
+    window.handleProfileUpdate = async function(e) {
+      e.preventDefault();
+      const name = document.getElementById('edit-name').value.trim();
+      const email = document.getElementById('edit-email').value.trim();
+      const errEl = document.getElementById('edit-err');
+      const token = localStorage.getItem('roamly_token');
+
+      try {
+        const res = await fetch('/api/auth/me', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ name, email })
+        });
+        const data = await res.json();
+        if (data.success) {
+          // Update display
+          document.getElementById('disp-name').textContent = data.data.name;
+          document.getElementById('disp-email').textContent = data.data.email;
+          // Update localstorage name
+          localStorage.setItem('roamly_name', data.data.name);
+          toggleEditProfile(false);
+          // Update header
+          const userLink = document.querySelector('.user-header-menu a');
+          if(userLink) userLink.textContent = data.data.name;
+        } else {
+          errEl.textContent = data.message || "Failed to update profile";
+          errEl.style.display = 'block';
+        }
+      } catch (err) {
+        errEl.textContent = "Network error";
+        errEl.style.display = 'block';
+      }
+    };
+
+    window.handleLogout = function() {
+      localStorage.removeItem('roamlyUser');
+      localStorage.removeItem('roamly_token');
+      localStorage.removeItem('roamly_role');
+      localStorage.removeItem('roamly_name');
+      window.location.href = 'index.html';
+    };
+
+    window.deleteTrip = async function(id) {
+      if(!confirm("Are you sure you want to delete this trip?")) return;
+      const token = localStorage.getItem('roamly_token');
+      try {
+        const res = await fetch(`/api/trips/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+          document.getElementById(`trip-${id}`).remove();
+        }
+      } catch(err) { console.error(err); }
+    };
+
+    window.removeWishlist = async function(id) {
+      if(!confirm("Remove from wishlist?")) return;
+      const token = localStorage.getItem('roamly_token');
+      try {
+        const res = await fetch(`/api/wishlist/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+          document.getElementById(`wishlist-${id}`).remove();
+        }
+      } catch(err) { console.error(err); }
+    };
+
+    window.deleteReview = async function(id) {
+      if(!confirm("Delete this review?")) return;
+      const token = localStorage.getItem('roamly_token');
+      try {
+        const res = await fetch(`/api/reviews/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+          document.getElementById(`review-${id}`).remove();
+        }
+      } catch(err) { console.error(err); }
+    };
+
+    function escapeHTML(str) {
+      if(!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+  </script>
+</body>
+</html>
