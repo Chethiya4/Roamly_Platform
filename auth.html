@@ -248,6 +248,9 @@
         </div>
       </div>
     </div>
+    <div id="admin-link-wrapper" style="text-align: center; margin-top: 16px;">
+      <a href="#" onclick="showAuthPanel('admin'); return false;" style="color: rgba(255,255,255,0.7); font-size: 0.88rem; font-weight: 600; text-decoration: underline;">System Administrator? Sign In to Admin Portal →</a>
+    </div>
 
     <!-- ── AUTHENTICATION PANEL ── -->
     <div class="auth-panel-container" id="auth-panel-container">
@@ -345,6 +348,20 @@
             <div class="auth-divider">or</div>
             <p class="auth-note">New to Roamly Business? <a href="registration.html">Register your business →</a></p>
           </div>
+
+          <!-- ── ADMIN ── -->
+          <div class="auth-section" id="section-admin">
+            <div class="auth-error" id="a-login-err"></div>
+            <div class="auth-field">
+              <label for="a-login-email">Admin Email</label>
+              <input type="email" id="a-login-email" placeholder="admin123@gmail.com" autocomplete="email" />
+            </div>
+            <div class="auth-field">
+              <label for="a-login-pass">Password</label>
+              <input type="password" id="a-login-pass" placeholder="••••••••" autocomplete="current-password" />
+            </div>
+            <button class="auth-submit" id="a-login-btn">Sign In to Admin Portal</button>
+          </div>
           
         </div><!-- /auth-body -->
       </div><!-- /auth-card -->
@@ -381,6 +398,10 @@ async function apiPost(url, body) {
 }
 
 function storeAndRedirect(data) {
+  // Clear any potential stale legacy keys to avoid conflicts
+  localStorage.removeItem('businessUser');
+  localStorage.removeItem('user');
+
   // Unified storage key used across the site
   localStorage.setItem('roamlyUser', JSON.stringify({
     token: data.token,
@@ -406,23 +427,45 @@ function storeAndRedirect(data) {
 // ── UI Views ──────────────────────────────────────────────────────────────────
 function showAuthPanel(type) {
   document.getElementById('auth-cards').style.display = 'none';
+  const adminWrapper = document.getElementById('admin-link-wrapper');
+  if (adminWrapper) adminWrapper.style.display = 'none';
   document.getElementById('auth-panel-container').classList.add('active');
   
+  document.getElementById('section-visitor').classList.remove('active');
+  document.getElementById('section-business').classList.remove('active');
+  document.getElementById('section-admin').classList.remove('active');
+
   if (type === 'visitor') {
     document.getElementById('auth-panel-title').textContent = "Visitor Portal";
     document.getElementById('section-visitor').classList.add('active');
-    document.getElementById('section-business').classList.remove('active');
-  } else {
+  } else if (type === 'business') {
     document.getElementById('auth-panel-title').textContent = "Business Portal";
     document.getElementById('section-business').classList.add('active');
-    document.getElementById('section-visitor').classList.remove('active');
+  } else if (type === 'admin') {
+    document.getElementById('auth-panel-title').textContent = "Admin Portal";
+    document.getElementById('section-admin').classList.add('active');
   }
 }
 
 function showCards() {
   document.getElementById('auth-panel-container').classList.remove('active');
   document.getElementById('auth-cards').style.display = 'grid';
+  const adminWrapper = document.getElementById('admin-link-wrapper');
+  if (adminWrapper) adminWrapper.style.display = 'block';
 }
+
+// ── Check URL Params on load ────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const tab = params.get('tab') || params.get('role');
+  if (tab === 'admin') {
+    showAuthPanel('admin');
+  } else if (tab === 'business' || tab === 'business_owner') {
+    showAuthPanel('business');
+  } else if (tab === 'visitor') {
+    showAuthPanel('visitor');
+  }
+});
 
 // ── Visitor sub-tabs ──────────────────────────────────────────────────────────
 function switchSub(sub) {
@@ -482,14 +525,30 @@ document.getElementById('b-login-btn').addEventListener('click', async () => {
   try {
     const data = await apiPost('/api/auth/login', { email, password });
     if (data.success) {
-      // NOTE: We rely purely on the role returned by the server. 
-      // If an admin logs in here, they will be redirected to admin-dashboard.html
       storeAndRedirect(data.data);
     } else {
       showErr('b-login-err', data.message || 'Login failed.');
     }
   } catch { showErr('b-login-err', 'Network error. Please try again.'); }
   setBtn('b-login-btn', false, 'Sign In to Portal');
+});
+
+// ── Admin Login ───────────────────────────────────────────────────────────────
+document.getElementById('a-login-btn').addEventListener('click', async () => {
+  clearErr('a-login-err');
+  const email    = document.getElementById('a-login-email').value.trim();
+  const password = document.getElementById('a-login-pass').value;
+  if (!email || !password) return showErr('a-login-err', 'Please fill in all fields.');
+  setBtn('a-login-btn', true, 'Signing in…');
+  try {
+    const data = await apiPost('/api/auth/login', { email, password });
+    if (data.success) {
+      storeAndRedirect(data.data);
+    } else {
+      showErr('a-login-err', data.message || 'Login failed.');
+    }
+  } catch { showErr('a-login-err', 'Network error. Please try again.'); }
+  setBtn('a-login-btn', false, 'Sign In to Admin Portal');
 });
 </script>
 </body>

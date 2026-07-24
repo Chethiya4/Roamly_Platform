@@ -10,15 +10,13 @@ const config = require('../config/index');
 
 const seedAdmin = async () => {
     try {
-        await connectDB();
-
         // Development-only credential defaults
         const email = config.ADMIN_EMAIL || 'admin123@gmail.com';
         const password = config.ADMIN_PASSWORD || 'admin123';
 
         if (!email || !password) {
             console.error('Error: ADMIN_EMAIL and ADMIN_PASSWORD must be defined in .env');
-            process.exit(1);
+            return;
         }
 
         const existingAdmin = await User.findOne({ role: 'admin' });
@@ -38,12 +36,16 @@ const seedAdmin = async () => {
             });
             console.log(`Successfully created admin user with email ${email}`);
         }
-
-        process.exit(0);
     } catch (error) {
         console.error('Error seeding admin:', error);
-        process.exit(1);
     }
 };
 
-seedAdmin();
+module.exports = seedAdmin;
+
+if (require.main === module) {
+    connectDB().then(async () => {
+        await seedAdmin();
+        process.exit(0);
+    });
+}
