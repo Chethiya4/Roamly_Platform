@@ -1,4 +1,54 @@
 document.addEventListener('DOMContentLoaded', () => {
+  /* ---------------- ADMIN ACCESS GUARD & HEARTBEAT TRACKING ---------------- */
+  initTrackingAndAuthGuard();
+
+  function initTrackingAndAuthGuard() {
+    const token = localStorage.getItem('roamly_token');
+    const role = localStorage.getItem('roamly_role');
+    const currentPath = window.location.pathname.toLowerCase();
+    const isAuthPage = currentPath.endsWith('auth.html');
+    const isAdminDashboard = currentPath.endsWith('admin-dashboard.html');
+
+    // Rule: Admins can ONLY see the admin dashboard. Redirect admins away from visitor/business pages.
+    if (token && role === 'admin' && !isAdminDashboard && !isAuthPage) {
+      window.location.href = 'admin-dashboard.html';
+      return;
+    }
+
+    // Initialize visitor session ID in sessionStorage
+    let sessionId = sessionStorage.getItem('roamly_session_id');
+    if (!sessionId) {
+      sessionId = 'sess_' + Math.random().toString(36).substring(2, 10) + '_' + Date.now();
+      sessionStorage.setItem('roamly_session_id', sessionId);
+    }
+
+    // Function to ping heartbeat API
+    async function sendPing() {
+      try {
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        
+        await fetch('/api/tracking/heartbeat', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            sessionId,
+            page: window.location.pathname + window.location.search,
+            title: document.title
+          })
+        });
+      } catch (err) {
+        // Silent catch for network pings
+      }
+    }
+
+    // Send immediate ping on page load
+    sendPing();
+
+    // Periodic heartbeat every 15 seconds
+    setInterval(sendPing, 15000);
+  }
+
   /* ---------------- AUTH STATE HEADER ---------------- */
   updateHeaderAuthState();
 

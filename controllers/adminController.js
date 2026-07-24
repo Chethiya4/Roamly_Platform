@@ -5,6 +5,7 @@ const Destination = require('../models/Destination');
 const Review      = require('../models/Review');
 const asyncHandler       = require('../utils/asyncHandler');
 const updateRatingStats  = require('../utils/updateRatingStats');
+const trackingManager    = require('../utils/trackingManager');
 
 // ─────────────────────────────────────────────────────────────────────────────
 // BUSINESS (already existed — preserved verbatim)
@@ -26,6 +27,7 @@ const listBusinesses = asyncHandler(async (req, res) => {
     const [businesses, totalItems] = await Promise.all([
         Business.find(filter)
             .populate('owner', 'name email')
+            .populate('destination', 'name')
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limitNum),
@@ -83,6 +85,7 @@ const getAdminStats = asyncHandler(async (req, res) => {
     const [
         usersByRole,
         businessesByStatus,
+        businessesByCategory,
         spotsByStatus,
         totalDestinations,
         totalReviews
@@ -92,6 +95,9 @@ const getAdminStats = asyncHandler(async (req, res) => {
         ]),
         Business.aggregate([
             { $group: { _id: '$status', count: { $sum: 1 } } }
+        ]),
+        Business.aggregate([
+            { $group: { _id: '$category', count: { $sum: 1 } } }
         ]),
         TouristSpot.aggregate([
             { $group: { _id: '$status', count: { $sum: 1 } } }
@@ -103,17 +109,21 @@ const getAdminStats = asyncHandler(async (req, res) => {
     // Flatten aggregation arrays into plain objects for easy frontend consumption
     const pivot = (arr) => arr.reduce((acc, { _id, count }) => { acc[_id] = count; return acc; }, {});
 
+    const liveStats = trackingManager.getLiveStats();
+
     res.status(200).json({
         success: true,
         data: {
-            totalUsers:        usersByRole,          // [{_id:'visitor',count:N}, ...]
-            usersByRole:       pivot(usersByRole),
-            totalBusinesses:   businessesByStatus,
-            businessesByStatus: pivot(businessesByStatus),
-            totalSpots:        spotsByStatus,
-            spotsByStatus:     pivot(spotsByStatus),
+            totalUsers:           usersByRole,          // [{_id:'visitor',count:N}, ...]
+            usersByRole:          pivot(usersByRole),
+            totalBusinesses:      businessesByStatus,
+            businessesByStatus:   pivot(businessesByStatus),
+            businessesByCategory: pivot(businessesByCategory),
+            totalSpots:           spotsByStatus,
+            spotsByStatus:        pivot(spotsByStatus),
             totalDestinations,
-            totalReviews
+            totalReviews,
+            liveTracking:         liveStats
         }
     });
 });

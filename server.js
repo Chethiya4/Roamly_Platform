@@ -55,6 +55,7 @@ const wishlistRoutes    = require('./routes/wishlistRoutes');
 const searchRoutes      = require('./routes/searchRoutes');
 const userRoutes        = require('./routes/userRoutes');
 const tripRoutes        = require('./routes/tripRoutes');
+const trackingRoutes    = require('./routes/trackingRoutes');
 
 // Mount routers
 app.get('/api/health', (req, res) => {
@@ -77,6 +78,7 @@ app.use('/api/wishlist',     wishlistRoutes);
 app.use('/api/search',       searchRoutes);
 app.use('/api/users',        userRoutes);
 app.use('/api/trips',        tripRoutes);
+app.use('/api/tracking',     trackingRoutes);
 
 // Serve static frontend files
 app.use(express.static(__dirname));
