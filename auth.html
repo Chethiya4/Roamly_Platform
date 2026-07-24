@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <title>Sign In / Register — Roamly</title>
+  <meta name="description" content="Sign in or create a Roamly account to start exploring Sri Lanka." />
+  <style>
+    .auth-shell {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--navy-900);
+      padding: 40px 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .auth-shell::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(215,38,61,0.18) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 20%, rgba(27,59,111,0.5) 0%, transparent 55%);
+    }
+    
+    .auth-content-wrapper {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .auth-logo {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      color: #fff;
+      margin-bottom: 40px;
+      display: block;
+      text-align: center;
+      text-decoration: none;
+    }
+    .auth-logo span { color: var(--red); }
+
+    /* The two cards container */
+    .auth-cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      width: 100%;
+    }
+    @media (min-width: 768px) {
+      .auth-cards { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* auth panel (form container) */
+    .auth-panel-container {
+      display: none;
+      max-width: 500px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .auth-panel-container.active {
+      display: block;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.7);
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: 0.2s;
+    }
+    .back-btn:hover {
+      color: #fff;
+    }
+
+    .auth-card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .auth-header {
+      background: var(--navy-900);
+      padding: 24px 36px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .auth-header h2 {
+      color: #fff;
+      font-size: 1.5rem;
+      margin: 0;
+    }
+
+    /* Sub-tab (login / register within visitor tab) */
+    .auth-subtabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 22px;
+    }
+    .auth-subtab {
+      flex: 1; padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: var(--bg);
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--ink-soft);
+      cursor: pointer;
+      transition: 0.15s;
+    }
+    .auth-subtab.active { background: var(--red); color: #fff; border-color: var(--red); }
+
+    .auth-body { padding: 32px 36px 36px; }
+
+    .auth-section { display: none; }
+    .auth-section.active { display: block; }
+    .auth-subform { display: none; }
+    .auth-subform.active { display: block; }
+
+    .auth-field { margin-bottom: 18px; }
+    .auth-field label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--ink-faint);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 7px;
+    }
+    .auth-field input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: var(--ink);
+      background: var(--bg);
+      transition: 0.2s;
+    }
+    .auth-field input:focus {
+      outline: none;
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px rgba(215,38,61,0.12);
+    }
+    .auth-submit {
+      width: 100%;
+      padding: 13px;
+      background: var(--red);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 6px;
+      transition: 0.2s;
+      box-shadow: 0 8px 20px rgba(215,38,61,0.35);
+    }
+    .auth-submit:hover { background: var(--red-dark); transform: translateY(-2px); }
+    .auth-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .auth-note {
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--ink-faint);
+      margin-top: 16px;
+    }
+    .auth-note a { color: var(--red); font-weight: 700; }
+
+    .auth-error {
+      background: rgba(215,38,61,0.1);
+      border: 1px solid rgba(215,38,61,0.3);
+      color: var(--red);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 14px;
+      display: none;
+    }
+    .auth-error.show { display: block; }
+
+    .auth-divider {
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--ink-faint);
+      margin: 20px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .auth-divider::before, .auth-divider::after {
+      content: ''; flex: 1; height: 1px; background: var(--line);
+    }
+    .social-logins {
+      display: flex; gap: 10px; justify-content: center; margin-top: 15px;
+    }
+    .social-btn {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 10px; border: 1px solid var(--line); background: var(--bg);
+      border-radius: var(--radius-sm); cursor: pointer; transition: 0.2s;
+      font-family: inherit; font-size: 0.9rem; font-weight: 600; color: var(--ink);
+    }
+    .social-btn:hover { background: rgba(0,0,0,0.05); }
+    body.dark-mode .social-btn:hover { background: rgba(255,255,255,0.05); }
+    body.dark-mode .apple-logo { filter: invert(1); }
+  </style>
+</head>
+<body>
+<div class="auth-shell">
+  <div class="auth-content-wrapper">
+    <a href="index.html" class="auth-logo">Roam<span>ly</span></a>
+    
+    <!-- ── INITIAL SELECTION CARDS ── -->
+    <div class="auth-cards" id="auth-cards">
+      <div class="service-card" onclick="showAuthPanel('visitor')" style="margin-bottom: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.4);">
+        <img src="images/Sigiriya1.jpg" alt="Visitor" class="service-bg" onerror="this.src='assets/hero-poster.jpg'">
+        <div class="service-content">
+          <h2>I'm a Visitor</h2>
+          <p style="margin-top: 10px; font-size: 1.1rem; opacity: 0.9;">Plan trips, write reviews & explore.</p>
+        </div>
+      </div>
+      <div class="service-card" onclick="showAuthPanel('business')" style="margin-bottom: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.4);">
+        <img src="images/hotel.jpg" alt="Business" class="service-bg" onerror="this.src='assets/hero-poster.jpg'">
+        <div class="service-content">
+          <h2>I'm a Business</h2>
+          <p style="margin-top: 10px; font-size: 1.1rem; opacity: 0.9;">Manage services & reach travelers.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── AUTHENTICATION PANEL ── -->
+    <div class="auth-panel-container" id="auth-panel-container">
+      <button class="back-btn" onclick="showCards()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back to selection
+      </button>
+
+      <div class="auth-card">
+        <div class="auth-header">
+          <h2 id="auth-panel-title">Sign In</h2>
+        </div>
+
+        <div class="auth-body">
+          <!-- ── VISITOR ── -->
+          <div class="auth-section" id="section-visitor">
+            <div class="auth-subtabs">
+              <button class="auth-subtab active" data-sub="login"    id="vsub-login">Login</button>
+              <button class="auth-subtab"        data-sub="register" id="vsub-register">Register</button>
+            </div>
+
+            <!-- Visitor Login -->
+            <div class="auth-subform active" id="vform-login">
+              <div class="auth-error" id="v-login-err"></div>
+              <div class="auth-field">
+                <label for="v-login-email">Email</label>
+                <input type="email" id="v-login-email" placeholder="you@example.com" autocomplete="email" />
+              </div>
+              <div class="auth-field">
+                <label for="v-login-pass">Password</label>
+                <input type="password" id="v-login-pass" placeholder="••••••••" autocomplete="current-password" />
+              </div>
+              <button class="auth-submit" id="v-login-btn">Sign In</button>
+              
+              <div class="auth-divider">or continue with</div>
+              <div class="social-logins">
+                <button class="social-btn" onclick="alert('Google login not configured in this demo')">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" width="18"> Google
+                </button>
+                <button class="social-btn" onclick="alert('Facebook login not configured in this demo')">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" alt="Facebook" width="18"> Facebook
+                </button>
+                <button class="social-btn" onclick="alert('Apple login not configured in this demo')">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple" width="16" class="apple-logo"> Apple
+                </button>
+              </div>
+            </div>
+
+            <!-- Visitor Register -->
+            <div class="auth-subform" id="vform-register">
+              <div class="auth-error" id="v-reg-err"></div>
+              <div class="auth-field">
+                <label for="v-reg-name">Full Name</label>
+                <input type="text" id="v-reg-name" placeholder="Jane Smith" autocomplete="name" />
+              </div>
+              <div class="auth-field">
+                <label for="v-reg-email">Email</label>
+                <input type="email" id="v-reg-email" placeholder="you@example.com" autocomplete="email" />
+              </div>
+              <div class="auth-field">
+                <label for="v-reg-pass">Password</label>
+                <input type="password" id="v-reg-pass" placeholder="Min 6 characters" autocomplete="new-password" />
+              </div>
+              <button class="auth-submit" id="v-reg-btn">Create Account</button>
+
+              <div class="auth-divider">or continue with</div>
+              <div class="social-logins">
+                <button class="social-btn" onclick="alert('Google signup not configured in this demo')">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" width="18"> Google
+                </button>
+                <button class="social-btn" onclick="alert('Facebook signup not configured in this demo')">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" alt="Facebook" width="18"> Facebook
+                </button>
+                <button class="social-btn" onclick="alert('Apple signup not configured in this demo')">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple" width="16" class="apple-logo"> Apple
+                </button>
+              </div>
+              
+              <p class="auth-note" style="margin-top: 24px;">Already have an account? <a href="#" id="v-switch-login">Sign In</a></p>
+            </div>
+          </div>
+
+          <!-- ── BUSINESS OWNER ── -->
+          <div class="auth-section" id="section-business">
+            <div class="auth-error" id="b-login-err"></div>
+            <div class="auth-field">
+              <label for="b-login-email">Business Owner Email</label>
+              <input type="email" id="b-login-email" placeholder="you@example.com" autocomplete="email" />
+            </div>
+            <div class="auth-field">
+              <label for="b-login-pass">Password</label>
+              <input type="password" id="b-login-pass" placeholder="••••••••" autocomplete="current-password" />
+            </div>
+            <button class="auth-submit" id="b-login-btn">Sign In to Portal</button>
+            <div class="auth-divider">or</div>
+            <p class="auth-note">New to Roamly Business? <a href="registration.html">Register your business →</a></p>
+          </div>
+          
+        </div><!-- /auth-body -->
+      </div><!-- /auth-card -->
+    </div><!-- /auth-panel-container -->
+
+  </div>
+</div>
+
+<script>
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function showErr(elId, msg) {
+  const el = document.getElementById(elId);
+  el.textContent = msg;
+  el.classList.add('show');
+}
+function clearErr(elId) {
+  const el = document.getElementById(elId);
+  el.textContent = '';
+  el.classList.remove('show');
+}
+function setBtn(id, disabled, label) {
+  const el = document.getElementById(id);
+  el.disabled = disabled;
+  el.textContent = label;
+}
+
+async function apiPost(url, body) {
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  return res.json();
+}
+
+function storeAndRedirect(data) {
+  // Unified storage key used across the site
+  localStorage.setItem('roamlyUser', JSON.stringify({
+    token: data.token,
+    role:  data.role,
+    name:  data.name,
+    _id:   data._id
+  }));
+  // Also write granular keys
+  localStorage.setItem('roamly_token', data.token);
+  localStorage.setItem('roamly_role',  data.role);
+  localStorage.setItem('roamly_name',  data.name);
+
+  // Redirect purely based on the returned role
+  const dest = {
+    visitor:        'index.html',
+    business_owner: 'business-dashboard.html',
+    admin:          'admin-dashboard.html'
+  }[data.role] || 'index.html';
+
+  window.location.href = dest;
+}
+
+// ── UI Views ──────────────────────────────────────────────────────────────────
+function showAuthPanel(type) {
+  document.getElementById('auth-cards').style.display = 'none';
+  document.getElementById('auth-panel-container').classList.add('active');
+  
+  if (type === 'visitor') {
+    document.getElementById('auth-panel-title').textContent = "Visitor Portal";
+    document.getElementById('section-visitor').classList.add('active');
+    document.getElementById('section-business').classList.remove('active');
+  } else {
+    document.getElementById('auth-panel-title').textContent = "Business Portal";
+    document.getElementById('section-business').classList.add('active');
+    document.getElementById('section-visitor').classList.remove('active');
+  }
+}
+
+function showCards() {
+  document.getElementById('auth-panel-container').classList.remove('active');
+  document.getElementById('auth-cards').style.display = 'grid';
+}
+
+// ── Visitor sub-tabs ──────────────────────────────────────────────────────────
+function switchSub(sub) {
+  ['login','register'].forEach(s => {
+    document.getElementById('vsub-' + s).classList.toggle('active', s === sub);
+    document.getElementById('vform-' + s).classList.toggle('active', s === sub);
+  });
+}
+document.getElementById('vsub-login').addEventListener('click', () => switchSub('login'));
+document.getElementById('vsub-register').addEventListener('click', () => switchSub('register'));
+document.getElementById('v-switch-login').addEventListener('click', (e) => { e.preventDefault(); switchSub('login'); });
+
+// ── Visitor Login ─────────────────────────────────────────────────────────────
+document.getElementById('v-login-btn').addEventListener('click', async () => {
+  clearErr('v-login-err');
+  const email    = document.getElementById('v-login-email').value.trim();
+  const password = document.getElementById('v-login-pass').value;
+  if (!email || !password) return showErr('v-login-err', 'Please fill in all fields.');
+  setBtn('v-login-btn', true, 'Signing in…');
+  try {
+    const data = await apiPost('/api/auth/login', { email, password });
+    if (data.success) {
+      storeAndRedirect(data.data);
+    } else {
+      showErr('v-login-err', data.message || 'Login failed.');
+    }
+  } catch { showErr('v-login-err', 'Network error. Please try again.'); }
+  setBtn('v-login-btn', false, 'Sign In');
+});
+
+// ── Visitor Register ──────────────────────────────────────────────────────────
+document.getElementById('v-reg-btn').addEventListener('click', async () => {
+  clearErr('v-reg-err');
+  const name     = document.getElementById('v-reg-name').value.trim();
+  const email    = document.getElementById('v-reg-email').value.trim();
+  const password = document.getElementById('v-reg-pass').value;
+  if (!name || !email || !password) return showErr('v-reg-err', 'Please fill in all fields.');
+  setBtn('v-reg-btn', true, 'Creating account…');
+  try {
+    const data = await apiPost('/api/auth/register', { name, email, password });
+    if (data.success) {
+      storeAndRedirect(data.data); // Auto-login on success
+    } else {
+      showErr('v-reg-err', data.message || 'Registration failed.');
+    }
+  } catch { showErr('v-reg-err', 'Network error. Please try again.'); }
+  setBtn('v-reg-btn', false, 'Create Account');
+});
+
+// ── Business Login ────────────────────────────────────────────────────────────
+document.getElementById('b-login-btn').addEventListener('click', async () => {
+  clearErr('b-login-err');
+  const email    = document.getElementById('b-login-email').value.trim();
+  const password = document.getElementById('b-login-pass').value;
+  if (!email || !password) return showErr('b-login-err', 'Please fill in all fields.');
+  setBtn('b-login-btn', true, 'Signing in…');
+  try {
+    const data = await apiPost('/api/auth/login', { email, password });
+    if (data.success) {
+      // NOTE: We rely purely on the role returned by the server. 
+      // If an admin logs in here, they will be redirected to admin-dashboard.html
+      storeAndRedirect(data.data);
+    } else {
+      showErr('b-login-err', data.message || 'Login failed.');
+    }
+  } catch { showErr('b-login-err', 'Network error. Please try again.'); }
+  setBtn('b-login-btn', false, 'Sign In to Portal');
+});
+</script>
+</body>
+</html>
