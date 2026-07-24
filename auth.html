@@ -212,6 +212,18 @@
     .auth-divider::before, .auth-divider::after {
       content: ''; flex: 1; height: 1px; background: var(--line);
     }
+    .social-logins {
+      display: flex; gap: 10px; justify-content: center; margin-top: 15px;
+    }
+    .social-btn {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 10px; border: 1px solid var(--line); background: var(--bg);
+      border-radius: var(--radius-sm); cursor: pointer; transition: 0.2s;
+      font-family: inherit; font-size: 0.9rem; font-weight: 600; color: var(--ink);
+    }
+    .social-btn:hover { background: rgba(0,0,0,0.05); }
+    body.dark-mode .social-btn:hover { background: rgba(255,255,255,0.05); }
+    body.dark-mode .apple-logo { filter: invert(1); }
   </style>
 </head>
 <body>
@@ -269,6 +281,19 @@
                 <input type="password" id="v-login-pass" placeholder="••••••••" autocomplete="current-password" />
               </div>
               <button class="auth-submit" id="v-login-btn">Sign In</button>
+              
+              <div class="auth-divider">or continue with</div>
+              <div class="social-logins">
+                <button class="social-btn" onclick="alert('Google login not configured in this demo')">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" width="18"> Google
+                </button>
+                <button class="social-btn" onclick="alert('Facebook login not configured in this demo')">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" alt="Facebook" width="18"> Facebook
+                </button>
+                <button class="social-btn" onclick="alert('Apple login not configured in this demo')">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple" width="16" class="apple-logo"> Apple
+                </button>
+              </div>
             </div>
 
             <!-- Visitor Register -->
@@ -287,7 +312,21 @@
                 <input type="password" id="v-reg-pass" placeholder="Min 6 characters" autocomplete="new-password" />
               </div>
               <button class="auth-submit" id="v-reg-btn">Create Account</button>
-              <p class="auth-note">Already have an account? <a href="#" id="v-switch-login">Sign In</a></p>
+
+              <div class="auth-divider">or continue with</div>
+              <div class="social-logins">
+                <button class="social-btn" onclick="alert('Google signup not configured in this demo')">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" width="18"> Google
+                </button>
+                <button class="social-btn" onclick="alert('Facebook signup not configured in this demo')">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" alt="Facebook" width="18"> Facebook
+                </button>
+                <button class="social-btn" onclick="alert('Apple signup not configured in this demo')">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple" width="16" class="apple-logo"> Apple
+                </button>
+              </div>
+              
+              <p class="auth-note" style="margin-top: 24px;">Already have an account? <a href="#" id="v-switch-login">Sign In</a></p>
             </div>
           </div>
 
@@ -356,7 +395,7 @@ function storeAndRedirect(data) {
 
   // Redirect purely based on the returned role
   const dest = {
-    visitor:        'account.html',
+    visitor:        'index.html',
     business_owner: 'business-dashboard.html',
     admin:          'admin-dashboard.html'
   }[data.role] || 'index.html';
