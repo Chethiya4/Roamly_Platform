@@ -30,21 +30,18 @@ document.addEventListener('DOMContentLoaded', () => {
         nameLink.href = dest;
         nameLink.textContent = name || 'My Account';
         nameLink.style.fontWeight = '700';
-        nameLink.style.color = 'var(--ink)';
+        nameLink.style.color = '#fff'; // Fixed light color for visibility against the dark header
         nameLink.style.textDecoration = 'none';
         
         // Log out button
-        const logoutBtn = document.createElement('button');
+        const logoutBtn = document.createElement('a');
+        logoutBtn.href = '#';
         logoutBtn.textContent = 'Log Out';
-        logoutBtn.className = 'btn-secondary'; // Assuming btn-secondary exists or just basic styling
-        logoutBtn.style.padding = '6px 12px';
-        logoutBtn.style.fontSize = '0.8rem';
-        logoutBtn.style.border = '1px solid var(--line)';
-        logoutBtn.style.borderRadius = 'var(--radius-sm)';
-        logoutBtn.style.background = 'transparent';
-        logoutBtn.style.cursor = 'pointer';
+        logoutBtn.className = 'btn-signin'; 
+        logoutBtn.style.textDecoration = 'none';
         
-        logoutBtn.addEventListener('click', () => {
+        logoutBtn.addEventListener('click', (e) => {
+          e.preventDefault();
           localStorage.removeItem('roamlyUser');
           localStorage.removeItem('roamly_token');
           localStorage.removeItem('roamly_role');
