@@ -29,10 +29,24 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
           </button>
           <ul class="lang-menu" id="langMenu" role="listbox" hidden>
-            <li><button type="button" class="active" data-code="EN">English</button></li>
-            <li><button type="button" data-code="TA">Tamil</button></li>
-            <li><button type="button" data-code="ZH">Chinese</button></li>
-          </ul>
+  <li>
+    <button type="button" class="active" data-code="EN">
+      English
+    </button>
+  </li>
+
+  <li>
+    <button type="button" data-code="SI">
+      සිංහල
+    </button>
+  </li>
+
+  <li>
+    <button type="button" data-code="TA">
+      தமிழ்
+    </button>
+  </li>
+</ul>
         </div>
 
         <div class="currency-select" role="group" aria-label="Currency" id="currencySelect">
@@ -62,22 +76,27 @@
 
   <nav class="navbar">
     <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="map.html" class="active">Map</a></li>
-      <li><a href="bookings.html">Bookings</a></li>
-      <li><a href="emergency.html">Emergency</a></li>
-      <li><a href="gallery.html">Gallery</a></li>
-      <li><a href="about.html">About Us</a></li>
+      <li><a href="index.html" data-i18n="home">Home</a></li>
+<li><a href="map.html" class="active" data-i18n="map">Map</a></li>
+<li><a href="bookings.html" data-i18n="bookings">Bookings</a></li>
+<li><a href="emergency.html" data-i18n="emergency">Emergency</a></li>
+<li><a href="gallery.html" data-i18n="gallery">Gallery</a></li>
+<li><a href="about.html" data-i18n="about">About Us</a></li>
     </ul>
   </nav>
 
   <main>
     <section class="section-padding scroll-reveal">
       <div class="container">
-        <h2 class="section-title">Explore by District</h2>
-        <p style="text-align: center; color: var(--ink-soft); margin-bottom: 40px; font-size: 1.05rem;">
-          Hover over any district to see its name. Click to view its distinct shape and registered tourist destinations!
-        </p>
+       <h2 class="section-title" data-i18n="exploreDistrict">
+         Explore by District
+      </h2>
+        <p
+    style="text-align:center; color:var(--ink-soft); margin-bottom:40px; font-size:1.05rem;"
+    data-i18n="districtDescription">
+    Hover over any district to see its name.<br>
+    Click to view its distinct shape and registered tourist destinations!
+</p>
         
         <div class="map-wrapper" style="position: relative; overflow: hidden; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 20px;">
           <!-- Dynamic background image under the map -->
@@ -295,6 +314,7 @@
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script src="translations.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
