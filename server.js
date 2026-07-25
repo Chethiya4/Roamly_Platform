@@ -41,6 +41,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Serve static frontend assets (CSS, JS, Images, Uploads, HTML files)
+app.use(express.static(__dirname));
+
 // Handle DB connection and Seeding outside of middleware loop
 let isSeeded = false;
 const initializeDB = async () => {
@@ -71,11 +74,6 @@ const userRoutes        = require('./routes/userRoutes');
 const tripRoutes        = require('./routes/tripRoutes');
 const trackingRoutes    = require('./routes/trackingRoutes');
 
-// Root Route for checking backend status
-app.get('/', (req, res) => {
-    res.status(200).json({ message: "Roamly API is running successfully!" });
-});
-
 // Health check endpoint
 app.get('/api/health', (req, res) => {
     res.status(200).json({
@@ -85,7 +83,7 @@ app.get('/api/health', (req, res) => {
     });
 });
 
-// Mount routers
+// Mount API routers
 app.use('/api/auth',         authRoutes);
 app.use('/api/business',     businessRoutes);
 app.use('/api/businesses',   businessRoutes);
@@ -99,6 +97,11 @@ app.use('/api/search',       searchRoutes);
 app.use('/api/users',        userRoutes);
 app.use('/api/trips',        tripRoutes);
 app.use('/api/tracking',     trackingRoutes);
+
+// Serve main frontend website UI
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // Global Error Handler Middleware
 app.use(errorHandler);
