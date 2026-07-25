@@ -170,8 +170,10 @@
           </button>
           <ul class="lang-menu" id="langMenu" role="listbox" hidden>
             <li><button type="button" class="active" data-code="EN">English</button></li>
-            <li><button type="button" data-code="TA">Tamil</button></li>
-            <li><button type="button" data-code="ZH">Chinese</button></li>
+            <li><button type="button" data-code="SI">සිංහල (Sinhala)</button></li>
+            <li><button type="button" data-code="TA">தமிழ் (Tamil)</button></li>
+            <li><button type="button" data-code="ZH">中文 (Chinese)</button></li>
+            <li><button type="button" data-code="DE">Deutsch (German)</button></li>
           </ul>
         </div>
 
@@ -829,6 +831,24 @@
       const wishlistBtn = document.getElementById('modalWishlistBtn');
       wishlistBtn.classList.remove('active');
 
+      const token = localStorage.getItem('roamly_token');
+      if (token && wishlistBtn) {
+        try {
+          const destRes = await fetch(`/api/destinations/by-name/${encodeURIComponent(title)}`);
+          const destBody = await destRes.json();
+          if (destBody.success && destBody.data) {
+            const wishRes = await fetch('/api/wishlist/mine', {
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const wishBody = await wishRes.json();
+            if (wishBody.success && Array.isArray(wishBody.data)) {
+              const isSaved = wishBody.data.some(w => (w.targetId === destBody.data._id || (w.targetId && w.targetId._id === destBody.data._id)));
+              wishlistBtn.classList.toggle('active', isSaved);
+            }
+          }
+        } catch (e) {}
+      }
+
       const weatherTemp = document.getElementById('weatherTemp');
       const weatherIcon = document.getElementById('weatherIcon');
       weatherTemp.textContent = "Loading...";
@@ -861,19 +881,41 @@
       document.body.style.overflow = '';
     };
 
-    window.toggleWishlist = () => {
+    window.toggleWishlist = async () => {
+      const token = localStorage.getItem('roamly_token');
+      if (!token) {
+        if (confirm("Please sign in to save items to your wishlist. Would you like to go to the Sign In page?")) {
+          window.location.href = 'auth.html';
+        }
+        return;
+      }
+
       const btn = document.getElementById('modalWishlistBtn');
-      btn.classList.toggle('active');
-      
-      const badge = document.querySelector('.icon-btn[aria-label="Wishlist"] .badge');
-      let count = parseInt(badge.textContent) || 0;
-      
-      if (btn.classList.contains('active')) {
-        badge.textContent = count + 1;
-        btn.style.transform = "scale(1.2)";
-        setTimeout(() => btn.style.transform = "", 200);
-      } else {
-        badge.textContent = Math.max(0, count - 1);
+      const title = document.getElementById('modalTitle').textContent;
+
+      try {
+        const destRes = await fetch(`/api/destinations/by-name/${encodeURIComponent(title)}`);
+        const destBody = await destRes.json();
+        if (destBody.success && destBody.data) {
+          const targetId = destBody.data._id;
+          const res = await fetch('/api/wishlist', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ targetType: 'destination', targetId })
+          });
+          const body = await res.json();
+          if (body.success && body.data) {
+            btn.classList.toggle('active', !!body.data.saved);
+            btn.style.transform = "scale(1.2)";
+            setTimeout(() => btn.style.transform = "", 200);
+            if (window.refreshWishlistBadge) window.refreshWishlistBadge();
+          }
+        }
+      } catch (err) {
+        console.error('Wishlist toggle error:', err);
       }
     };
   </script>
