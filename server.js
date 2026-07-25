@@ -41,24 +41,21 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Database Connection Middleware for Serverless Environment
+// Handle DB connection and Seeding outside of middleware loop
 let isSeeded = false;
-app.use(async (req, res, next) => {
+const initializeDB = async () => {
     try {
         await connectDB();
-        
-        // Seed only once on first connection
         if (!isSeeded) {
             isSeeded = true;
             seedAdmin().catch(console.error);
             seedDestinations().catch(console.error);
         }
-        next();
     } catch (err) {
         console.error("Database Connection Error:", err);
-        res.status(500).json({ error: "Database connection failed" });
     }
-});
+};
+initializeDB();
 
 // Route files
 const authRoutes        = require('./routes/authRoutes');
@@ -103,15 +100,11 @@ app.use('/api/users',        userRoutes);
 app.use('/api/trips',        tripRoutes);
 app.use('/api/tracking',     trackingRoutes);
 
-// Serve static frontend files & uploads
-app.use(express.static(__dirname));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
 // Global Error Handler Middleware
 app.use(errorHandler);
 
-// Only listen locally, Vercel exports the app
-if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+// Only listen locally
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
     app.listen(PORT, () => {
         console.log(`Roamly Backend Server running on port ${PORT}`);
     });
