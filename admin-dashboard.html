@@ -511,14 +511,15 @@
       <!-- ── SPOTS ──────────────────────────────────────────────────────── -->
       <section class="adm-section" id="section-spots">
         <div class="adm-section-head">
-          <h2>Tourist Spot Submissions</h2>
-          <div style="display:flex;gap:8px;align-items:center;">
+          <h2>Tourist Spot Management</h2>
+          <div style="display:flex;gap:12px;align-items:center;">
+            <button class="adm-sign-out" style="background:var(--red);color:#fff;width:auto;padding:8px 16px;box-shadow:0 4px 14px rgba(215,38,61,0.35);" onclick="openAdminAddSpotModal()">+ Add New Tourist Spot</button>
             <label for="spotStatusFilter" style="font-size:0.85rem;font-weight:600;color:var(--ink-soft);">Filter:</label>
             <select id="spotStatusFilter" class="role-select" onchange="loadSpots()">
-              <option value="pending">Pending</option>
-              <option value="approved">Approved</option>
-              <option value="rejected">Rejected</option>
               <option value="">All</option>
+              <option value="approved">Approved</option>
+              <option value="pending">Pending</option>
+              <option value="rejected">Rejected</option>
             </select>
           </div>
         </div>
@@ -599,6 +600,64 @@
     </div><!-- /adm-content -->
   </main>
 </div><!-- /adm-shell -->
+
+<!-- ── ADMIN ADD SPOT MODAL ────────────────────────────────────────── -->
+<div class="modal-overlay" id="adminAddSpotModal" role="dialog" aria-modal="true" aria-labelledby="adminSpotModalTitle">
+  <div class="modal-box" style="max-width: 540px; padding: 28px;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid var(--line); padding-bottom: 14px;">
+      <h3 id="adminSpotModalTitle" style="font-family: var(--font-display); font-size: 1.35rem; color: var(--ink); margin: 0;">Add New Tourist Spot</h3>
+      <button class="modal-close" onclick="closeAdminAddSpotModal()" aria-label="Close modal">&times;</button>
+    </div>
+
+    <form id="adminAddSpotForm" onsubmit="handleAdminAddSpot(event)">
+      <div style="margin-bottom: 14px;">
+        <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--ink-faint); text-transform: uppercase; margin-bottom: 6px;">Destination / District *</label>
+        <select id="adminSpotDest" required style="width: 100%; padding: 11px 14px; border-radius: var(--radius-sm); border: 1px solid var(--line); font-family: inherit; font-size: 0.9rem; background: var(--bg); color: var(--ink);">
+          <option value="">Loading destinations…</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom: 14px;">
+        <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--ink-faint); text-transform: uppercase; margin-bottom: 6px;">Spot Name *</label>
+        <input type="text" id="adminSpotName" required placeholder="e.g. Nine Arch Bridge, Sigiriya Rock" style="width: 100%; padding: 11px 14px; border-radius: var(--radius-sm); border: 1px solid var(--line); font-family: inherit; font-size: 0.9rem; background: var(--bg); color: var(--ink);" />
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+        <div>
+          <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--ink-faint); text-transform: uppercase; margin-bottom: 6px;">Category</label>
+          <select id="adminSpotCategory" style="width: 100%; padding: 11px 14px; border-radius: var(--radius-sm); border: 1px solid var(--line); font-family: inherit; font-size: 0.9rem; background: var(--bg); color: var(--ink);">
+            <option value="Historical">Historical</option>
+            <option value="Nature & Wildlife">Nature & Wildlife</option>
+            <option value="Beach & Coast">Beach & Coast</option>
+            <option value="Adventure">Adventure</option>
+            <option value="Religious & Sacred">Religious & Sacred</option>
+            <option value="Culture & Heritage">Culture & Heritage</option>
+            <option value="Scenic Lookout">Scenic Lookout</option>
+          </select>
+        </div>
+        <div>
+          <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--ink-faint); text-transform: uppercase; margin-bottom: 6px;">Entry Fee (LKR)</label>
+          <input type="number" id="adminSpotEntryFee" min="0" placeholder="0 for Free" style="width: 100%; padding: 11px 14px; border-radius: var(--radius-sm); border: 1px solid var(--line); font-family: inherit; font-size: 0.9rem; background: var(--bg); color: var(--ink);" />
+        </div>
+      </div>
+
+      <div style="margin-bottom: 14px;">
+        <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--ink-faint); text-transform: uppercase; margin-bottom: 6px;">Opening Hours</label>
+        <input type="text" id="adminSpotOpeningHours" placeholder="e.g. 6:00 AM - 6:00 PM or 24 Hours Open" style="width: 100%; padding: 11px 14px; border-radius: var(--radius-sm); border: 1px solid var(--line); font-family: inherit; font-size: 0.9rem; background: var(--bg); color: var(--ink);" />
+      </div>
+
+      <div style="margin-bottom: 18px;">
+        <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--ink-faint); text-transform: uppercase; margin-bottom: 6px;">Description</label>
+        <textarea id="adminSpotDescription" rows="3" placeholder="Describe the tourist attraction..." style="width: 100%; padding: 11px 14px; border-radius: var(--radius-sm); border: 1px solid var(--line); font-family: inherit; font-size: 0.9rem; resize: vertical; background: var(--bg); color: var(--ink);"></textarea>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 12px;">
+        <button type="button" class="btn-neutral" onclick="closeAdminAddSpotModal()">Cancel</button>
+        <button type="submit" class="adm-sign-out" id="adminSpotSubmitBtn" style="background: var(--red); color: #fff; width: auto; padding: 10px 20px;">Create Spot ✓</button>
+      </div>
+    </form>
+  </div>
+</div>
 
 <script>
 // ── AUTH GUARD ────────────────────────────────────────────────────────────────
@@ -1034,6 +1093,7 @@ async function loadSpots() {
           <div class="btn-gap">
             ${s.status !== 'approved' ? `<button class="btn-approve" onclick="approveSpot('${s._id}')">Approve</button>` : ''}
             ${s.status !== 'rejected' ? `<button class="btn-reject"  onclick="openReject('spot','${s._id}')">Reject</button>` : ''}
+            <button class="btn-reject" onclick="deleteAdminSpot('${s._id}')" style="background:rgba(215,38,61,0.12);color:var(--red);border-color:rgba(215,38,61,0.3);">Delete</button>
           </div>
         </td>
       </tr>
@@ -1048,6 +1108,89 @@ async function approveSpot(id) {
     loadSpots();
     loadStats();
   } catch(e) { toast(e.message, false); }
+}
+
+async function deleteAdminSpot(id) {
+  if (!confirm('Are you sure you want to delete this tourist spot?')) return;
+  try {
+    await api(`/spots/${id}`, { method: 'DELETE' });
+    toast('Spot deleted successfully ✓');
+    loadSpots();
+    loadStats();
+  } catch(e) { toast(e.message, false); }
+}
+
+// ── ADMIN SPOT CREATION ───────────────────────────────────────────────────────
+async function openAdminAddSpotModal() {
+  document.getElementById('adminAddSpotModal').classList.add('active');
+  const select = document.getElementById('adminSpotDest');
+  select.innerHTML = '<option value="">Loading destinations…</option>';
+  try {
+    const res = await fetch('/api/destinations');
+    const data = await res.json();
+    const dests = data.data || [];
+    if (dests.length) {
+      select.innerHTML = dests.map(d => `<option value="${d._id}">${d.name} (${d.province || ''})</option>`).join('');
+    } else {
+      select.innerHTML = '<option value="">No destinations found</option>';
+    }
+  } catch {
+    select.innerHTML = '<option value="">Failed to load destinations</option>';
+  }
+}
+
+function closeAdminAddSpotModal() {
+  document.getElementById('adminAddSpotModal').classList.remove('active');
+}
+
+async function handleAdminAddSpot(e) {
+  e.preventDefault();
+  const destination = document.getElementById('adminSpotDest').value;
+  const name = document.getElementById('adminSpotName').value.trim();
+  const category = document.getElementById('adminSpotCategory').value;
+  const entryFee = document.getElementById('adminSpotEntryFee').value;
+  const openingHours = document.getElementById('adminSpotOpeningHours').value.trim();
+  const description = document.getElementById('adminSpotDescription').value.trim();
+
+  if (!destination || !name) {
+    toast('Destination and Name are required.', false);
+    return;
+  }
+
+  const btn = document.getElementById('adminSpotSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Creating…';
+
+  try {
+    const res = await fetch('/api/spots', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${TOKEN}`
+      },
+      body: JSON.stringify({
+        destination,
+        name,
+        category,
+        entryFee: entryFee ? Number(entryFee) : 0,
+        openingHours,
+        description
+      })
+    });
+    const body = await res.json();
+    if (!res.ok) throw new Error(body.message || 'Failed to create spot');
+    
+    toast('Tourist spot created & approved ✓');
+    closeAdminAddSpotModal();
+    document.getElementById('adminAddSpotForm').reset();
+    loadSpots();
+    loadStats();
+  } catch(err) {
+    toast(err.message, false);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Create Spot ✓';
+  }
 }
 
 // ── REJECT MODAL ──────────────────────────────────────────────────────────────

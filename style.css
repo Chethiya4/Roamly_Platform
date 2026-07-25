@@ -1181,3 +1181,36 @@ body.dark-mode .map-bg-image.visible {
   gap: 10px;
   color: #fff;
 }
+
+/* ---------- VISUAL FIELD VALIDATION & ERROR INDICATORS ---------- */
+.form-input.is-invalid, 
+.form-select.is-invalid, 
+.form-textarea.is-invalid, 
+select.is-invalid, 
+input.is-invalid, 
+textarea.is-invalid {
+  border-color: #D7263D !important;
+  background-color: rgba(215, 38, 61, 0.05) !important;
+  box-shadow: 0 0 0 3px rgba(215, 38, 61, 0.2) !important;
+  animation: fieldShake 0.35s ease-in-out !important;
+}
+
+@keyframes fieldShake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
+
+.field-error-msg {
+  color: #D7263D;
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.field-error-msg::before {
+  content: '⚠️';
+  font-size: 0.85rem;
+}

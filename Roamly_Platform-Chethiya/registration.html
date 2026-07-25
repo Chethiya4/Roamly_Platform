@@ -159,7 +159,7 @@
             Return to Business Portal
           </button>
 </div>
-<div id="errorBanner" style="display: none; background: #ffebee; color: #c62828; padding: 12px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: 600;"></div><form action="#" enctype="multipart/form-data" id="registrationForm" method="POST">
+<div id="errorBanner" style="display: none; background: #ffebee; color: #c62828; padding: 12px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: 600;"></div><form action="#" enctype="multipart/form-data" id="registrationForm" method="POST" novalidate="">
 <!-- 1. Business Information -->
 <div class="form-section scroll-reveal">
 <h2 class="form-section-title"><span>1</span> Business Information</h2>
@@ -221,13 +221,22 @@
 <div class="form-group">
 <label>Province</label>
 <select class="form-select" name="province" id="provinceSelect" required="">
-<option disabled="" selected="" value="">Loading provinces…</option>
+<option disabled="" selected="" value="">Select Province</option>
+<option value="Western Province">Western Province</option>
+<option value="Central Province">Central Province</option>
+<option value="Southern Province">Southern Province</option>
+<option value="Northern Province">Northern Province</option>
+<option value="Eastern Province">Eastern Province</option>
+<option value="North Western Province">North Western Province</option>
+<option value="North Central Province">North Central Province</option>
+<option value="Uva Province">Uva Province</option>
+<option value="Sabaragamuwa Province">Sabaragamuwa Province</option>
 </select>
 </div>
 <div class="form-group">
-<label>District (Destination)</label>
-<select class="form-select" name="destination" id="destinationSelect" required="" disabled>
-<option disabled="" selected="" value="">Select a province first…</option>
+<label>District (Destination) *</label>
+<select class="form-select" name="destination" id="destinationSelect" required="">
+<option disabled="" selected="" value="">Loading districts…</option>
 </select>
 </div>
 </div>
@@ -431,33 +440,130 @@
 <script src="script.js"></script>
 <!-- Form Submission Handler -->
 <script>
+    function scrollToField(el) {
+      if (!el) return;
+      const headerOffset = 130;
+      const rect = el.getBoundingClientRect();
+      const targetTop = Math.max(0, rect.top + window.pageYOffset - headerOffset);
+
+      window.scrollTo({
+        top: targetTop,
+        behavior: 'smooth'
+      });
+
+      setTimeout(() => {
+        try {
+          el.focus({ preventScroll: true });
+        } catch(e) {}
+      }, 250);
+    }
+
+    function markInvalid(el, message) {
+      if (!el) return;
+      el.classList.add('is-invalid');
+      
+      const parent = el.closest('.form-group') || el.parentElement;
+      if (parent) {
+        const existingMsg = parent.querySelector('.field-error-msg');
+        if (existingMsg) existingMsg.remove();
+        
+        if (message) {
+          const msgEl = document.createElement('div');
+          msgEl.className = 'field-error-msg';
+          msgEl.textContent = message;
+          parent.appendChild(msgEl);
+        }
+      }
+
+      const clearHandler = () => {
+        el.classList.remove('is-invalid');
+        const p = el.closest('.form-group') || el.parentElement;
+        if (p) {
+          const m = p.querySelector('.field-error-msg');
+          if (m) m.remove();
+        }
+        el.removeEventListener('input', clearHandler);
+        el.removeEventListener('change', clearHandler);
+      };
+      el.addEventListener('input', clearHandler);
+      el.addEventListener('change', clearHandler);
+    }
+
+    function clearAllErrors(form) {
+      form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+      form.querySelectorAll('.field-error-msg').forEach(el => el.remove());
+    }
+
     document.getElementById('registrationForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       const errorBanner = document.getElementById('errorBanner');
       errorBanner.style.display = 'none';
+      clearAllErrors(this);
 
-      const password = document.querySelector('input[name="password"]').value;
-      const confirmPassword = document.querySelector('input[name="confirmPassword"]').value;
-      
-      if (password !== confirmPassword) {
-          errorBanner.textContent = "Passwords do not match.";
-          errorBanner.style.display = 'block';
-          errorBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          return;
+      let hasErrors = false;
+
+      // 1. Password Validation (Length & Matching)
+      const passEl = document.querySelector('input[name="password"]');
+      const confirmPassEl = document.querySelector('input[name="confirmPassword"]');
+      if (passEl) {
+        if (!passEl.value || passEl.value.length < 6) {
+          markInvalid(passEl, "Password must be at least 6 characters long.");
+          hasErrors = true;
+        }
+      }
+      if (passEl && confirmPassEl && passEl.value && confirmPassEl.value) {
+        if (passEl.value !== confirmPassEl.value) {
+          markInvalid(confirmPassEl, "Passwords do not match.");
+          hasErrors = true;
+        }
       }
 
-      const destSel = document.getElementById('destinationSelect');
-      if (!destSel.value) {
-          errorBanner.textContent = "Please select a District.";
-          errorBanner.style.display = 'block';
-          errorBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          return;
+      // 2. Required Fields Validation
+      const requiredInputs = this.querySelectorAll('[required]');
+      requiredInputs.forEach(el => {
+        if (el.type === 'checkbox' && !el.checked) {
+          markInvalid(el, "You must agree to continue.");
+          hasErrors = true;
+        } else if (el.type === 'file') {
+          if (!el.files || el.files.length === 0) {
+            markInvalid(el, "Please upload the required file.");
+            hasErrors = true;
+          }
+        } else if (!el.value || !el.value.trim()) {
+          markInvalid(el, `Please fill out this required field.`);
+          hasErrors = true;
+        }
+      });
+
+      // 3. Email Format Validation
+      const emailInputs = this.querySelectorAll('input[type="email"]');
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      emailInputs.forEach(el => {
+        if (el.value && !emailRegex.test(el.value.trim())) {
+          markInvalid(el, "Please enter a valid email address.");
+          hasErrors = true;
+        }
+      });
+
+      if (hasErrors) {
+        const firstInvalid = this.querySelector('.is-invalid');
+        if (firstInvalid) {
+          scrollToField(firstInvalid);
+        }
+        errorBanner.textContent = "Please correct the highlighted errors below before submitting.";
+        errorBanner.style.display = 'block';
+        return;
       }
 
       const formData = new FormData(this);
+      const facilities = formData.getAll('facilities');
+      formData.delete('facilities');
+      if (facilities.length > 0) {
+          formData.append('facilities', JSON.stringify(facilities));
+      }
 
-      // Optional logic for file inputs - remove if empty to avoid sending empty files
-      if (document.querySelector('input[name="nic"]').files.length === 0) formData.delete('nic');
+      const nicInput = document.querySelector('input[name="nic"]');
+      if (nicInput && nicInput.files.length === 0) formData.delete('nic');
 
       try {
           const res = await fetch('/api/business/register', {
@@ -481,61 +587,106 @@
               
               setTimeout(() => {
                   window.location.href = 'business.html';
-              }, 2500); // Redirect after short delay
+              }, 2500);
           } else {
-              errorBanner.textContent = data.message || "Registration failed.";
+              if (data.errors && Array.isArray(data.errors)) {
+                data.errors.forEach(err => {
+                  const fieldEl = this.querySelector(`[name="${err.path || err.param}"]`);
+                  if (fieldEl) markInvalid(fieldEl, err.msg);
+                });
+              }
+              const firstInvalid = this.querySelector('.is-invalid');
+              if (firstInvalid) {
+                scrollToField(firstInvalid);
+              } else {
+                scrollToField(errorBanner);
+              }
+              errorBanner.textContent = data.message || "Registration failed. Please check highlighted fields.";
               errorBanner.style.display = 'block';
-              errorBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
           }
       } catch (err) {
           errorBanner.textContent = "An error occurred during registration. Please try again.";
           errorBanner.style.display = 'block';
-          errorBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          scrollToField(errorBanner);
       }
     });
 </script>
 
-<!-- Populate destination dropdown from API -->
+<!-- Populate & filter destination dropdown from API -->
 <script>
-    let groupedDestinations = {};
-    
-    (async () => {
-      try {
-        const res  = await fetch('/api/destinations/grouped-by-province');
-        const body = await res.json();
-        const provSel = document.getElementById('provinceSelect');
-        if (body.success && body.data) {
-          groupedDestinations = body.data;
-          provSel.innerHTML = '<option disabled selected value="">Select Province</option>';
-          Object.keys(groupedDestinations).forEach(prov => {
-            const opt = document.createElement('option');
-            opt.value = prov;
-            opt.textContent = prov;
-            provSel.appendChild(opt);
-          });
-        } else {
-          provSel.innerHTML = '<option disabled selected value="">Failed to load provinces</option>';
-        }
-      } catch {
-        provSel.innerHTML = '<option disabled selected value="">Failed to load provinces</option>';
-      }
-    })();
+    let allDestinations = [];
 
-    document.getElementById('provinceSelect').addEventListener('change', function() {
-        const prov = this.value;
-        const destSel = document.getElementById('destinationSelect');
-        destSel.innerHTML = '<option disabled selected value="">Select district…</option>';
-        if (groupedDestinations[prov]) {
-            groupedDestinations[prov].forEach(d => {
-                const opt = document.createElement('option');
-                opt.value = d._id;
-                opt.textContent = d.name;
-                destSel.appendChild(opt);
-            });
-            destSel.disabled = false;
+    function populateDestinations(filteredDests) {
+      const sel = document.getElementById('destinationSelect');
+      if (!sel) return;
+      sel.disabled = false;
+      const currentVal = sel.value;
+      sel.innerHTML = '<option disabled selected value="">Select district (destination)…</option>';
+      
+      if (filteredDests && filteredDests.length) {
+        filteredDests.forEach(d => {
+          const opt = document.createElement('option');
+          opt.value = d._id;
+          opt.textContent = d.province ? `${d.name} (${d.province})` : d.name;
+          if (d._id === currentVal) opt.selected = true;
+          sel.appendChild(opt);
+        });
+      } else {
+        sel.innerHTML = '<option disabled selected value="">No districts found for selected province</option>';
+      }
+    }
+
+    async function loadDestinations() {
+      const sel = document.getElementById('destinationSelect');
+      try {
+        const res = await fetch('/api/destinations?limit=100');
+        const body = await res.json();
+        if (body.success && body.data && body.data.length) {
+          allDestinations = body.data;
+          populateDestinations(allDestinations);
         } else {
-            destSel.disabled = true;
+          if (sel) sel.innerHTML = '<option disabled selected value="">No districts available</option>';
         }
+      } catch (err) {
+        console.error('Failed to load destinations from API:', err);
+        if (sel) sel.innerHTML = '<option disabled selected value="">Error loading districts</option>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadDestinations();
+
+      const provSel = document.getElementById('provinceSelect');
+      const destSel = document.getElementById('destinationSelect');
+
+      if (provSel) {
+        provSel.addEventListener('change', (e) => {
+          const selectedProvince = e.target.value;
+          if (!selectedProvince) {
+            populateDestinations(allDestinations);
+          } else {
+            const filtered = allDestinations.filter(d => 
+              d.province && d.province.toLowerCase().trim() === selectedProvince.toLowerCase().trim()
+            );
+            populateDestinations(filtered.length ? filtered : allDestinations);
+          }
+        });
+      }
+
+      if (destSel) {
+        destSel.addEventListener('change', (e) => {
+          const selectedId = e.target.value;
+          const found = allDestinations.find(d => d._id === selectedId);
+          if (found && found.province && provSel) {
+            for (let opt of provSel.options) {
+              if (opt.value && opt.value.toLowerCase().trim() === found.province.toLowerCase().trim()) {
+                provSel.value = opt.value;
+                break;
+              }
+            }
+          }
+        });
+      }
     });
 </script>
 </html>

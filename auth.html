@@ -372,15 +372,41 @@
 
 <script>
 // ── Helpers ───────────────────────────────────────────────────────────────────
-function showErr(elId, msg) {
+function showErr(elId, msg, fieldsToHighlight = []) {
   const el = document.getElementById(elId);
-  el.textContent = msg;
-  el.classList.add('show');
+  if (el) {
+    el.textContent = msg;
+    el.classList.add('show');
+  }
+  if (fieldsToHighlight && fieldsToHighlight.length) {
+    fieldsToHighlight.forEach(fieldId => {
+      const inputEl = document.getElementById(fieldId);
+      if (inputEl) {
+        inputEl.classList.add('is-invalid');
+        const clearHandler = () => {
+          inputEl.classList.remove('is-invalid');
+          inputEl.removeEventListener('input', clearHandler);
+        };
+        inputEl.addEventListener('input', clearHandler);
+      }
+    });
+    const first = document.getElementById(fieldsToHighlight[0]);
+    if (first) {
+      first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      try { first.focus(); } catch {}
+    }
+  }
 }
 function clearErr(elId) {
   const el = document.getElementById(elId);
-  el.textContent = '';
-  el.classList.remove('show');
+  if (el) {
+    el.textContent = '';
+    el.classList.remove('show');
+  }
+  const section = el ? el.closest('.auth-section, .auth-subform, .auth-card') : document;
+  if (section) {
+    section.querySelectorAll('.is-invalid').forEach(i => i.classList.remove('is-invalid'));
+  }
 }
 function setBtn(id, disabled, label) {
   const el = document.getElementById(id);
@@ -483,14 +509,19 @@ document.getElementById('v-login-btn').addEventListener('click', async () => {
   clearErr('v-login-err');
   const email    = document.getElementById('v-login-email').value.trim();
   const password = document.getElementById('v-login-pass').value;
-  if (!email || !password) return showErr('v-login-err', 'Please fill in all fields.');
+  
+  const toHighlight = [];
+  if (!email) toHighlight.push('v-login-email');
+  if (!password) toHighlight.push('v-login-pass');
+  if (toHighlight.length) return showErr('v-login-err', 'Please fill in all fields.', toHighlight);
+
   setBtn('v-login-btn', true, 'Signing in…');
   try {
     const data = await apiPost('/api/auth/login', { email, password });
     if (data.success) {
       storeAndRedirect(data.data);
     } else {
-      showErr('v-login-err', data.message || 'Login failed.');
+      showErr('v-login-err', data.message || 'Login failed.', ['v-login-email', 'v-login-pass']);
     }
   } catch { showErr('v-login-err', 'Network error. Please try again.'); }
   setBtn('v-login-btn', false, 'Sign In');
@@ -502,14 +533,20 @@ document.getElementById('v-reg-btn').addEventListener('click', async () => {
   const name     = document.getElementById('v-reg-name').value.trim();
   const email    = document.getElementById('v-reg-email').value.trim();
   const password = document.getElementById('v-reg-pass').value;
-  if (!name || !email || !password) return showErr('v-reg-err', 'Please fill in all fields.');
+
+  const toHighlight = [];
+  if (!name) toHighlight.push('v-reg-name');
+  if (!email) toHighlight.push('v-reg-email');
+  if (!password) toHighlight.push('v-reg-pass');
+  if (toHighlight.length) return showErr('v-reg-err', 'Please fill in all fields.', toHighlight);
+
   setBtn('v-reg-btn', true, 'Creating account…');
   try {
     const data = await apiPost('/api/auth/register', { name, email, password });
     if (data.success) {
-      storeAndRedirect(data.data); // Auto-login on success
+      storeAndRedirect(data.data);
     } else {
-      showErr('v-reg-err', data.message || 'Registration failed.');
+      showErr('v-reg-err', data.message || 'Registration failed.', ['v-reg-email']);
     }
   } catch { showErr('v-reg-err', 'Network error. Please try again.'); }
   setBtn('v-reg-btn', false, 'Create Account');
@@ -520,14 +557,19 @@ document.getElementById('b-login-btn').addEventListener('click', async () => {
   clearErr('b-login-err');
   const email    = document.getElementById('b-login-email').value.trim();
   const password = document.getElementById('b-login-pass').value;
-  if (!email || !password) return showErr('b-login-err', 'Please fill in all fields.');
+
+  const toHighlight = [];
+  if (!email) toHighlight.push('b-login-email');
+  if (!password) toHighlight.push('b-login-pass');
+  if (toHighlight.length) return showErr('b-login-err', 'Please fill in all fields.', toHighlight);
+
   setBtn('b-login-btn', true, 'Signing in…');
   try {
     const data = await apiPost('/api/auth/login', { email, password });
     if (data.success) {
       storeAndRedirect(data.data);
     } else {
-      showErr('b-login-err', data.message || 'Login failed.');
+      showErr('b-login-err', data.message || 'Login failed.', ['b-login-email', 'b-login-pass']);
     }
   } catch { showErr('b-login-err', 'Network error. Please try again.'); }
   setBtn('b-login-btn', false, 'Sign In to Portal');
@@ -538,14 +580,19 @@ document.getElementById('a-login-btn').addEventListener('click', async () => {
   clearErr('a-login-err');
   const email    = document.getElementById('a-login-email').value.trim();
   const password = document.getElementById('a-login-pass').value;
-  if (!email || !password) return showErr('a-login-err', 'Please fill in all fields.');
+
+  const toHighlight = [];
+  if (!email) toHighlight.push('a-login-email');
+  if (!password) toHighlight.push('a-login-pass');
+  if (toHighlight.length) return showErr('a-login-err', 'Please fill in all fields.', toHighlight);
+
   setBtn('a-login-btn', true, 'Signing in…');
   try {
     const data = await apiPost('/api/auth/login', { email, password });
     if (data.success) {
       storeAndRedirect(data.data);
     } else {
-      showErr('a-login-err', data.message || 'Login failed.');
+      showErr('a-login-err', data.message || 'Login failed.', ['a-login-email', 'a-login-pass']);
     }
   } catch { showErr('a-login-err', 'Network error. Please try again.'); }
   setBtn('a-login-btn', false, 'Sign In to Admin Portal');

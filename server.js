@@ -9,13 +9,17 @@ const compression = require('compression');
 const mongoose = require('mongoose');
 const connectDB = require('./config/db');
 const seedAdmin = require('./scripts/seedAdmin');
+const seedDestinations = require('./scripts/seedDestinations');
 const { errorHandler } = require('./middleware/errorMiddleware');
 
 // Load environment variables
 dotenv.config();
 
-// Connect to MongoDB and seed Admin
-connectDB().then(() => seedAdmin());
+// Connect to MongoDB and seed Admin & Destinations
+connectDB().then(async () => {
+    await seedAdmin();
+    await seedDestinations();
+});
 
 const app = express();
 const PORT = process.env.PORT || 3000;

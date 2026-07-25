@@ -43,7 +43,7 @@ router.post('/register', businessUpload, validate([
     body('destination').custom(isObjectId).withMessage('Valid destination ID is required'),
     body('ownerFullName').trim().notEmpty().withMessage('Owner full name is required'),
     body('province').trim().notEmpty().withMessage('Province is required'),
-    body('district').trim().notEmpty().withMessage('District is required'),
+    body('district').optional().trim(),
     body('city').trim().notEmpty().withMessage('City is required'),
     body('postalCode').trim().notEmpty().withMessage('Postal code is required'),
     body('streetAddress').trim().notEmpty().withMessage('Street address is required'),
