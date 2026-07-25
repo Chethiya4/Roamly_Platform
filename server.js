@@ -15,19 +15,13 @@ const { errorHandler } = require('./middleware/errorMiddleware');
 // Load environment variables
 dotenv.config();
 
-// Connect to MongoDB and seed Admin & Destinations
-connectDB().then(async () => {
-    await seedAdmin();
-    await seedDestinations();
-});
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Production hardening middleware
-app.use(helmet({ contentSecurityPolicy: false })); // Sets secure HTTP headers, CSP disabled to allow inline scripts/fonts
+app.use(helmet({ contentSecurityPolicy: false }));
 
-// Prevent NoSQL injection manually to avoid Express 5 req.query read-only error
+// Prevent NoSQL injection
 app.use((req, res, next) => {
     if (req.body) mongoSanitize.sanitize(req.body);
     if (req.params) mongoSanitize.sanitize(req.params);
@@ -36,17 +30,35 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(compression()); // Compress response bodies
+app.use(compression());
 
 // Middleware
 if (process.env.NODE_ENV !== 'production') {
     app.use(morgan('dev'));
 }
-// TODO: Lock CORS to a specific origin before real deployment
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Database Connection Middleware for Serverless Environment
+let isSeeded = false;
+app.use(async (req, res, next) => {
+    try {
+        await connectDB();
+        
+        // Seed only once on first connection
+        if (!isSeeded) {
+            isSeeded = true;
+            seedAdmin().catch(console.error);
+            seedDestinations().catch(console.error);
+        }
+        next();
+    } catch (err) {
+        console.error("Database Connection Error:", err);
+        res.status(500).json({ error: "Database connection failed" });
+    }
+});
 
 // Route files
 const authRoutes        = require('./routes/authRoutes');
@@ -62,7 +74,12 @@ const userRoutes        = require('./routes/userRoutes');
 const tripRoutes        = require('./routes/tripRoutes');
 const trackingRoutes    = require('./routes/trackingRoutes');
 
-// Mount routers
+// Root Route for checking backend status
+app.get('/', (req, res) => {
+    res.status(200).json({ message: "Roamly API is running successfully!" });
+});
+
+// Health check endpoint
 app.get('/api/health', (req, res) => {
     res.status(200).json({
         status: 'ok',
@@ -71,9 +88,10 @@ app.get('/api/health', (req, res) => {
     });
 });
 
+// Mount routers
 app.use('/api/auth',         authRoutes);
-app.use('/api/business',     businessRoutes);   // owner dashboard + register
-app.use('/api/businesses',   businessRoutes);   // public discovery (plural — ARCHITECTURE.md convention)
+app.use('/api/business',     businessRoutes);
+app.use('/api/businesses',   businessRoutes);
 app.use('/api/admin',        adminRoutes);
 app.use('/api/listings',     listingRoutes);
 app.use('/api/destinations', destinationRoutes);
@@ -85,15 +103,18 @@ app.use('/api/users',        userRoutes);
 app.use('/api/trips',        tripRoutes);
 app.use('/api/tracking',     trackingRoutes);
 
-// Serve static frontend files
+// Serve static frontend files & uploads
 app.use(express.static(__dirname));
-
-// Serve uploads statically
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Global Error Handler Middleware
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-    console.log(`Roamly Backend Server running on port ${PORT}`);
-});
+// Only listen locally, Vercel exports the app
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+    app.listen(PORT, () => {
+        console.log(`Roamly Backend Server running on port ${PORT}`);
+    });
+}
+
+module.exports = app;
