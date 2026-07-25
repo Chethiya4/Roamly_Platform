@@ -41,7 +41,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static frontend assets (CSS, JS, Images, Uploads, HTML files)
+// Serve static assets (CSS, JS, Images, Uploads)
 app.use(express.static(__dirname));
 
 // Handle DB connection and Seeding outside of middleware loop
@@ -98,7 +98,17 @@ app.use('/api/users',        userRoutes);
 app.use('/api/trips',        tripRoutes);
 app.use('/api/tracking',     trackingRoutes);
 
-// Serve main frontend website UI
+// Dynamic HTML page router (map.html, bookings.html, emergency.html, etc.)
+app.get('/:page.html', (req, res) => {
+    const page = req.params.page;
+    res.sendFile(path.join(__dirname, `${page}.html`), (err) => {
+        if (err) {
+            res.status(404).sendFile(path.join(__dirname, 'index.html'));
+        }
+    });
+});
+
+// Main Home Page Route
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
