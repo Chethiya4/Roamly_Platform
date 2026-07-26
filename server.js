@@ -83,6 +83,18 @@ app.get('/api/health', (req, res) => {
     });
 });
 
+// Ensure DB connection is established for API requests
+app.use('/api', async (req, res, next) => {
+    if (mongoose.connection.readyState !== 1) {
+        try {
+            await connectDB();
+        } catch (err) {
+            return res.status(503).json({ success: false, message: 'Database connecting, please try again.' });
+        }
+    }
+    next();
+});
+
 // Mount API routers
 app.use('/api/auth',         authRoutes);
 app.use('/api/business',     businessRoutes);

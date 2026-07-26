@@ -7,7 +7,10 @@ const UserSchema = new mongoose.Schema({
     password: { type: String, required: true },
     role: { type: String, enum: ['visitor', 'business_owner', 'admin'], default: 'visitor' },
     active: { type: Boolean, default: true }
-}, { timestamps: true });
+}, { 
+    timestamps: true,
+    bufferCommands: true
+});
 
 UserSchema.pre('save', async function() {
     if (!this.isModified('password')) return;
@@ -19,4 +22,4 @@ UserSchema.methods.matchPassword = async function(enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 };
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.models.User || mongoose.model('User', UserSchema);

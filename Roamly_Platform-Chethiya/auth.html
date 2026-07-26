@@ -8,7 +8,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <title>Sign In / Register — Roamly</title>
   <meta name="description" content="Sign in or create a Roamly account to start exploring Sri Lanka." />
   <style>
@@ -49,7 +48,7 @@
     }
     .auth-logo span { color: var(--red); }
 
-    /* The two cards container */
+    /* Selection cards container */
     .auth-cards {
       display: grid;
       grid-template-columns: 1fr;
@@ -213,37 +212,18 @@
     .auth-divider::before, .auth-divider::after {
       content: ''; flex: 1; height: 1px; background: var(--line);
     }
-
-    /* Social Buttons */
-    .social-logins { margin-bottom: 20px; }
+    .social-logins {
+      display: flex; gap: 10px; justify-content: center; margin-top: 15px;
+    }
     .social-btn {
-      width: 100%;
-      max-width: 320px;
-      height: 40px;
-      margin: 0 auto 10px auto;
-      border-radius: 4px;
-      border: none;
-      font-family: inherit;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      transition: 0.2s;
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 10px; border: 1px solid var(--line); background: var(--bg);
+      border-radius: var(--radius-sm); cursor: pointer; transition: 0.2s;
+      font-family: inherit; font-size: 0.9rem; font-weight: 600; color: var(--ink);
     }
-    .apple-login-btn {
-      background: #000;
-      color: #fff;
-    }
-    .apple-login-btn:hover { background: #333; }
-    
-    .facebook-login-btn {
-      background: #1877F2;
-      color: #fff;
-    }
-    .facebook-login-btn:hover { background: #166FE5; }
+    .social-btn:hover { background: rgba(0,0,0,0.05); }
+    body.dark-mode .social-btn:hover { background: rgba(255,255,255,0.05); }
+    body.dark-mode .apple-logo { filter: invert(1); }
   </style>
 </head>
 <body>
@@ -267,6 +247,9 @@
           <p style="margin-top: 10px; font-size: 1.1rem; opacity: 0.9;">Manage services & reach travelers.</p>
         </div>
       </div>
+    </div>
+    <div id="admin-link-wrapper" style="text-align: center; margin-top: 16px;">
+      <a href="#" onclick="showAuthPanel('admin'); return false;" style="color: rgba(255,255,255,0.7); font-size: 0.88rem; font-weight: 600; text-decoration: underline;">System Administrator? Sign In to Admin Portal →</a>
     </div>
 
     <!-- ── AUTHENTICATION PANEL ── -->
@@ -301,36 +284,19 @@
                 <input type="password" id="v-login-pass" placeholder="••••••••" autocomplete="current-password" />
               </div>
               <button class="auth-submit" id="v-login-btn">Sign In</button>
-            </div>
-
-            <div class="auth-divider" style="margin: 20px 0;">or continue with</div>
-
-            <!-- Social Logins -->
-            <div class="social-logins">
-              <div id="google-btn-container" style="margin-bottom: 10px; display: flex; justify-content: center;"></div>
               
-              <button class="social-btn apple-login-btn" onclick="handleStubLogin('Apple')">
-                Sign in with Apple
-              </button>
-              
-              <!-- 
-                TODO (Real Apple Login): 
-                - Create Apple Developer Team ID and Services ID
-                - Generate client secret JWT
-                - Use 'passport-apple' on backend or manual verification endpoint
-              -->
-              
-              <button class="social-btn facebook-login-btn" onclick="handleStubLogin('Facebook')">
-                Sign in with Facebook
-              </button>
-              
-              <!-- 
-                TODO (Real Facebook Login): 
-                - Setup Facebook App ID and Secret
-                - Use Facebook SDK or 'passport-facebook' on backend
-              -->
-              
-              <div id="social-stub-msg" style="display: none; font-size: 0.8rem; color: var(--red); text-align: center; margin-top: 8px;"></div>
+              <div class="auth-divider">or continue with</div>
+              <div class="social-logins">
+                <button class="social-btn" onclick="alert('Google login not configured in this demo')">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" width="18"> Google
+                </button>
+                <button class="social-btn" onclick="alert('Facebook login not configured in this demo')">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" alt="Facebook" width="18"> Facebook
+                </button>
+                <button class="social-btn" onclick="alert('Apple login not configured in this demo')">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple" width="16" class="apple-logo"> Apple
+                </button>
+              </div>
             </div>
 
             <!-- Visitor Register -->
@@ -349,7 +315,21 @@
                 <input type="password" id="v-reg-pass" placeholder="Min 6 characters" autocomplete="new-password" />
               </div>
               <button class="auth-submit" id="v-reg-btn">Create Account</button>
-              <p class="auth-note">Already have an account? <a href="#" id="v-switch-login">Sign In</a></p>
+
+              <div class="auth-divider">or continue with</div>
+              <div class="social-logins">
+                <button class="social-btn" onclick="alert('Google signup not configured in this demo')">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" width="18"> Google
+                </button>
+                <button class="social-btn" onclick="alert('Facebook signup not configured in this demo')">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" alt="Facebook" width="18"> Facebook
+                </button>
+                <button class="social-btn" onclick="alert('Apple signup not configured in this demo')">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple" width="16" class="apple-logo"> Apple
+                </button>
+              </div>
+              
+              <p class="auth-note" style="margin-top: 24px;">Already have an account? <a href="#" id="v-switch-login">Sign In</a></p>
             </div>
           </div>
 
@@ -368,6 +348,26 @@
             <div class="auth-divider">or</div>
             <p class="auth-note">New to Roamly Business? <a href="registration.html">Register your business →</a></p>
           </div>
+
+          <!-- ── ADMIN ── -->
+          <div class="auth-section" id="section-admin">
+            <div class="auth-error" id="a-login-err"></div>
+            <div class="auth-field">
+              <label for="a-login-email">Admin Email</label>
+              <input type="email" id="a-login-email" value="admin123@gmail.com" placeholder="admin123@gmail.com" autocomplete="email" />
+            </div>
+            <div class="auth-field">
+              <label for="a-login-pass">Password</label>
+              <input type="password" id="a-login-pass" value="admin123" placeholder="••••••••" autocomplete="current-password" />
+            </div>
+            <button class="auth-submit" id="a-login-btn">Sign In to Admin Portal</button>
+
+            <div style="margin-top:18px; padding:12px 14px; background:rgba(215,38,61,0.06); border:1px solid rgba(215,38,61,0.2); border-radius:var(--radius-sm); font-size:0.82rem; color:var(--ink-soft); line-height:1.4;">
+              <strong style="color:var(--red);">🔑 Demo Admin Account:</strong><br>
+              Email: <code style="background:var(--bg); padding:2px 6px; border-radius:4px;">admin123@gmail.com</code><br>
+              Password: <code style="background:var(--bg); padding:2px 6px; border-radius:4px;">admin123</code>
+            </div>
+          </div>
           
         </div><!-- /auth-body -->
       </div><!-- /auth-card -->
@@ -378,20 +378,48 @@
 
 <script>
 // ── Helpers ───────────────────────────────────────────────────────────────────
-function showErr(elId, msg) {
+function showErr(elId, msg, fieldsToHighlight = []) {
   const el = document.getElementById(elId);
-  el.textContent = msg;
-  el.classList.add('show');
+  if (el) {
+    el.textContent = msg;
+    el.classList.add('show');
+  }
+  if (fieldsToHighlight && fieldsToHighlight.length) {
+    fieldsToHighlight.forEach(fieldId => {
+      const inputEl = document.getElementById(fieldId);
+      if (inputEl) {
+        inputEl.classList.add('is-invalid');
+        const clearHandler = () => {
+          inputEl.classList.remove('is-invalid');
+          inputEl.removeEventListener('input', clearHandler);
+        };
+        inputEl.addEventListener('input', clearHandler);
+      }
+    });
+    const first = document.getElementById(fieldsToHighlight[0]);
+    if (first) {
+      first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      try { first.focus(); } catch {}
+    }
+  }
 }
 function clearErr(elId) {
   const el = document.getElementById(elId);
-  el.textContent = '';
-  el.classList.remove('show');
+  if (el) {
+    el.textContent = '';
+    el.classList.remove('show');
+  }
+  const section = el ? el.closest('.auth-section, .auth-subform, .auth-card') : document;
+  if (section) {
+    section.querySelectorAll('.is-invalid').forEach(i => i.classList.remove('is-invalid'));
+  }
 }
 function setBtn(id, disabled, label) {
   const el = document.getElementById(id);
-  el.disabled = disabled;
-  el.textContent = label;
+  if (el) {
+    el.disabled = disabled;
+    el.textContent = label;
+  }
 }
 
 async function apiPost(url, body) {
@@ -404,22 +432,22 @@ async function apiPost(url, body) {
 }
 
 function storeAndRedirect(data) {
-  // Unified storage key used across the site
+  localStorage.removeItem('businessUser');
+  localStorage.removeItem('user');
+
   localStorage.setItem('roamlyUser', JSON.stringify({
     token: data.token,
     role:  data.role,
     name:  data.name,
     _id:   data._id
   }));
-  // Also write granular keys
   localStorage.setItem('roamly_token', data.token);
   localStorage.setItem('roamly_role',  data.role);
   localStorage.setItem('roamly_name',  data.name);
 
-  // Redirect purely based on the returned role
   const dest = {
     visitor:        'index.html',
-    business_owner: 'business.html',
+    business_owner: 'business-dashboard.html',
     admin:          'admin-dashboard.html'
   }[data.role] || 'index.html';
 
@@ -429,23 +457,45 @@ function storeAndRedirect(data) {
 // ── UI Views ──────────────────────────────────────────────────────────────────
 function showAuthPanel(type) {
   document.getElementById('auth-cards').style.display = 'none';
+  const adminWrapper = document.getElementById('admin-link-wrapper');
+  if (adminWrapper) adminWrapper.style.display = 'none';
   document.getElementById('auth-panel-container').classList.add('active');
   
+  document.getElementById('section-visitor').classList.remove('active');
+  document.getElementById('section-business').classList.remove('active');
+  document.getElementById('section-admin').classList.remove('active');
+
   if (type === 'visitor') {
     document.getElementById('auth-panel-title').textContent = "Visitor Portal";
     document.getElementById('section-visitor').classList.add('active');
-    document.getElementById('section-business').classList.remove('active');
-  } else {
+  } else if (type === 'business') {
     document.getElementById('auth-panel-title').textContent = "Business Portal";
     document.getElementById('section-business').classList.add('active');
-    document.getElementById('section-visitor').classList.remove('active');
+  } else if (type === 'admin') {
+    document.getElementById('auth-panel-title').textContent = "Admin Portal";
+    document.getElementById('section-admin').classList.add('active');
   }
 }
 
 function showCards() {
   document.getElementById('auth-panel-container').classList.remove('active');
   document.getElementById('auth-cards').style.display = 'grid';
+  const adminWrapper = document.getElementById('admin-link-wrapper');
+  if (adminWrapper) adminWrapper.style.display = 'block';
 }
+
+// ── Check URL Params on load ────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const tab = params.get('tab') || params.get('role');
+  if (tab === 'admin') {
+    showAuthPanel('admin');
+  } else if (tab === 'business' || tab === 'business_owner') {
+    showAuthPanel('business');
+  } else if (tab === 'visitor') {
+    showAuthPanel('visitor');
+  }
+});
 
 // ── Visitor sub-tabs ──────────────────────────────────────────────────────────
 function switchSub(sub) {
@@ -454,108 +504,122 @@ function switchSub(sub) {
     document.getElementById('vform-' + s).classList.toggle('active', s === sub);
   });
 }
-document.getElementById('vsub-login').addEventListener('click', () => switchSub('login'));
-document.getElementById('vsub-register').addEventListener('click', () => switchSub('register'));
-document.getElementById('v-switch-login').addEventListener('click', (e) => { e.preventDefault(); switchSub('login'); });
+document.getElementById('vsub-login')?.addEventListener('click', () => switchSub('login'));
+document.getElementById('vsub-register')?.addEventListener('click', () => switchSub('register'));
+document.getElementById('v-switch-login')?.addEventListener('click', (e) => { e.preventDefault(); switchSub('login'); });
+
+// ── Keyboard Enter Listeners ─────────────────────────────────────────────────
+['v-login-email', 'v-login-pass'].forEach(id => {
+  document.getElementById(id)?.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('v-login-btn')?.click(); });
+});
+['v-reg-name', 'v-reg-email', 'v-reg-pass'].forEach(id => {
+  document.getElementById(id)?.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('v-reg-btn')?.click(); });
+});
+['b-login-email', 'b-login-pass'].forEach(id => {
+  document.getElementById(id)?.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('b-login-btn')?.click(); });
+});
+['a-login-email', 'a-login-pass'].forEach(id => {
+  document.getElementById(id)?.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('a-login-btn')?.click(); });
+});
 
 // ── Visitor Login ─────────────────────────────────────────────────────────────
-document.getElementById('v-login-btn').addEventListener('click', async () => {
+document.getElementById('v-login-btn')?.addEventListener('click', async () => {
   clearErr('v-login-err');
   const email    = document.getElementById('v-login-email').value.trim();
   const password = document.getElementById('v-login-pass').value;
-  if (!email || !password) return showErr('v-login-err', 'Please fill in all fields.');
+  
+  const toHighlight = [];
+  if (!email) toHighlight.push('v-login-email');
+  if (!password) toHighlight.push('v-login-pass');
+  if (toHighlight.length) return showErr('v-login-err', 'Please fill in all fields.', toHighlight);
+
   setBtn('v-login-btn', true, 'Signing in…');
   try {
     const data = await apiPost('/api/auth/login', { email, password });
     if (data.success) {
       storeAndRedirect(data.data);
     } else {
-      showErr('v-login-err', data.message || 'Login failed.');
+      showErr('v-login-err', data.message || 'Login failed.', ['v-login-email', 'v-login-pass']);
     }
   } catch { showErr('v-login-err', 'Network error. Please try again.'); }
   setBtn('v-login-btn', false, 'Sign In');
 });
 
 // ── Visitor Register ──────────────────────────────────────────────────────────
-document.getElementById('v-reg-btn').addEventListener('click', async () => {
+document.getElementById('v-reg-btn')?.addEventListener('click', async () => {
   clearErr('v-reg-err');
   const name     = document.getElementById('v-reg-name').value.trim();
   const email    = document.getElementById('v-reg-email').value.trim();
   const password = document.getElementById('v-reg-pass').value;
-  if (!name || !email || !password) return showErr('v-reg-err', 'Please fill in all fields.');
+
+  const toHighlight = [];
+  if (!name) toHighlight.push('v-reg-name');
+  if (!email) toHighlight.push('v-reg-email');
+  if (!password) toHighlight.push('v-reg-pass');
+  if (toHighlight.length) return showErr('v-reg-err', 'Please fill in all fields.', toHighlight);
+
   setBtn('v-reg-btn', true, 'Creating account…');
   try {
     const data = await apiPost('/api/auth/register', { name, email, password });
     if (data.success) {
-      storeAndRedirect(data.data); // Auto-login on success
+      storeAndRedirect(data.data);
     } else {
-      showErr('v-reg-err', data.message || 'Registration failed.');
+      showErr('v-reg-err', data.message || 'Registration failed.', ['v-reg-email']);
     }
   } catch { showErr('v-reg-err', 'Network error. Please try again.'); }
   setBtn('v-reg-btn', false, 'Create Account');
 });
 
 // ── Business Login ────────────────────────────────────────────────────────────
-document.getElementById('b-login-btn').addEventListener('click', async () => {
+document.getElementById('b-login-btn')?.addEventListener('click', async () => {
   clearErr('b-login-err');
   const email    = document.getElementById('b-login-email').value.trim();
   const password = document.getElementById('b-login-pass').value;
-  if (!email || !password) return showErr('b-login-err', 'Please fill in all fields.');
+
+  const toHighlight = [];
+  if (!email) toHighlight.push('b-login-email');
+  if (!password) toHighlight.push('b-login-pass');
+  if (toHighlight.length) return showErr('b-login-err', 'Please fill in all fields.', toHighlight);
+
   setBtn('b-login-btn', true, 'Signing in…');
   try {
     const data = await apiPost('/api/auth/login', { email, password });
     if (data.success) {
-      // NOTE: We rely purely on the role returned by the server. 
-      // If an admin logs in here, they will be redirected to admin-dashboard.html
       storeAndRedirect(data.data);
     } else {
-      showErr('b-login-err', data.message || 'Login failed.');
+      showErr('b-login-err', data.message || 'Login failed.', ['b-login-email', 'b-login-pass']);
     }
   } catch { showErr('b-login-err', 'Network error. Please try again.'); }
   setBtn('b-login-btn', false, 'Sign In to Portal');
 });
 
-// ── Google / Social Sign-In Logic ─────────────────────────────────────────────
-window.addEventListener('load', async () => {
-  try {
-    const res = await fetch('/api/auth/google-client-id');
-    const data = await res.json();
-    if (data.success && data.data.clientId) {
-      google.accounts.id.initialize({
-        client_id: data.data.clientId,
-        callback: handleGoogleCredentialResponse
-      });
-      google.accounts.id.renderButton(
-        document.getElementById('google-btn-container'),
-        { theme: 'outline', size: 'large', width: 320 }
-      );
-    }
-  } catch (err) {
-    console.error('Failed to init Google Sign In', err);
-  }
-});
+// ── Admin Login ───────────────────────────────────────────────────────────────
+document.getElementById('a-login-btn')?.addEventListener('click', async () => {
+  clearErr('a-login-err');
+  const email    = document.getElementById('a-login-email').value.trim();
+  const password = document.getElementById('a-login-pass').value;
 
-async function handleGoogleCredentialResponse(response) {
+  const toHighlight = [];
+  if (!email) toHighlight.push('a-login-email');
+  if (!password) toHighlight.push('a-login-pass');
+  if (toHighlight.length) return showErr('a-login-err', 'Please fill in all fields.', toHighlight);
+
+  setBtn('a-login-btn', true, 'Signing in…');
   try {
-    const res = await apiPost('/api/auth/google', { credential: response.credential });
-    if (res.success) {
-      storeAndRedirect(res.data);
+    const data = await apiPost('/api/auth/login', { email, password });
+    if (data.success) {
+      if (data.data.role !== 'admin') {
+        showErr('a-login-err', 'Access Denied: Account is not an Administrator.', ['a-login-email']);
+      } else {
+        storeAndRedirect(data.data);
+      }
     } else {
-      // Show error in login form area by default
-      switchSub('login');
-      showErr('v-login-err', res.message || 'Google Login failed.');
+      showErr('a-login-err', data.message || 'Login failed. Check email & password.', ['a-login-email', 'a-login-pass']);
     }
-  } catch (err) {
-    switchSub('login');
-    showErr('v-login-err', 'Network error during Google Login.');
-  }
-}
-
-function handleStubLogin(provider) {
-  const msgEl = document.getElementById('social-stub-msg');
-  msgEl.textContent = `${provider} Sign-In requires a paid Developer Program account — this will be enabled once the team has access.`;
-  msgEl.style.display = 'block';
-}
+  } catch { showErr('a-login-err', 'Network error. Please ensure server is running.'); }
+  setBtn('a-login-btn', false, 'Sign In to Admin Portal');
+});
 </script>
+<script src="script.js"></script>
 </body>
 </html>

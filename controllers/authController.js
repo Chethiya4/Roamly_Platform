@@ -1,11 +1,13 @@
 const User = require('../models/User');
 const generateToken = require('../utils/generateToken');
 const asyncHandler = require('../utils/asyncHandler');
+const connectDB = require('../config/db');
 
 // @desc    Register a new user
 // @route   POST /api/auth/register
 // @access  Public
 const registerUser = asyncHandler(async (req, res, next) => {
+    await connectDB();
     const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
@@ -51,6 +53,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
 // @route   POST /api/auth/login
 // @access  Public
 const loginUser = asyncHandler(async (req, res, next) => {
+    await connectDB();
     const { email, password } = req.body;
 
     if (!email || !password) {

@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 
+// Enable global buffering so queries queue safely during connection setup
+mongoose.set('bufferCommands', true);
+
 let cached = global.mongoose;
 
 if (!cached) {
@@ -7,18 +10,19 @@ if (!cached) {
 }
 
 async function connectDB() {
-  if (cached.conn) {
+  if (cached.conn && mongoose.connection.readyState === 1) {
     return cached.conn;
   }
 
   if (!cached.promise) {
     const opts = {
-      bufferCommands: false,
+      serverSelectionTimeoutMS: 5000,
     };
+    const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/roamly';
 
-    cached.promise = mongoose.connect(process.env.MONGODB_URI, opts).then((mongoose) => {
+    cached.promise = mongoose.connect(uri, opts).then((m) => {
       console.log('MongoDB Connected Successfully');
-      return mongoose;
+      return m;
     });
   }
 

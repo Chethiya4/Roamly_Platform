@@ -48,7 +48,7 @@
     }
     .auth-logo span { color: var(--red); }
 
-    /* The two cards container */
+    /* Selection cards container */
     .auth-cards {
       display: grid;
       grid-template-columns: 1fr;
@@ -354,13 +354,19 @@
             <div class="auth-error" id="a-login-err"></div>
             <div class="auth-field">
               <label for="a-login-email">Admin Email</label>
-              <input type="email" id="a-login-email" placeholder="admin123@gmail.com" autocomplete="email" />
+              <input type="email" id="a-login-email" value="admin123@gmail.com" placeholder="admin123@gmail.com" autocomplete="email" />
             </div>
             <div class="auth-field">
               <label for="a-login-pass">Password</label>
-              <input type="password" id="a-login-pass" placeholder="••••••••" autocomplete="current-password" />
+              <input type="password" id="a-login-pass" value="admin123" placeholder="••••••••" autocomplete="current-password" />
             </div>
             <button class="auth-submit" id="a-login-btn">Sign In to Admin Portal</button>
+
+            <div style="margin-top:18px; padding:12px 14px; background:rgba(215,38,61,0.06); border:1px solid rgba(215,38,61,0.2); border-radius:var(--radius-sm); font-size:0.82rem; color:var(--ink-soft); line-height:1.4;">
+              <strong style="color:var(--red);">🔑 Demo Admin Account:</strong><br>
+              Email: <code style="background:var(--bg); padding:2px 6px; border-radius:4px;">admin123@gmail.com</code><br>
+              Password: <code style="background:var(--bg); padding:2px 6px; border-radius:4px;">admin123</code>
+            </div>
           </div>
           
         </div><!-- /auth-body -->
@@ -410,8 +416,10 @@ function clearErr(elId) {
 }
 function setBtn(id, disabled, label) {
   const el = document.getElementById(id);
-  el.disabled = disabled;
-  el.textContent = label;
+  if (el) {
+    el.disabled = disabled;
+    el.textContent = label;
+  }
 }
 
 async function apiPost(url, body) {
@@ -424,23 +432,19 @@ async function apiPost(url, body) {
 }
 
 function storeAndRedirect(data) {
-  // Clear any potential stale legacy keys to avoid conflicts
   localStorage.removeItem('businessUser');
   localStorage.removeItem('user');
 
-  // Unified storage key used across the site
   localStorage.setItem('roamlyUser', JSON.stringify({
     token: data.token,
     role:  data.role,
     name:  data.name,
     _id:   data._id
   }));
-  // Also write granular keys
   localStorage.setItem('roamly_token', data.token);
   localStorage.setItem('roamly_role',  data.role);
   localStorage.setItem('roamly_name',  data.name);
 
-  // Redirect purely based on the returned role
   const dest = {
     visitor:        'index.html',
     business_owner: 'business-dashboard.html',
@@ -500,12 +504,26 @@ function switchSub(sub) {
     document.getElementById('vform-' + s).classList.toggle('active', s === sub);
   });
 }
-document.getElementById('vsub-login').addEventListener('click', () => switchSub('login'));
-document.getElementById('vsub-register').addEventListener('click', () => switchSub('register'));
-document.getElementById('v-switch-login').addEventListener('click', (e) => { e.preventDefault(); switchSub('login'); });
+document.getElementById('vsub-login')?.addEventListener('click', () => switchSub('login'));
+document.getElementById('vsub-register')?.addEventListener('click', () => switchSub('register'));
+document.getElementById('v-switch-login')?.addEventListener('click', (e) => { e.preventDefault(); switchSub('login'); });
+
+// ── Keyboard Enter Listeners ─────────────────────────────────────────────────
+['v-login-email', 'v-login-pass'].forEach(id => {
+  document.getElementById(id)?.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('v-login-btn')?.click(); });
+});
+['v-reg-name', 'v-reg-email', 'v-reg-pass'].forEach(id => {
+  document.getElementById(id)?.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('v-reg-btn')?.click(); });
+});
+['b-login-email', 'b-login-pass'].forEach(id => {
+  document.getElementById(id)?.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('b-login-btn')?.click(); });
+});
+['a-login-email', 'a-login-pass'].forEach(id => {
+  document.getElementById(id)?.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('a-login-btn')?.click(); });
+});
 
 // ── Visitor Login ─────────────────────────────────────────────────────────────
-document.getElementById('v-login-btn').addEventListener('click', async () => {
+document.getElementById('v-login-btn')?.addEventListener('click', async () => {
   clearErr('v-login-err');
   const email    = document.getElementById('v-login-email').value.trim();
   const password = document.getElementById('v-login-pass').value;
@@ -528,7 +546,7 @@ document.getElementById('v-login-btn').addEventListener('click', async () => {
 });
 
 // ── Visitor Register ──────────────────────────────────────────────────────────
-document.getElementById('v-reg-btn').addEventListener('click', async () => {
+document.getElementById('v-reg-btn')?.addEventListener('click', async () => {
   clearErr('v-reg-err');
   const name     = document.getElementById('v-reg-name').value.trim();
   const email    = document.getElementById('v-reg-email').value.trim();
@@ -553,7 +571,7 @@ document.getElementById('v-reg-btn').addEventListener('click', async () => {
 });
 
 // ── Business Login ────────────────────────────────────────────────────────────
-document.getElementById('b-login-btn').addEventListener('click', async () => {
+document.getElementById('b-login-btn')?.addEventListener('click', async () => {
   clearErr('b-login-err');
   const email    = document.getElementById('b-login-email').value.trim();
   const password = document.getElementById('b-login-pass').value;
@@ -576,7 +594,7 @@ document.getElementById('b-login-btn').addEventListener('click', async () => {
 });
 
 // ── Admin Login ───────────────────────────────────────────────────────────────
-document.getElementById('a-login-btn').addEventListener('click', async () => {
+document.getElementById('a-login-btn')?.addEventListener('click', async () => {
   clearErr('a-login-err');
   const email    = document.getElementById('a-login-email').value.trim();
   const password = document.getElementById('a-login-pass').value;
@@ -590,11 +608,15 @@ document.getElementById('a-login-btn').addEventListener('click', async () => {
   try {
     const data = await apiPost('/api/auth/login', { email, password });
     if (data.success) {
-      storeAndRedirect(data.data);
+      if (data.data.role !== 'admin') {
+        showErr('a-login-err', 'Access Denied: Account is not an Administrator.', ['a-login-email']);
+      } else {
+        storeAndRedirect(data.data);
+      }
     } else {
-      showErr('a-login-err', data.message || 'Login failed.', ['a-login-email', 'a-login-pass']);
+      showErr('a-login-err', data.message || 'Login failed. Check email & password.', ['a-login-email', 'a-login-pass']);
     }
-  } catch { showErr('a-login-err', 'Network error. Please try again.'); }
+  } catch { showErr('a-login-err', 'Network error. Please ensure server is running.'); }
   setBtn('a-login-btn', false, 'Sign In to Admin Portal');
 });
 </script>
