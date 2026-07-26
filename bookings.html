@@ -26,10 +26,24 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
           </button>
           <ul class="lang-menu" id="langMenu" role="listbox" hidden>
-            <li><button type="button" class="active" data-code="EN">English</button></li>
-            <li><button type="button" data-code="TA">Tamil</button></li>
-            <li><button type="button" data-code="ZH">Chinese</button></li>
-          </ul>
+  <li>
+    <button type="button" class="active" data-code="EN">
+      English
+    </button>
+  </li>
+
+  <li>
+    <button type="button" data-code="SI">
+      සිංහල
+    </button>
+  </li>
+
+  <li>
+    <button type="button" data-code="TA">
+      தமிழ்
+    </button>
+  </li>
+</ul>
         </div>
 
         <div class="currency-select" role="group" aria-label="Currency" id="currencySelect">
@@ -58,51 +72,57 @@
   </header>
 
   <nav class="navbar">
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="map.html">Map</a></li>
-      <li><a href="bookings.html" class="active">Bookings</a></li>
-      <li><a href="emergency.html">Emergency</a></li>
-      <li><a href="gallery.html">Gallery</a></li>
-      <li><a href="about.html">About Us</a></li>
-    </ul>
-  </nav>
+  <ul>
+    <li><a href="index.html" data-i18n="home">Home</a></li>
+    <li><a href="map.html" data-i18n="map">Map</a></li>
+    <li><a href="bookings.html" class="active" data-i18n="bookings">Bookings</a></li>
+    <li><a href="emergency.html" data-i18n="emergency">Emergency</a></li>
+    <li><a href="gallery.html" data-i18n="gallery">Gallery</a></li>
+    <li><a href="about.html" data-i18n="about">About Us</a></li>
+  </ul>
+</nav>
 
   <main>
     <section class="section-padding scroll-reveal">
       <div class="container">
-        <h1 class="section-title">Bookings & Services</h1>
-        <p style="text-align:center; color: var(--ink-soft); margin-bottom: 50px; font-size: 1.1rem;">
-          Select the service you need to plan your perfect journey.
-        </p>
+      <h1 class="section-title" data-i18n="bookingTitle">
+       Bookings & Services
+      </h1>
+
+       <p
+         data-i18n="bookingSubtitle"
+         style="text-align:center; color: var(--ink-soft); margin-bottom: 50px; font-size: 1.1rem;"
+        >
+        Select the service you need to plan your perfect journey.
+       </p>
         
         <div class="services-grid">
           
           <div class="service-card" onclick="showResults('transport')">
             <img src="images/transport.jpg" alt="Transport" class="service-bg" onerror="this.src='https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?q=80&w=800'">
             <div class="service-content">
-              <h2>Transport</h2>
+             <h2 data-i18n="transport">Transport</h2>
             </div>
           </div>
 
           <div class="service-card" onclick="showResults('guides')">
             <img src="images/tourguide.jpg" alt="Tour Guides" class="service-bg" onerror="this.src='https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=800'">
             <div class="service-content">
-              <h2>Tour Guides</h2>
+              <h2 data-i18n="tourGuides">Tour Guides</h2>
             </div>
           </div>
 
           <div class="service-card" onclick="showResults('hotels')">
             <img src="images/hotel.jpg" alt="Hotels" class="service-bg" onerror="this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800'">
             <div class="service-content">
-              <h2>Hotels & Accommodations</h2>
+              <h2 data-i18n="hotels">Hotels & Accommodations</h2>
             </div>
           </div>
 
           <div class="service-card" onclick="showResults('restaurants')">
             <img src="images/resturant.jpg" alt="Restaurants" class="service-bg" onerror="this.src='https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=800'">
             <div class="service-content">
-              <h2>Restaurants</h2>
+              <h2 data-i18n="restaurants">Restaurants</h2>
             </div>
           </div>
 
@@ -113,80 +133,100 @@
     <!-- NEW: 12-Item Local Directory Section -->
     <section class="section-padding scroll-reveal" style="background: var(--surface); border-top: 1px solid var(--line);">
       <div class="container">
-        <h2 class="section-title">Local Directory & Essentials</h2>
+       <h2 class="section-title" data-i18n="directoryTitle">
+Local Directory & Essentials
+</h2>
         
         <div class="category-grid">
           
           <div class="category-btn" onclick="showResults('cafes')">
             <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop" alt="Cafes">
             <div class="category-btn-overlay"></div>
-            <span>Cafes</span>
+            <span data-i18n="cafes">Cafes</span>
           </div>
 
           <div class="category-btn" onclick="showResults('supermarkets')">
             <img src="https://images.unsplash.com/photo-1578916171728-46686eac8d58?q=80&w=400&auto=format&fit=crop" alt="Supermarkets">
             <div class="category-btn-overlay"></div>
-            <span>Supermarkets & Grocery</span>
+            <span data-i18n="supermarkets">
+  Supermarkets & Grocery
+</span>
           </div>
 
           <div class="category-btn" onclick="showResults('pharmacies')">
             <img src="https://images.unsplash.com/photo-1585435557343-3b092031a831?q=80&w=400&auto=format&fit=crop" alt="Pharmacies">
             <div class="category-btn-overlay"></div>
-            <span>Pharmacies & Medical</span>
+           <span data-i18n="pharmacies">
+  Pharmacies & Medical
+</span>
           </div>
 
           <div class="category-btn" onclick="showResults('atms')">
             <img src="https://images.unsplash.com/photo-1554524275-ebcb239eb88d?q=80&w=400&auto=format&fit=crop" alt="ATMs">
             <div class="category-btn-overlay"></div>
-            <span>ATMs</span>
+            <span data-i18n="atms">ATMs</span>
           </div>
 
           <div class="category-btn" onclick="showResults('fuel')">
             <img src="https://images.unsplash.com/photo-1572051659752-d35fb4c441dc?q=80&w=400&auto=format&fit=crop" alt="Fuel">
             <div class="category-btn-overlay"></div>
-            <span>Fuel / Charging</span>
+            <span data-i18n="fuel">
+  Fuel / Charging
+</span>
           </div>
 
           <div class="category-btn" onclick="showResults('rental')">
             <img src="https://images.unsplash.com/photo-1518987048-93e29699e79a?q=80&w=400&auto=format&fit=crop" alt="Rental Services">
             <div class="category-btn-overlay"></div>
-            <span>Rental Services</span>
+            <span data-i18n="rental">
+  Rental Services
+</span>
           </div>
 
           <div class="category-btn" onclick="showResults('safaris')">
             <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=400&auto=format&fit=crop" alt="Safaris">
             <div class="category-btn-overlay"></div>
-            <span>Safaries</span>
+           <span data-i18n="safaris">Safaris</span>
           </div>
 
           <div class="category-btn" onclick="showResults('adventure')">
             <img src="https://images.unsplash.com/photo-1533587851505-d119e13bf0b5?q=80&w=400&auto=format&fit=crop" alt="Adventure">
             <div class="category-btn-overlay"></div>
-            <span>Adventure Activities</span>
+            <span data-i18n="adventure">
+  Adventure Activities
+</span>
           </div>
 
           <div class="category-btn" onclick="showResults('police')">
             <img src="https://images.unsplash.com/photo-1587829741301-dc798b83add3?q=80&w=400&auto=format&fit=crop" alt="Police">
             <div class="category-btn-overlay"></div>
-            <span>Police Stations</span>
+           <span data-i18n="police">
+  Police Stations
+</span>
           </div>
 
           <div class="category-btn" onclick="showResults('laundry')">
             <img src="https://images.unsplash.com/photo-1517677208171-0bc6725a3e60?q=80&w=400&auto=format&fit=crop" alt="Laundry">
             <div class="category-btn-overlay"></div>
-            <span>Laundry Stations</span>
+            <span data-i18n="laundry">
+  Laundry Stations
+</span>
           </div>
 
           <div class="category-btn" onclick="showResults('spa')">
             <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=400&auto=format&fit=crop" alt="Saloons and Spa">
             <div class="category-btn-overlay"></div>
-            <span>Saloons & Spa</span>
+            <span data-i18n="spa">
+  Salons & Spa
+</span>
           </div>
 
           <div class="category-btn" onclick="showResults('gym')">
             <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=400&auto=format&fit=crop" alt="Gym & Yoga">
             <div class="category-btn-overlay"></div>
-            <span>Gym / Yoga Centers</span>
+          <span data-i18n="gym">
+  Gym / Yoga Centers
+</span>
           </div>
 
         </div>
@@ -244,13 +284,29 @@
         <section class="section-padding scroll-reveal" style="background: var(--surface); border-top: 1px solid var(--line); text-align: center;">
       <div class="container">
         <div style="max-width: 650px; margin: 0 auto; background: var(--bg); padding: 50px 30px; border-radius: var(--radius-lg); box-shadow: var(--shadow); border: 1px solid var(--line);">
-          <h2 style="font-family: var(--font-display); font-size: 2.2rem; margin-bottom: 12px; color: var(--ink);">Are you a service provider?</h2>
-          <p style="color: var(--ink-soft); margin-bottom: 30px; font-size: 1.05rem;">Join Roamly's growing network and reach thousands of travellers daily. Grow your business with us.</p>
+         <h2
+  data-i18n="providerTitle"
+  style="font-family: var(--font-display); font-size: 2.2rem; margin-bottom: 12px; color: var(--ink);"
+>
+  Are you a service provider?
+</h2>
+        <p
+  data-i18n="providerDesc"
+  style="color: var(--ink-soft); margin-bottom: 30px; font-size: 1.05rem;"
+>
+  Join Roamly's growing network and reach thousands of
+  travellers daily. Grow your business with us.
+</p>
           
           <!-- Updated Button: Now links directly to the Business Portal -->
-          <a href="business.html" class="btn-primary" style="display: inline-block; font-size: 1.05rem; padding: 14px 36px; border-radius: var(--radius-md);">
-            Go to Business Portal
-          </a>
+          <a
+  href="business.html"
+  class="btn-primary"
+  data-i18n="businessPortal"
+  style="display: inline-block; font-size: 1.05rem; padding: 14px 36px; border-radius: var(--radius-md);"
+>
+  Go to Business Portal
+</a>
           
         </div>
       </div>
@@ -265,13 +321,16 @@
       </div>
       <div class="footer-col">
         <h4>Quick Links</h4>
-        <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="map.html">Map</a></li>
-          <li><a href="bookings.html">Bookings</a></li>
-          <li><a href="gallery.html">Gallery</a></li>
-          <li><a href="about.html">About Us</a></li>
-        </ul>
+        <nav class="navbar">
+    <ul>
+      <li><a href="index.html" data-i18n="home">Home</a></li>
+<li><a href="index.html" data-i18n="home">Home</a></li>
+<li><a href="map.html" data-i18n="map">Map</a></li>
+<li><a href="bookings.html" class="active" data-i18n="bookings">Bookings</a></li>
+<li><a href="emergency.html" data-i18n="emergency">Emergency</a></li>
+<li><a href="gallery.html" data-i18n="gallery">Gallery</a></li>
+<li><a href="about.html" data-i18n="about">About Us</a></li>
+  </nav>
       </div>
       <div class="footer-col">
         <h4>Emergency Numbers</h4>
@@ -298,7 +357,8 @@
     </div>
   </footer>
 
-  <script src="script.js"></script>
+  <script src="translations.js"></script>
+<script src="script.js"></script>
 
   <script>
     const servicesDB = {
@@ -538,5 +598,6 @@
       });
     }
   </script>
+  <script src="translations.js"></script>
 </body>
 </html>
