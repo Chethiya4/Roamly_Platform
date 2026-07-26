@@ -1,6 +1,10 @@
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
+
+// Vercel compatible temporary path (/tmp)
+const baseDir = process.env.VERCEL ? os.tmpdir() : process.cwd();
 
 // Create required upload directories
 const uploadDirs = [
@@ -10,11 +14,12 @@ const uploadDirs = [
     'uploads/licenses',
     'uploads/nic',
     'uploads/listings',
-    'uploads/spots'
+    'uploads/spots',
+    'uploads/misc'
 ];
 
 uploadDirs.forEach(dir => {
-    const fullPath = path.join(process.cwd(), dir);
+    const fullPath = path.join(baseDir, dir);
     if (!fs.existsSync(fullPath)) {
         fs.mkdirSync(fullPath, { recursive: true });
     }
@@ -41,7 +46,6 @@ const storage = multer.diskStorage({
                 folder += 'nic';
                 break;
             case 'photos':
-                // 'spotPhotos' field → spots folder; 'photos' → listings folder
                 folder += 'listings';
                 break;
             case 'spotPhotos':
@@ -50,7 +54,7 @@ const storage = multer.diskStorage({
             default:
                 folder += 'misc';
         }
-        cb(null, path.join(process.cwd(), folder));
+        cb(null, path.join(baseDir, folder));
     },
     filename: function (req, file, cb) {
         const sanitizedOriginal = file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_');
@@ -64,14 +68,12 @@ const fileFilter = (req, file, cb) => {
     const isDocField = ['license', 'nic'].includes(file.fieldname);
 
     if (isImageField) {
-        // Accept jpg/jpeg/png/webp
         if (file.mimetype.match(/^image\/(jpeg|jpg|png|webp)$/)) {
             cb(null, true);
         } else {
             cb(new multer.MulterError('LIMIT_UNEXPECTED_FILE', file.fieldname), false);
         }
     } else if (isDocField) {
-        // Accept jpg/jpeg/png/pdf
         if (file.mimetype.match(/^image\/(jpeg|jpg|png)$/) || file.mimetype === 'application/pdf') {
             cb(null, true);
         } else {
@@ -82,10 +84,9 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
-// Multer base config (shared storage, filter)
+// Multer base config
 const multerBase = { storage, fileFilter, limits: { fileSize: 8 * 1024 * 1024 } };
 
-// Business registration upload (logo, cover, gallery, license, nic)
 const businessUpload = multer(multerBase).fields([
     { name: 'logo', maxCount: 1 },
     { name: 'cover', maxCount: 1 },
@@ -94,14 +95,12 @@ const businessUpload = multer(multerBase).fields([
     { name: 'nic', maxCount: 1 }
 ]);
 
-// Business image update upload (logo, cover, gallery only)
 const businessImageUpload = multer(multerBase).fields([
     { name: 'logo', maxCount: 1 },
     { name: 'cover', maxCount: 1 },
     { name: 'gallery', maxCount: 6 }
 ]);
 
-// Listing photos upload (up to 5 photos, 5MB max)
 const listingUpload = multer({
     storage,
     fileFilter,
@@ -110,7 +109,6 @@ const listingUpload = multer({
     { name: 'photos', maxCount: 5 }
 ]);
 
-// Tourist spot photos upload (up to 5 photos, 5MB max, jpg/jpeg/png/webp)
 const spotUpload = multer({
     storage,
     fileFilter,

@@ -60,10 +60,8 @@ const DISTRICTS = [
     { name: 'Hambantota',     province: 'Southern Province', coverImage: 'images/yala1.jpg' },
 ];
 
-const seed = async () => {
+const seedDestinations = async () => {
     try {
-        await connectDB();
-
         let created = 0;
         let updated = 0;
 
@@ -75,20 +73,22 @@ const seed = async () => {
             );
 
             if (result.upsertedCount > 0) {
-                console.log(`  ✓ Created: ${district.name} (${district.province})`);
                 created++;
             } else {
-                console.log(`  ✓ Updated: ${district.name}`);
                 updated++;
             }
         }
-
-        console.log(`\nDone. ${created} created, ${updated} updated.`);
-        process.exit(0);
+        console.log(`Seeded destinations: ${created} created, ${updated} updated.`);
     } catch (err) {
-        console.error('Seed failed:', err.message);
-        process.exit(1);
+        console.error('Seed destinations failed:', err.message);
     }
 };
 
-seed();
+module.exports = seedDestinations;
+
+if (require.main === module) {
+    connectDB().then(async () => {
+        await seedDestinations();
+        process.exit(0);
+    });
+}

@@ -165,32 +165,6 @@ const registerBusiness = asyncHandler(async (req, res, next) => {
             }
         }
 
-        // ── Validate required text fields ────────────────────────────────
-        const missingFields = [];
-
-        if (!personalEmail)   missingFields.push('personalEmail');
-        if (!password)        missingFields.push('password');
-        if (!confirmPassword) missingFields.push('confirmPassword');
-        if (!businessName)    missingFields.push('businessName');
-        if (!category)        missingFields.push('category');
-        if (!ownerFullName)   missingFields.push('ownerFullName');
-        if (!destination)     missingFields.push('destination');
-        if (!province)        missingFields.push('province');
-        if (!district)        missingFields.push('district');
-        if (!city)            missingFields.push('city');
-        if (!postalCode)      missingFields.push('postalCode');
-        if (!streetAddress)   missingFields.push('streetAddress');
-        if (!businessPhone)   missingFields.push('businessPhone');
-        if (!businessEmail)   missingFields.push('businessEmail');
-        if (!priceTier)       missingFields.push('priceTier');
-
-        if (missingFields.length > 0) {
-            return res.status(400).json({
-                success: false,
-                message: `Missing required fields: ${missingFields.join(', ')}`
-            });
-        }
-
         // ── Validate password match ──────────────────────────────────────
         if (password !== confirmPassword) {
             return res.status(400).json({
@@ -208,11 +182,46 @@ const registerBusiness = asyncHandler(async (req, res, next) => {
         }
 
         // ── Validate destination exists ───────────────────────────────────
+        if (!destination) {
+            return res.status(400).json({
+                success: false,
+                message: 'Destination district is required'
+            });
+        }
+
         const destinationDoc = await Destination.findById(destination);
         if (!destinationDoc) {
             return res.status(400).json({
                 success: false,
                 message: `No destination found with id "${destination}". Choose a valid destination from /api/destinations.`
+            });
+        }
+
+        const districtName = district || destinationDoc.name;
+
+        // ── Validate required text fields ────────────────────────────────
+        const missingFields = [];
+
+        if (!personalEmail)   missingFields.push('personalEmail');
+        if (!password)        missingFields.push('password');
+        if (!confirmPassword) missingFields.push('confirmPassword');
+        if (!businessName)    missingFields.push('businessName');
+        if (!category)        missingFields.push('category');
+        if (!ownerFullName)   missingFields.push('ownerFullName');
+        if (!destination)     missingFields.push('destination');
+        if (!province)        missingFields.push('province');
+        if (!districtName)    missingFields.push('district');
+        if (!city)            missingFields.push('city');
+        if (!postalCode)      missingFields.push('postalCode');
+        if (!streetAddress)   missingFields.push('streetAddress');
+        if (!businessPhone)   missingFields.push('businessPhone');
+        if (!businessEmail)   missingFields.push('businessEmail');
+        if (!priceTier)       missingFields.push('priceTier');
+
+        if (missingFields.length > 0) {
+            return res.status(400).json({
+                success: false,
+                message: `Missing required fields: ${missingFields.join(', ')}`
             });
         }
 
@@ -269,7 +278,7 @@ const registerBusiness = asyncHandler(async (req, res, next) => {
 
             location: {
                 province,
-                district,
+                district: districtName,
                 city,
                 postalCode,
                 streetAddress,

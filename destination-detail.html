@@ -168,9 +168,9 @@
         <h2>Tourist Spots</h2>
         <p style="color:var(--ink-faint);font-size:0.88rem;margin-top:2px">Verified attractions and places to visit in this district.</p>
       </div>
-      <button class="btn-add-spot" onclick="openAddSpotModal()">
+      <button class="btn-add-spot" id="adminAddSpotBtn" style="display:none;" onclick="location.href='admin-dashboard.html'">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-        <span>Add Tourist Spot</span>
+        <span>Manage Spots (Admin) →</span>
       </button>
     </div>
 
@@ -370,6 +370,13 @@ const DEST_ID   = params.get('id');
 const DEST_NAME = params.get('name');
 const user = JSON.parse(localStorage.getItem('roamlyUser') || 'null');
 const TOKEN = user?.token;
+
+if (user && user.role === 'admin') {
+  window.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('adminAddSpotBtn');
+    if (btn) btn.style.display = 'inline-flex';
+  });
+}
 
 let currentDestinationData = null;
 let allApprovedSpots = [];
@@ -732,14 +739,11 @@ async function load() {
 
 // ── Add Spot Modal Controls ───────────────────────────────────────────────────
 function openAddSpotModal() {
-  if (!user || !TOKEN) {
-    alert('Please sign in to submit a tourist spot.');
-    window.location.href = 'auth.html';
+  if (!user || user.role !== 'admin') {
+    alert('Tourist spot creation is restricted to Administrators in the Admin Dashboard.');
     return;
   }
-  document.getElementById('addSpotModal').classList.add('active');
-  document.getElementById('spotFormError').style.display = 'none';
-  document.getElementById('spotFormSuccess').style.display = 'none';
+  window.location.href = 'admin-dashboard.html';
 }
 
 function closeAddSpotModal() {

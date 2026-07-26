@@ -9,7 +9,11 @@ const BusinessSchema = new mongoose.Schema({
 
     category: { 
         type: String, 
-        enum: ['Hotel','Restaurant','Vehicle Rental','Tour Guide','Camping','Adventure','Cafe','Homestay'], 
+        enum: [
+            'Hotel','Restaurant','Rental','Vehicle Rental','Supermarket','Pharmacy','Cafe','TourGuide','Tour Guide',
+            'TravelAgency','SouvenirShop','LaundryService','SpaWellness','MedicalCenter','FuelStation','ATM',
+            'Camping','Adventure','Homestay'
+        ], 
         required: true 
     },
     registrationNumber: { type: String },

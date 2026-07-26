@@ -8,13 +8,14 @@ const mongoSanitize = require('express-mongo-sanitize');
 const compression = require('compression');
 const mongoose = require('mongoose');
 const connectDB = require('./config/db');
+const seedAdmin = require('./scripts/seedAdmin');
 const { errorHandler } = require('./middleware/errorMiddleware');
 
 // Load environment variables
 dotenv.config();
 
-// Connect to MongoDB
-connectDB();
+// Connect to MongoDB and seed Admin
+connectDB().then(() => seedAdmin());
 
 const app = express();
 const PORT = process.env.PORT || 5000;

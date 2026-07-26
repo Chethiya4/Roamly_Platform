@@ -248,6 +248,9 @@
         </div>
       </div>
     </div>
+    <div id="admin-link-wrapper" style="text-align: center; margin-top: 16px;">
+      <a href="#" onclick="showAuthPanel('admin'); return false;" style="color: rgba(255,255,255,0.7); font-size: 0.88rem; font-weight: 600; text-decoration: underline;">System Administrator? Sign In to Admin Portal →</a>
+    </div>
 
     <!-- ── AUTHENTICATION PANEL ── -->
     <div class="auth-panel-container" id="auth-panel-container">
@@ -345,6 +348,20 @@
             <div class="auth-divider">or</div>
             <p class="auth-note">New to Roamly Business? <a href="registration.html">Register your business →</a></p>
           </div>
+
+          <!-- ── ADMIN ── -->
+          <div class="auth-section" id="section-admin">
+            <div class="auth-error" id="a-login-err"></div>
+            <div class="auth-field">
+              <label for="a-login-email">Admin Email</label>
+              <input type="email" id="a-login-email" placeholder="admin123@gmail.com" autocomplete="email" />
+            </div>
+            <div class="auth-field">
+              <label for="a-login-pass">Password</label>
+              <input type="password" id="a-login-pass" placeholder="••••••••" autocomplete="current-password" />
+            </div>
+            <button class="auth-submit" id="a-login-btn">Sign In to Admin Portal</button>
+          </div>
           
         </div><!-- /auth-body -->
       </div><!-- /auth-card -->
@@ -355,15 +372,41 @@
 
 <script>
 // ── Helpers ───────────────────────────────────────────────────────────────────
-function showErr(elId, msg) {
+function showErr(elId, msg, fieldsToHighlight = []) {
   const el = document.getElementById(elId);
-  el.textContent = msg;
-  el.classList.add('show');
+  if (el) {
+    el.textContent = msg;
+    el.classList.add('show');
+  }
+  if (fieldsToHighlight && fieldsToHighlight.length) {
+    fieldsToHighlight.forEach(fieldId => {
+      const inputEl = document.getElementById(fieldId);
+      if (inputEl) {
+        inputEl.classList.add('is-invalid');
+        const clearHandler = () => {
+          inputEl.classList.remove('is-invalid');
+          inputEl.removeEventListener('input', clearHandler);
+        };
+        inputEl.addEventListener('input', clearHandler);
+      }
+    });
+    const first = document.getElementById(fieldsToHighlight[0]);
+    if (first) {
+      first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      try { first.focus(); } catch {}
+    }
+  }
 }
 function clearErr(elId) {
   const el = document.getElementById(elId);
-  el.textContent = '';
-  el.classList.remove('show');
+  if (el) {
+    el.textContent = '';
+    el.classList.remove('show');
+  }
+  const section = el ? el.closest('.auth-section, .auth-subform, .auth-card') : document;
+  if (section) {
+    section.querySelectorAll('.is-invalid').forEach(i => i.classList.remove('is-invalid'));
+  }
 }
 function setBtn(id, disabled, label) {
   const el = document.getElementById(id);
@@ -381,6 +424,10 @@ async function apiPost(url, body) {
 }
 
 function storeAndRedirect(data) {
+  // Clear any potential stale legacy keys to avoid conflicts
+  localStorage.removeItem('businessUser');
+  localStorage.removeItem('user');
+
   // Unified storage key used across the site
   localStorage.setItem('roamlyUser', JSON.stringify({
     token: data.token,
@@ -406,23 +453,45 @@ function storeAndRedirect(data) {
 // ── UI Views ──────────────────────────────────────────────────────────────────
 function showAuthPanel(type) {
   document.getElementById('auth-cards').style.display = 'none';
+  const adminWrapper = document.getElementById('admin-link-wrapper');
+  if (adminWrapper) adminWrapper.style.display = 'none';
   document.getElementById('auth-panel-container').classList.add('active');
   
+  document.getElementById('section-visitor').classList.remove('active');
+  document.getElementById('section-business').classList.remove('active');
+  document.getElementById('section-admin').classList.remove('active');
+
   if (type === 'visitor') {
     document.getElementById('auth-panel-title').textContent = "Visitor Portal";
     document.getElementById('section-visitor').classList.add('active');
-    document.getElementById('section-business').classList.remove('active');
-  } else {
+  } else if (type === 'business') {
     document.getElementById('auth-panel-title').textContent = "Business Portal";
     document.getElementById('section-business').classList.add('active');
-    document.getElementById('section-visitor').classList.remove('active');
+  } else if (type === 'admin') {
+    document.getElementById('auth-panel-title').textContent = "Admin Portal";
+    document.getElementById('section-admin').classList.add('active');
   }
 }
 
 function showCards() {
   document.getElementById('auth-panel-container').classList.remove('active');
   document.getElementById('auth-cards').style.display = 'grid';
+  const adminWrapper = document.getElementById('admin-link-wrapper');
+  if (adminWrapper) adminWrapper.style.display = 'block';
 }
+
+// ── Check URL Params on load ────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const tab = params.get('tab') || params.get('role');
+  if (tab === 'admin') {
+    showAuthPanel('admin');
+  } else if (tab === 'business' || tab === 'business_owner') {
+    showAuthPanel('business');
+  } else if (tab === 'visitor') {
+    showAuthPanel('visitor');
+  }
+});
 
 // ── Visitor sub-tabs ──────────────────────────────────────────────────────────
 function switchSub(sub) {
@@ -440,14 +509,19 @@ document.getElementById('v-login-btn').addEventListener('click', async () => {
   clearErr('v-login-err');
   const email    = document.getElementById('v-login-email').value.trim();
   const password = document.getElementById('v-login-pass').value;
-  if (!email || !password) return showErr('v-login-err', 'Please fill in all fields.');
+  
+  const toHighlight = [];
+  if (!email) toHighlight.push('v-login-email');
+  if (!password) toHighlight.push('v-login-pass');
+  if (toHighlight.length) return showErr('v-login-err', 'Please fill in all fields.', toHighlight);
+
   setBtn('v-login-btn', true, 'Signing in…');
   try {
     const data = await apiPost('/api/auth/login', { email, password });
     if (data.success) {
       storeAndRedirect(data.data);
     } else {
-      showErr('v-login-err', data.message || 'Login failed.');
+      showErr('v-login-err', data.message || 'Login failed.', ['v-login-email', 'v-login-pass']);
     }
   } catch { showErr('v-login-err', 'Network error. Please try again.'); }
   setBtn('v-login-btn', false, 'Sign In');
@@ -459,14 +533,20 @@ document.getElementById('v-reg-btn').addEventListener('click', async () => {
   const name     = document.getElementById('v-reg-name').value.trim();
   const email    = document.getElementById('v-reg-email').value.trim();
   const password = document.getElementById('v-reg-pass').value;
-  if (!name || !email || !password) return showErr('v-reg-err', 'Please fill in all fields.');
+
+  const toHighlight = [];
+  if (!name) toHighlight.push('v-reg-name');
+  if (!email) toHighlight.push('v-reg-email');
+  if (!password) toHighlight.push('v-reg-pass');
+  if (toHighlight.length) return showErr('v-reg-err', 'Please fill in all fields.', toHighlight);
+
   setBtn('v-reg-btn', true, 'Creating account…');
   try {
     const data = await apiPost('/api/auth/register', { name, email, password });
     if (data.success) {
-      storeAndRedirect(data.data); // Auto-login on success
+      storeAndRedirect(data.data);
     } else {
-      showErr('v-reg-err', data.message || 'Registration failed.');
+      showErr('v-reg-err', data.message || 'Registration failed.', ['v-reg-email']);
     }
   } catch { showErr('v-reg-err', 'Network error. Please try again.'); }
   setBtn('v-reg-btn', false, 'Create Account');
@@ -477,19 +557,45 @@ document.getElementById('b-login-btn').addEventListener('click', async () => {
   clearErr('b-login-err');
   const email    = document.getElementById('b-login-email').value.trim();
   const password = document.getElementById('b-login-pass').value;
-  if (!email || !password) return showErr('b-login-err', 'Please fill in all fields.');
+
+  const toHighlight = [];
+  if (!email) toHighlight.push('b-login-email');
+  if (!password) toHighlight.push('b-login-pass');
+  if (toHighlight.length) return showErr('b-login-err', 'Please fill in all fields.', toHighlight);
+
   setBtn('b-login-btn', true, 'Signing in…');
   try {
     const data = await apiPost('/api/auth/login', { email, password });
     if (data.success) {
-      // NOTE: We rely purely on the role returned by the server. 
-      // If an admin logs in here, they will be redirected to admin-dashboard.html
       storeAndRedirect(data.data);
     } else {
-      showErr('b-login-err', data.message || 'Login failed.');
+      showErr('b-login-err', data.message || 'Login failed.', ['b-login-email', 'b-login-pass']);
     }
   } catch { showErr('b-login-err', 'Network error. Please try again.'); }
   setBtn('b-login-btn', false, 'Sign In to Portal');
+});
+
+// ── Admin Login ───────────────────────────────────────────────────────────────
+document.getElementById('a-login-btn').addEventListener('click', async () => {
+  clearErr('a-login-err');
+  const email    = document.getElementById('a-login-email').value.trim();
+  const password = document.getElementById('a-login-pass').value;
+
+  const toHighlight = [];
+  if (!email) toHighlight.push('a-login-email');
+  if (!password) toHighlight.push('a-login-pass');
+  if (toHighlight.length) return showErr('a-login-err', 'Please fill in all fields.', toHighlight);
+
+  setBtn('a-login-btn', true, 'Signing in…');
+  try {
+    const data = await apiPost('/api/auth/login', { email, password });
+    if (data.success) {
+      storeAndRedirect(data.data);
+    } else {
+      showErr('a-login-err', data.message || 'Login failed.', ['a-login-email', 'a-login-pass']);
+    }
+  } catch { showErr('a-login-err', 'Network error. Please try again.'); }
+  setBtn('a-login-btn', false, 'Sign In to Admin Portal');
 });
 </script>
 </body>

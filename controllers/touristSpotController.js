@@ -77,9 +77,9 @@ const getSpotById = asyncHandler(async (req, res) => {
     res.status(200).json({ success: true, data: spot });
 });
 
-// @desc    Submit a new tourist spot
+// @desc    Create a new tourist spot
 // @route   POST /api/spots
-// @access  Private (any logged-in user)
+// @access  Private (Admin only)
 const createSpot = asyncHandler(async (req, res) => {
     const {
         destination,
@@ -104,8 +104,8 @@ const createSpot = asyncHandler(async (req, res) => {
 
     const spot = await TouristSpot.create({
         destination,
-        submittedBy: req.user._id,  // forced — never trust body
-        status: 'pending',          // forced — always starts pending
+        submittedBy: req.user._id,
+        status: req.user.role === 'admin' ? 'approved' : 'pending',
         name,
         description,
         category,
@@ -121,7 +121,7 @@ const createSpot = asyncHandler(async (req, res) => {
     res.status(201).json({
         success: true,
         data: spot,
-        message: 'Tourist spot submitted for review'
+        message: 'Tourist spot created successfully'
     });
 });
 

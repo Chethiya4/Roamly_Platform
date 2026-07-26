@@ -8,21 +8,20 @@ const mongoSanitize = require('express-mongo-sanitize');
 const compression = require('compression');
 const mongoose = require('mongoose');
 const connectDB = require('./config/db');
+const seedAdmin = require('./scripts/seedAdmin');
+const seedDestinations = require('./scripts/seedDestinations');
 const { errorHandler } = require('./middleware/errorMiddleware');
 
 // Load environment variables
 dotenv.config();
 
-// Connect to MongoDB
-connectDB();
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Production hardening middleware
-app.use(helmet({ contentSecurityPolicy: false })); // Sets secure HTTP headers, CSP disabled to allow inline scripts/fonts
+app.use(helmet({ contentSecurityPolicy: false }));
 
-// Prevent NoSQL injection manually to avoid Express 5 req.query read-only error
+// Prevent NoSQL injection
 app.use((req, res, next) => {
     if (req.body) mongoSanitize.sanitize(req.body);
     if (req.params) mongoSanitize.sanitize(req.params);
@@ -31,17 +30,35 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(compression()); // Compress response bodies
+app.use(compression());
 
 // Middleware
 if (process.env.NODE_ENV !== 'production') {
     app.use(morgan('dev'));
 }
-// TODO: Lock CORS to a specific origin before real deployment
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Serve static assets (CSS, JS, Images, Uploads)
+app.use(express.static(__dirname));
+
+// Handle DB connection and Seeding outside of middleware loop
+let isSeeded = false;
+const initializeDB = async () => {
+    try {
+        await connectDB();
+        if (!isSeeded) {
+            isSeeded = true;
+            seedAdmin().catch(console.error);
+            seedDestinations().catch(console.error);
+        }
+    } catch (err) {
+        console.error("Database Connection Error:", err);
+    }
+};
+initializeDB();
 
 // Route files
 const authRoutes        = require('./routes/authRoutes');
@@ -57,7 +74,7 @@ const userRoutes        = require('./routes/userRoutes');
 const tripRoutes        = require('./routes/tripRoutes');
 const trackingRoutes    = require('./routes/trackingRoutes');
 
-// Mount routers
+// Health check endpoint
 app.get('/api/health', (req, res) => {
     res.status(200).json({
         status: 'ok',
@@ -66,9 +83,10 @@ app.get('/api/health', (req, res) => {
     });
 });
 
+// Mount API routers
 app.use('/api/auth',         authRoutes);
-app.use('/api/business',     businessRoutes);   // owner dashboard + register
-app.use('/api/businesses',   businessRoutes);   // public discovery (plural — ARCHITECTURE.md convention)
+app.use('/api/business',     businessRoutes);
+app.use('/api/businesses',   businessRoutes);
 app.use('/api/admin',        adminRoutes);
 app.use('/api/listings',     listingRoutes);
 app.use('/api/destinations', destinationRoutes);
@@ -80,15 +98,29 @@ app.use('/api/users',        userRoutes);
 app.use('/api/trips',        tripRoutes);
 app.use('/api/tracking',     trackingRoutes);
 
-// Serve static frontend files
-app.use(express.static(__dirname));
+// Dynamic HTML page router (map.html, bookings.html, emergency.html, etc.)
+app.get('/:page.html', (req, res) => {
+    const page = req.params.page;
+    res.sendFile(path.join(__dirname, `${page}.html`), (err) => {
+        if (err) {
+            res.status(404).sendFile(path.join(__dirname, 'index.html'));
+        }
+    });
+});
 
-// Serve uploads statically
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Main Home Page Route
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // Global Error Handler Middleware
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-    console.log(`Roamly Backend Server running on port ${PORT}`);
-});
+// Only listen locally
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+    app.listen(PORT, () => {
+        console.log(`Roamly Backend Server running on port ${PORT}`);
+    });
+}
+
+module.exports = app;
