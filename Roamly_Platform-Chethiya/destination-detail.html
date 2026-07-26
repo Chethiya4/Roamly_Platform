@@ -611,7 +611,7 @@ function renderSpots() {
 
   grid.innerHTML = filtered.map((s, idx) => {
     const photo = (s.photos && s.photos[0]) || CATEGORY_PHOTOS[s.category] || DISTRICT_PHOTOS[currentDestinationData?.name] || 'images/colombo.jpg';
-    const feeText = s.entryFee ? `🎟️ LKR ${s.entryFee}` : '🎟️ Free Entry';
+    const feeText = s.entryFee ? `🎟️ ${window.formatPriceFromLKR ? window.formatPriceFromLKR(s.entryFee) : 'LKR ' + s.entryFee}` : '🎟️ Free Entry';
     const hoursText = s.openingHours ? `🕒 ${esc(s.openingHours)}` : '🕒 Open Daily';
 
     return `
@@ -653,7 +653,7 @@ function openSpotDetails(filteredIdx) {
   document.getElementById('detailModalStars').textContent = spot.averageRating ? `${stars(Math.round(spot.averageRating))} (${spot.averageRating})` : '★ 4.8 (Popular)';
   
   document.getElementById('detailModalHours').textContent = spot.openingHours ? `🕒 ${spot.openingHours}` : '🕒 Open Daily';
-  document.getElementById('detailModalFee').textContent = spot.entryFee ? `🎟️ LKR ${spot.entryFee}` : '🎟️ Free Entry';
+  document.getElementById('detailModalFee').textContent = spot.entryFee ? `🎟️ ${window.formatPriceFromLKR ? window.formatPriceFromLKR(spot.entryFee) : 'LKR ' + spot.entryFee}` : '🎟️ Free Entry';
   document.getElementById('detailModalDesc').textContent = spot.description || `Explore ${spot.name}, one of the most remarkable tourist attractions located in ${distName} district.`;
 
   const mapQuery = encodeURIComponent(`${spot.name} ${distName} Sri Lanka`);
@@ -904,6 +904,7 @@ async function loadReviews(targetId) {
     </div>`).join('');
 }
 
+window.addEventListener('currencyChange', renderSpots);
 load();
 </script>
 </body>

@@ -14,7 +14,7 @@ const UserSchema = new mongoose.Schema({
     authProvider: { type: String, enum: ['local', 'google', 'apple', 'facebook'], default: 'local' },
     role: { type: String, enum: ['visitor', 'business_owner', 'admin'], default: 'visitor' },
     active: { type: Boolean, default: true }
-}, { timestamps: true });
+}, { timestamps: true, bufferCommands: true });
 
 UserSchema.pre('save', async function() {
     if (!this.isModified('password') || !this.password) return;
@@ -26,4 +26,4 @@ UserSchema.methods.matchPassword = async function(enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 };
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.models.User || mongoose.model('User', UserSchema);

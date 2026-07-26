@@ -188,7 +188,7 @@ async function load() {
       <div class="listing-card">
         <h4>${esc(l.title)}</h4>
         <p>${esc(l.description?.slice(0,100) || '')}${(l.description||'').length>100?'…':''}</p>
-        ${l.price ? `<div style="margin-top:8px;font-weight:700;color:var(--red)">LKR ${esc(String(l.price))}</div>` : ''}
+        ${l.price ? `<div style="margin-top:8px;font-weight:700;color:var(--red)">${window.formatPriceFromLKR ? window.formatPriceFromLKR(l.price) : 'LKR ' + esc(String(l.price))}</div>` : ''}
       </div>`).join('');
   } else {
     grid.innerHTML = '<p style="color:var(--ink-faint)">No listings yet.</p>';
@@ -266,6 +266,7 @@ async function loadReviews() {
     </div>`).join('');
 }
 
+window.addEventListener('currencyChange', load);
 load();
 </script>
 </body>

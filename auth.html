@@ -422,8 +422,17 @@ function setBtn(id, disabled, label) {
   }
 }
 
+function getApiOrigin() {
+  if (window.location.protocol === 'file:' || (window.location.port !== '3000' && !window.location.hostname.includes('localhost'))) {
+    return 'http://localhost:3000';
+  }
+  return '';
+}
+
 async function apiPost(url, body) {
-  const res = await fetch(url, {
+  const origin = getApiOrigin();
+  const fullUrl = url.startsWith('http') ? url : (origin + url);
+  const res = await fetch(fullUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body)

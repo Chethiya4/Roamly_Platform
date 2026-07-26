@@ -560,10 +560,12 @@ Local Directory & Essentials
         const priceLabel = currentCategory === 'hotels' ? '/ night' : '';
         const isDir = servicesDB[currentCategory].isDir;
         
-        // Show price range ($$) for directory items, or exact price ($15) for booking items
-        const priceDisplay = item.priceRange 
-          ? `💰 ${item.priceRange}` 
-          : `💰 $${item.price} ${priceLabel}`;
+        // Format price based on active currency
+        const formattedPrice = item.priceRange 
+          ? item.priceRange 
+          : (window.formatPriceFromUSD ? window.formatPriceFromUSD(item.price) : `$${item.price}`) + (priceLabel ? ` ${priceLabel}` : '');
+        
+        const priceDisplay = `💰 ${formattedPrice}`;
 
         // Change Action Button to Directions if it is a directory item
         const actionButton = isDir 
@@ -597,6 +599,10 @@ Local Directory & Essentials
         `;
       });
     }
+
+    window.addEventListener('currencyChange', () => {
+      updateResults();
+    });
   </script>
   <script src="translations.js"></script>
 </body>

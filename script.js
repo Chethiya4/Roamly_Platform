@@ -270,7 +270,9 @@ document.addEventListener('DOMContentLoaded', () => {
       new google.translate.TranslateElement({
         pageLanguage: 'en',
         includedLanguages: 'en,si,ta,zh-CN,de,fr,es,ru,ja,ko,it,ar,hi',
-        autoDisplay: false
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false,
+        multilanguagePage: true
       }, 'google_translate_element');
     };
 
@@ -282,21 +284,24 @@ document.addEventListener('DOMContentLoaded', () => {
       document.head.appendChild(script);
     }
   }
+
   function suppressGoogleTranslateBanner() {
     if (document.documentElement) {
       document.documentElement.style.setProperty('top', '0px', 'important');
       document.documentElement.style.setProperty('position', 'static', 'important');
       document.documentElement.style.setProperty('margin-top', '0px', 'important');
+      document.documentElement.style.setProperty('padding-top', '0px', 'important');
     }
     if (document.body) {
       document.body.style.setProperty('top', '0px', 'important');
       document.body.style.setProperty('position', 'static', 'important');
       document.body.style.setProperty('margin-top', '0px', 'important');
+      document.body.style.setProperty('padding-top', '0px', 'important');
     }
 
-    const elements = document.querySelectorAll('iframe.goog-te-banner-frame, iframe[class*="goog"], iframe[src*="translate"], .goog-te-banner-frame, .goog-te-banner, .VIpgJd-yD54df-SkJuBc-i5tdBd, .VIpgJd-ZGain-SCstLd, #goog-gt-tt, .goog-te-balloon-frame');
+    const elements = document.querySelectorAll('iframe, .goog-te-banner-frame, .goog-te-banner, .VIpgJd-yD54df-SkJuBc-i5tdBd, .VIpgJd-ZGain-SCstLd, #goog-gt-tt, .goog-te-balloon-frame, .goog-tooltip');
     elements.forEach(el => {
-      if (!el.classList.contains('goog-te-combo') && !el.querySelector('.goog-te-combo')) {
+      if (!el.classList.contains('goog-te-combo') && !el.querySelector('.goog-te-combo') && el.id !== 'google_translate_element') {
         el.style.setProperty('display', 'none', 'important');
         el.style.setProperty('visibility', 'hidden', 'important');
         el.style.setProperty('height', '0px', 'important');
@@ -304,6 +309,8 @@ document.addEventListener('DOMContentLoaded', () => {
         el.style.setProperty('opacity', '0', 'important');
         el.style.setProperty('position', 'absolute', 'important');
         el.style.setProperty('top', '-9999px', 'important');
+        el.style.setProperty('left', '-9999px', 'important');
+        el.style.setProperty('z-index', '-99999', 'important');
       }
     });
   }
@@ -320,7 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  setInterval(suppressGoogleTranslateBanner, 300);
+  setInterval(suppressGoogleTranslateBanner, 100);
 
   initGoogleTranslateScript();
 
@@ -328,8 +335,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const langMenu = document.getElementById('langMenu');
   const langCode = document.getElementById('langCode');
 
-  const savedLang = localStorage.getItem('roamly_lang') || 'EN';
+  const savedLang = localStorage.getItem('roamly_lang') || localStorage.getItem('selectedLanguage') || 'EN';
   if (langCode) langCode.textContent = savedLang;
+  applyLanguage(savedLang);
 
   if (savedLang !== 'EN') {
     const targetLang = LANG_MAPPING[savedLang] || savedLang.toLowerCase();
@@ -355,9 +363,11 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.classList.add('active');
         langCode.textContent = code;
         localStorage.setItem('roamly_lang', code);
+        localStorage.setItem('selectedLanguage', code);
         langMenu.hidden = true;
         langTrigger.setAttribute('aria-expanded', 'false');
         
+        applyLanguage(code);
         applyGoogleTranslate(code);
       });
     });
@@ -374,15 +384,78 @@ document.addEventListener('DOMContentLoaded', () => {
 
 applyLanguage(savedLanguage);
 
-  const currencySelect = document.getElementById('currencySelect');
-  if (currencySelect) {
-    currencySelect.querySelectorAll('button').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        currencySelect.querySelectorAll('button').forEach((b) => b.classList.remove('active'));
-        btn.classList.add('active');
-      });
+  /* ---------------- CURRENCY SELECTOR INTEGRATION ---------------- */
+  window.formatPriceFromUSD = function(usdAmount, targetCurrency) {
+    const code = targetCurrency || localStorage.getItem('roamly_currency') || 'LKR';
+    const val = parseFloat(usdAmount);
+    if (isNaN(val)) return usdAmount;
+    if (code === 'LKR') {
+      return `LKR ${Math.round(val * 300).toLocaleString()}`;
+    } else if (code === 'EUR') {
+      return `€${Math.round(val * 0.92).toLocaleString()}`;
+    } else {
+      return `$${Math.round(val).toLocaleString()}`;
+    }
+  };
+
+  window.formatPriceFromLKR = function(lkrAmount, targetCurrency) {
+    const code = targetCurrency || localStorage.getItem('roamly_currency') || 'LKR';
+    const val = parseFloat(lkrAmount);
+    if (isNaN(val)) return lkrAmount;
+    if (code === 'USD') {
+      return `$${Math.round(val / 300).toLocaleString()}`;
+    } else if (code === 'EUR') {
+      return `€${Math.round(val / 325).toLocaleString()}`;
+    } else {
+      return `LKR ${Math.round(val).toLocaleString()}`;
+    }
+  };
+
+  function updateCurrencyUI(currency) {
+    const code = currency || localStorage.getItem('roamly_currency') || 'LKR';
+    
+    document.querySelectorAll('.currency-select button, #currencySelect button').forEach((btn) => {
+      const bCode = btn.dataset.currency || btn.textContent.trim();
+      btn.classList.toggle('active', bCode === code);
     });
+
+    document.querySelectorAll('[data-price-usd]').forEach(el => {
+      const usdVal = parseFloat(el.dataset.priceUsd);
+      if (!isNaN(usdVal)) {
+        const textNode = el.childNodes[0];
+        if (textNode && textNode.nodeType === Node.TEXT_NODE) {
+          textNode.nodeValue = window.formatPriceFromUSD(usdVal, code);
+        } else {
+          el.textContent = window.formatPriceFromUSD(usdVal, code);
+        }
+      }
+    });
+
+    document.querySelectorAll('[data-price-lkr]').forEach(el => {
+      const lkrVal = parseFloat(el.dataset.priceLkr);
+      if (!isNaN(lkrVal)) {
+        const textNode = el.childNodes[0];
+        if (textNode && textNode.nodeType === Node.TEXT_NODE) {
+          textNode.nodeValue = window.formatPriceFromLKR(lkrVal, code);
+        } else {
+          el.textContent = window.formatPriceFromLKR(lkrVal, code);
+        }
+      }
+    });
+
+    window.dispatchEvent(new CustomEvent('currencyChange', { detail: { currency: code } }));
   }
+
+  document.querySelectorAll('.currency-select button, #currencySelect button').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const code = btn.dataset.currency || btn.textContent.trim();
+      localStorage.setItem('roamly_currency', code);
+      updateCurrencyUI(code);
+    });
+  });
+
+  const savedCurrency = localStorage.getItem('roamly_currency') || 'LKR';
+  updateCurrencyUI(savedCurrency);
 
   /* ---------------- DARK MODE TOGGLE ---------------- */
   const darkModeToggle = document.getElementById('darkModeToggle');
