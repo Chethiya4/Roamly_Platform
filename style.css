@@ -170,7 +170,12 @@ body.dark-mode .tag { background: rgba(255, 255, 255, 0.08); color: #fff; }
 .locations-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
 .location-card { background: var(--bg); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm); cursor: pointer; transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease; transform: perspective(1000px) translateZ(0); }
 .location-card:hover { transform: perspective(1000px) translateZ(20px) translateY(-8px); box-shadow: var(--shadow); }
-.card-img { height: 190px; overflow: hidden; }
+.card-img {
+  position: relative;
+  height: 190px;
+  overflow: hidden;
+}
+
 .card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
 .location-card:hover .card-img img { transform: scale(1.08); }
 .card-info { padding: 20px; }
@@ -1258,41 +1263,148 @@ iframe[src*="translate"],
   display: none !important;
 }
 
-/* ---------- GOOGLE TRANSLATE CLEAN OVERRIDES ---------- */
-html, body {
-  top: 0px !important;
-  position: static !important;
-  margin-top: 0px !important;
+/* ==========================
+   Popular Location Wishlist
+========================== */
+
+.popular-heart-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+
+  width: 38px;
+  height: 38px;
+
+  border: 1px solid rgba(10, 27, 51, 0.12);
+  border-radius: 50%;
+ background: rgba(255, 255, 255, 0.70);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  z-index: 10;
+
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+
+  transition:
+    transform .2s ease,
+    box-shadow .2s ease,
+    background .2s ease;
 }
 
-iframe.goog-te-banner-frame,
-iframe[class*="goog"],
-iframe[src*="translate"],
-.goog-te-banner-frame,
-.goog-te-banner,
-.VIpgJd-yD54df-SkJuBc-i5tdBd,
-.VIpgJd-ZGain-SCstLd,
-#goog-gt-tt,
-.goog-te-balloon-frame,
-.goog-tooltip,
-.goog-tooltip:hover {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  height: 0 !important;
-  width: 0 !important;
-  max-height: 0 !important;
-  overflow: hidden !important;
-  pointer-events: none !important;
-  position: absolute !important;
-  top: -9999px !important;
+.popular-heart-btn:hover {
+  transform: scale(1.08);
+  background: #fff;
+  box-shadow: 0 8px 20px rgba(0,0,0,.22);
 }
 
-.goog-text-highlight {
-  background-color: transparent !important;
-  box-shadow: none !important;
+.popular-heart-btn .heart-icon {
+  font-size: 20px;
+  color: #0A2947;
+  pointer-events: none;
+
+  transition:
+    color .25s ease,
+    transform .25s ease;
 }
 
-#google_translate_element {
-  display: none !important;
+.popular-heart-btn.active .heart-icon {
+  color: #E63946;
 }
+
+.popular-heart-btn.active {
+  animation: heartPop .35s ease;
+}
+
+@keyframes heartPop {
+  0% {
+    transform: scale(1);
+  }
+
+  40% {
+    transform: scale(1.30);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Flying heart */
+
+.flying-wishlist-heart {
+  position: fixed;
+  z-index: 99999;
+   pointer-events: none;
+
+  color: #E5233F;
+  font-size: 28px;
+  line-height: 1;
+
+  pointer-events: none;
+
+  transform: translate(-50%, -50%) scale(1);
+  filter: drop-shadow(0 6px 12px rgba(229, 35, 63, 0.45));
+
+  transition:
+    left .9s cubic-bezier(.18,.89,.32,1.28),
+    top .9s cubic-bezier(.18,.89,.32,1.28),
+    transform .9s ease,
+    opacity .9s ease;
+}
+.flying-wishlist-heart{
+    animation: flyingHeartPop .25s ease;
+}
+
+@keyframes flyingHeartPop{
+    0%{
+        transform:translate(-50%,-50%) scale(.4);
+    }
+
+    60%{
+        transform:translate(-50%,-50%) scale(1.35);
+    }
+
+    100%{
+        transform:translate(-50%,-50%) scale(1);
+    }
+}
+.popular-heart-btn.active .heart-icon {
+  animation: wishlistHeartBounce 0.45s ease;
+}
+
+@keyframes wishlistHeartBounce {
+  0% {
+    transform: scale(1);
+  }
+
+  35% {
+    transform: scale(1.35);
+  }
+
+  65% {
+    transform: scale(0.9);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+.heart-particle {
+    position: fixed;
+    z-index: 9998;
+    pointer-events: none;
+
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+    background: #ff4d6d;
+
+    box-shadow: 0 0 8px rgba(255,77,109,.45);
+}
+
+
+
