@@ -27,8 +27,8 @@
           </button>
           <ul class="lang-menu" id="langMenu" role="listbox" hidden>
             <li><button type="button" class="active" data-code="EN">English</button></li>
-            <li><button type="button" data-code="TA">Tamil</button></li>
-            <li><button type="button" data-code="ZH">Chinese</button></li>
+            <li><button type="button" data-code="SI">සිංහල</button></li>
+<li><button type="button" data-code="TA">தமிழ்</button></li>
           </ul>
         </div>
 
@@ -59,12 +59,12 @@
 
   <nav class="navbar">
     <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="map.html">Map</a></li>
-      <li><a href="bookings.html">Bookings</a></li>
-      <li><a href="emergency.html">Emergency</a></li>
-      <li><a href="gallery.html" class="active">Gallery</a></li>
-      <li><a href="about.html">About Us</a></li>
+      <li><a href="index.html" data-i18n="home">Home</a></li>
+<li><a href="map.html" data-i18n="map">Map</a></li>
+<li><a href="bookings.html" data-i18n="bookings">Bookings</a></li>
+<li><a href="emergency.html" data-i18n="emergency">Emergency</a></li>
+<li><a href="gallery.html" class="active" data-i18n="gallery">Gallery</a></li>
+<li><a href="about.html" data-i18n="about">About Us</a></li>
     </ul>
   </nav>
 
@@ -72,17 +72,24 @@
     
     <section class="section-padding scroll-reveal">
       <div class="container">
-        <h1 class="section-title">Roamly Gallery</h1>
-        <p style="text-align:center; color: var(--ink-soft); font-size: 1.1rem;">
-          A visual journey through the wonders of Sri Lanka. Hover over a photo to pause the scroll. Click to view it in full size.
-        </p>
+       <h1 class="section-title" data-i18n="galleryTitle">
+    Roamly Gallery
+</h1>
+       <p
+data-i18n="gallerySubtitle"
+style="text-align:center; color: var(--ink-soft); font-size: 1.1rem;">
       </div>
     </section>
 
     <!-- Category 1: Tourist Destinations -->
     <section class="section-padding scroll-reveal" style="background: var(--bg); padding-bottom: 80px;">
       <div class="container">
-        <h2 class="section-title" style="font-size: 2rem; margin-bottom: 40px; text-align: left;">Tourist Destinations</h2>
+        <h2
+class="section-title"
+data-i18n="touristDestinations"
+style="font-size: 2rem; margin-bottom: 40px; text-align: left;">
+Tourist Destinations
+</h2>
       </div>
       
       <!-- Seamless Scrolling Track -->
@@ -113,7 +120,12 @@
     <!-- Category 2: Cultural Events -->
     <section class="section-padding scroll-reveal" style="background: var(--surface); padding-bottom: 80px;">
       <div class="container">
-        <h2 class="section-title" style="font-size: 2rem; margin-bottom: 40px; text-align: left;">Cultural Events</h2>
+<h2
+class="section-title"
+data-i18n="culturalEvents"
+style="font-size: 2rem; margin-bottom: 40px; text-align: left;">
+Cultural Events
+</h2>
       </div>
       
       <div class="scrolling-gallery">
@@ -142,7 +154,12 @@
     <!-- Category 3: Famous Industries -->
     <section class="section-padding scroll-reveal" style="background: var(--bg); padding-bottom: 80px;">
       <div class="container">
-        <h2 class="section-title" style="font-size: 2rem; margin-bottom: 40px; text-align: left;">Famous Industries</h2>
+       <h2
+class="section-title"
+data-i18n="famousIndustries"
+style="font-size: 2rem; margin-bottom: 40px; text-align: left;">
+Famous Industries
+</h2>
       </div>
       
       <div class="scrolling-gallery">
@@ -178,11 +195,12 @@
       <div class="footer-col">
         <h4>Quick Links</h4>
         <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="map.html">Map</a></li>
-          <li><a href="bookings.html">Bookings</a></li>
-          <li><a href="gallery.html">Gallery</a></li>
-          <li><a href="about.html">About Us</a></li>
+         <li><a href="index.html" data-i18n="home">Home</a></li>
+          <li><a href="map.html" data-i18n="map">Map</a></li>
+          <li><a href="bookings.html" data-i18n="bookings">Bookings</a></li>
+          <li><a href="emergency.html" data-i18n="emergency">Emergency</a></li>
+         <li><a href="gallery.html" class="active" data-i18n="gallery">Gallery</a></li>
+         <li><a href="about.html" data-i18n="about">About Us</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -216,6 +234,7 @@
     <img id="lightboxImg" src="" alt="Expanded Image" onclick="event.stopPropagation()">
   </div>
 
+  <script src="translations.js"></script>
   <script src="script.js"></script>
   
   <script>

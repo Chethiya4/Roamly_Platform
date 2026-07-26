@@ -168,10 +168,11 @@
             <span id="langCode">EN</span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
           </button>
-          <ul class="lang-menu" id="langMenu" role="listbox" hidden>
-            <li><button type="button" class="active" data-code="EN">English</button></li>
-            <li><button type="button" data-code="TA">Tamil</button></li>
-            <li><button type="button" data-code="ZH">Chinese</button></li>
+         <ul class="lang-menu" id="langMenu" role="listbox" hidden>
+           <li><button type="button" class="active" data-code="EN">English</button></li>
+           <li><button type="button" data-code="SI">සිංහල</button></li>
+           <li><button type="button" data-code="TA">தமிழ்</button></li>
+
           </ul>
         </div>
 
@@ -182,7 +183,7 @@
           <button type="button" data-currency="EUR">EUR</button>
         </div>
 
-        <button type="button" class="btn-signin">Sign In</button>
+        <button type="button" class="btn-signin" data-i18n="signIn">Sign In</button>
 
         <button type="button" class="icon-btn" aria-label="Wishlist">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -203,12 +204,12 @@
 
   <nav class="navbar">
     <ul>
-      <li><a href="index.html" class="active">Home</a></li>
-      <li><a href="map.html">Map</a></li>
-      <li><a href="bookings.html">Bookings</a></li>
-      <li><a href="emergency.html">Emergency</a></li>
-      <li><a href="gallery.html">Gallery</a></li>
-      <li><a href="about.html">About Us</a></li>
+     <li><a href="index.html" class="active" data-i18n="home">Home</a></li>
+     <li><a href="map.html" data-i18n="map">Map</a></li>
+     <li><a href="bookings.html" data-i18n="bookings">Bookings</a></li>
+     <li><a href="emergency.html" data-i18n="emergency">Emergency</a></li>
+     <li><a href="gallery.html" data-i18n="gallery">Gallery</a></li>
+     <li><a href="about.html" data-i18n="about">About Us</a></li>
     </ul>
   </nav>
 
@@ -237,20 +238,47 @@
       <div class="hero-overlay"></div>
 
       <div class="hero-content">
-        <h1>Plan your Tour with <span>Roamly</span></h1>
-        <div class="hero-buttons">
-          <button type="button" class="btn-primary" onclick="window.location.href='map.html'">Explore</button>
-          <button type="button" class="btn-outline" onclick="window.location.href='plan.html'">Plan a Trip</button>
-        </div>
+     <h1>
+  <span class="hero-text" data-i18n="heroTitle">Plan your Tour with</span>
+  <span class="hero-brand">Roamly</span>
+</h1>
+
+<div class="hero-buttons">
+  <button
+    type="button"
+    class="btn-primary"
+    onclick="window.location.href='map.html'"
+    data-i18n="explore"
+  >
+    Explore
+  </button>
+
+  <button
+    type="button"
+    class="btn-outline"
+    onclick="window.location.href='plan.html'"
+    data-i18n="planTrip"
+  >
+    Plan a Trip
+  </button>
+</div>
       </div>
     </section>
 
     <section class="search-section section-padding scroll-reveal">
       <div class="container">
-        <h2 class="section-title">Where do you want to go?</h2>
+       <h2 class="section-title" data-i18n="homeSearchTitle">
+          Where do you want to go?
+        </h2>
         <div style="position:relative;max-width:600px;margin:0 auto 20px;">
           <div class="search-box" id="homeSearchBox">
-            <input type="text" id="homeSearchInput" placeholder="Search for destinations, spots, or businesses..." autocomplete="off">
+           <input
+              type="text"
+              id="homeSearchInput"
+              placeholder="Search for destinations, spots, or businesses..."
+              data-i18n-placeholder="searchPlaceholder"
+              autocomplete="off"
+              >
             <button type="button" class="btn-search" id="homeSearchBtn">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/>
@@ -261,7 +289,7 @@
           <div id="searchDropdown" style="display:none;position:absolute;top:calc(100% + 8px);left:0;right:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-md);box-shadow:var(--shadow);z-index:100;max-height:400px;overflow-y:auto;padding:12px;"></div>
         </div>
         <div class="popular-tags">
-          <span>Popular:</span>
+          <span data-i18n="popular">Popular:</span>
           <button type="button" class="tag" onclick="document.getElementById('homeSearchInput').value=this.textContent;runSearch()">Sigiriya</button>
           <button type="button" class="tag" onclick="document.getElementById('homeSearchInput').value=this.textContent;runSearch()">Ella</button>
           <button type="button" class="tag" onclick="document.getElementById('homeSearchInput').value=this.textContent;runSearch()">Galle Fort</button>
@@ -277,7 +305,9 @@
       const dd = document.getElementById('searchDropdown');
       if (!q) { dd.style.display = 'none'; return; }
       dd.style.display = 'block';
-      dd.innerHTML = '<p style="color:var(--ink-faint);text-align:center;padding:12px">Searching…</p>';
+      dd.innerHTML = `<p style="color:var(--ink-faint);text-align:center;padding:12px">
+  ${getTranslation('searching')}
+</p>`;
       try {
         const res  = await fetch('/api/search?q=' + encodeURIComponent(q));
         const body = await res.json();
@@ -285,33 +315,71 @@
         const d = body.data;
         let html = '';
         if (d.destinations && d.destinations.length) {
-          html += '<div style="font-size:0.72rem;font-weight:700;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Destinations</div>';
-          d.destinations.forEach(x => {
-            html += `<a href="destination-detail.html?id=${esc(x._id)}" style="display:flex;align-items:center;gap:10px;padding:8px 6px;border-radius:var(--radius-sm);color:var(--ink);text-decoration:none;transition:0.15s" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background=''">
-              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              <span>${esc(x.name)} <small style="color:var(--ink-faint)">${esc(x.province||'')}</small></span></a>`;
-          });
-        }
-        if (d.spots && d.spots.length) {
-          html += '<div style="font-size:0.72rem;font-weight:700;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.5px;margin:10px 0 6px">Tourist Spots</div>';
-          d.spots.forEach(x => {
-            html += `<a href="destination-detail.html?id=${esc(x.destination?._id||x.destination||'')}" style="display:flex;align-items:center;gap:10px;padding:8px 6px;border-radius:var(--radius-sm);color:var(--ink);text-decoration:none;transition:0.15s" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background=''">
-              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-              <span>${esc(x.name)} <small style="color:var(--ink-faint)">${esc(x.category||'')} · ${esc(x.destination?.name||'')}</small></span></a>`;
-          });
-        }
-        if (d.businesses && d.businesses.length) {
-          html += '<div style="font-size:0.72rem;font-weight:700;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.5px;margin:10px 0 6px">Businesses</div>';
-          d.businesses.forEach(x => {
-            html += `<a href="business-detail.html?id=${esc(x._id)}" style="display:flex;align-items:center;gap:10px;padding:8px 6px;border-radius:var(--radius-sm);color:var(--ink);text-decoration:none;transition:0.15s" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background=''">
-              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-              <span>${esc(x.name)} <small style="color:var(--ink-faint)">${esc(x.category||'')} · ${esc(x.destination?.name||'')}</small></span></a>`;
-          });
-        }
-        if (!html) html = '<p style="color:var(--ink-faint);text-align:center;padding:12px">No results found for "'+esc(q)+'"</p>';
+  html += `<div style="font-size:0.72rem;font-weight:700;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">
+    ${getTranslation('destinations')}
+  </div>`;
+
+  d.destinations.forEach(x => {
+    html += `
+      <a href="destination-detail.html?id=${esc(x._id)}"
+         style="display:flex;align-items:center;gap:10px;padding:8px 6px;border-radius:var(--radius-sm);color:var(--ink);text-decoration:none;transition:0.15s"
+         onmouseover="this.style.background='var(--bg)'"
+         onmouseout="this.style.background=''">
+
+        <svg width="14" height="14" fill="none" stroke="currentColor"
+             stroke-width="2" viewBox="0 0 24 24">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+
+        <span>
+          ${esc(x.name)}
+          <small style="color:var(--ink-faint)">
+            ${esc(x.province || '')}
+          </small>
+        </span>
+      </a>
+    `;
+  });
+}
+       if (d.spots && d.spots.length) {
+  html += `<div style="font-size:0.72rem;font-weight:700;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.5px;margin:10px 0 6px">
+    ${getTranslation('touristSpots')}
+  </div>`;
+
+  d.spots.forEach(x => {
+    html += `
+      <a href="destination-detail.html?id=${esc(x.destination?._id || x.destination || '')}"
+         style="display:flex;align-items:center;gap:10px;padding:8px 6px;border-radius:var(--radius-sm);color:var(--ink);text-decoration:none;transition:0.15s"
+         onmouseover="this.style.background='var(--bg)'"
+         onmouseout="this.style.background=''">
+
+        <svg width="14" height="14" fill="none" stroke="currentColor"
+             stroke-width="2" viewBox="0 0 24 24">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+        </svg>
+
+        <span>
+          ${esc(x.name)}
+          <small style="color:var(--ink-faint)">
+            ${esc(x.category || '')} · ${esc(x.destination?.name || '')}
+          </small>
+        </span>
+      </a>
+    `;
+  });
+}
+        if (!html) {
+  html = `<p style="color:var(--ink-faint);text-align:center;padding:12px">
+    ${getTranslation('noResultsFound')} "${esc(q)}"
+  </p>`;
+}
         dd.innerHTML = html;
-      } catch { dd.innerHTML = '<p style="color:var(--red);text-align:center;padding:12px">Search failed.</p>'; }
-    }
+      } catch {
+  dd.innerHTML = `<p style="color:var(--red);text-align:center;padding:12px">
+    ${getTranslation('searchFailed')}
+  </p>`;
+}
     document.getElementById('homeSearchBtn').addEventListener('click', runSearch);
     document.getElementById('homeSearchInput').addEventListener('keydown', e => { if(e.key==='Enter') runSearch(); });
     document.addEventListener('click', e => {
@@ -323,57 +391,63 @@
     <!-- NEW: Live Statistics Dashboard -->
     <section class="stats-dashboard section-padding scroll-reveal" id="statsSection">
       <div class="container">
-        <h2 class="section-title" style="text-align: center; margin-bottom: 40px;">The Roamly Ecosystem</h2>
+       <h2
+  class="section-title"
+  style="text-align: center; margin-bottom: 40px;"
+  data-i18n="ecosystemTitle"
+>
+  The Roamly Ecosystem
+</h2>
         <div class="stats-grid">
           <div class="stat-card">
             <span class="stat-icon">👥</span>
             <h3 class="counter" data-target="1245890">0</h3>
-            <p>Tourist Arrivals</p>
+           <p data-i18n="touristArrivals">Tourist Arrivals</p>
           </div>
           <div class="stat-card">
             <span class="stat-icon">🌍</span>
             <h3 class="counter" data-target="165">0</h3>
-            <p>Countries Visiting</p>
+           <p data-i18n="countriesVisiting">Countries Visiting</p>
           </div>
           <div class="stat-card">
             <span class="stat-icon">🏢</span>
             <h3 class="counter" data-target="2350">0</h3>
-            <p>Registered Businesses</p>
+           <p data-i18n="registeredBusinesses">Registered Businesses</p>
           </div>
           <div class="stat-card">
             <span class="stat-icon">🧑‍🏫</span>
             <h3 class="counter" data-target="430">0</h3>
-            <p>Verified Tour Guides</p>
+            <p data-i18n="verifiedTourGuides">Verified Tour Guides</p>
           </div>
           <div class="stat-card">
             <span class="stat-icon">📍</span>
             <h3 class="counter" data-target="580">0</h3>
-            <p>Tourist Attractions</p>
+           <p data-i18n="touristAttractions">Tourist Attractions</p>
           </div>
           <div class="stat-card">
             <span class="stat-icon">⭐</span>
             <h3 class="counter" data-target="18450">0</h3>
-            <p>Customer Reviews</p>
+            <p data-i18n="customerReviews">Customer Reviews</p>
           </div>
           <div class="stat-card">
             <span class="stat-icon">🧳</span>
             <h3 class="counter" data-target="96800">0</h3>
-            <p>Successful Bookings</p>
+            <p data-i18n="successfulBookings">Successful Bookings</p>
           </div>
           <div class="stat-card">
             <span class="stat-icon">🚗</span>
             <h3 class="counter" data-target="720">0</h3>
-            <p>Rental Vehicles</p>
+            <p data-i18n="rentalVehicles">Rental Vehicles</p>
           </div>
           <div class="stat-card">
             <span class="stat-icon">🏄</span>
             <h3 class="counter" data-target="250">0</h3>
-            <p>Adventure Activities</p>
+           <p data-i18n="adventureActivities">Adventure Activities</p>
           </div>
           <div class="stat-card">
             <span class="stat-icon">🗺️</span>
             <h3 class="counter" data-target="25">0</h3>
-            <p>Districts Covered</p>
+            <p data-i18n="districtsCovered">Districts Covered</p>
           </div>
         </div>
       </div>
@@ -382,13 +456,20 @@
     <!-- NEW: Sri Lanka at a Glance (Bento Box) -->
     <section class="insights-section scroll-reveal" style="background: #EDF2F7;">
       <div class="container">
-        <h2 class="section-title" style="text-align: center; margin-bottom: 40px;">Live Travel Insights</h2>
-        
+       <h2
+  class="section-title"
+  style="text-align: center; margin-bottom: 40px;"
+  data-i18n="liveTravelInsights"
+>
+  Live Travel Insights
+</h2>
         <div class="bento-grid">
           
           <!-- Live Weather -->
           <div class="bento-item bento-weather">
-            <h3 class="bento-title">🌤️ Live Weather</h3>
+            <h3 class="bento-title">
+  🌤️ <span data-i18n="liveWeather">Live Weather</span>
+</h3>
             <div class="weather-grid">
               <div class="weather-card"><span>Colombo</span><span>☀️ 30°C</span></div>
               <div class="weather-card"><span>Kandy</span><span>🌦️ 24°C</span></div>
@@ -399,7 +480,9 @@
 
           <!-- Trending Destinations -->
           <div class="bento-item bento-trending">
-            <h3 class="bento-title">🔥 Trending Today</h3>
+<h3 class="bento-title">
+  🔥 <span data-i18n="trendingToday">Trending Today</span>
+</h3>
             <ul class="trending-list">
               <li><span class="trending-rank">1</span> Sigiriya</li>
               <li><span class="trending-rank">2</span> Ella</li>
@@ -411,52 +494,64 @@
 
           <!-- Transport Hub Arrivals -->
           <div class="bento-item bento-flights">
-            <h3 class="bento-title">🛬 Daily Arrivals</h3>
+           <h3 class="bento-title">
+  🛬 <span data-i18n="dailyArrivals">Daily Arrivals</span>
+</h3>
             <div class="transport-badge">
-              <span>✈️ Flights</span>
+              <span>✈️ <span data-i18n="flights">Flights</span></span>
               <h4 class="counter" data-target="124">0</h4>
             </div>
             <div class="transport-badge">
-              <span>🚢 Cruises</span>
-              <h4 class="counter" data-target="18">0</h4>
+<span>🚢 <span data-i18n="cruises">Cruises</span></span>              <h4 class="counter" data-target="18">0</h4>
             </div>
           </div>
 
           <!-- Averages -->
           <div class="bento-item bento-costs">
             <div>
-              <p style="color: #718096; font-weight: 600; margin-bottom: 5px;">Average Daily Budget</p>
-              <h2 style="font-family: var(--font-display); color: #2B6CB0; font-size: 2.5rem; margin: 0;">$58<span style="font-size: 1rem; color: #4A5568;">/day</span></h2>
+<p
+  style="color: #718096; font-weight: 600; margin-bottom: 5px;"
+  data-i18n="averageDailyBudget"
+>
+  Average Daily Budget
+</p>              <h2 style="font-family: var(--font-display); color: #2B6CB0; font-size: 2.5rem; margin: 0;">$58<span style="font-size: 1rem; color: #4A5568;"><span style="font-size: 1rem; color: #4A5568;" data-i18n="perDay">/day</span></span></h2>
             </div>
             <div style="width: 1px; height: 60px; background: #E2E8F0;"></div>
             <div>
-              <p style="color: #718096; font-weight: 600; margin-bottom: 5px;">Average Stay</p>
-              <h2 style="font-family: var(--font-display); color: #2B6CB0; font-size: 2.5rem; margin: 0;">6.4<span style="font-size: 1rem; color: #4A5568;"> Days</span></h2>
+              <p
+  style="color: #718096; font-weight: 600; margin-bottom: 5px;"
+  data-i18n="averageStay"
+>
+  Average Stay
+</p>
+              <h2 style="font-family: var(--font-display); color: #2B6CB0; font-size: 2.5rem; margin: 0;">6.4<span style="font-size: 1rem; color: #4A5568;"> <span style="font-size: 1rem; color: #4A5568;" data-i18n="days">
+  Days
+</span></span></h2>
             </div>
           </div>
 
           <!-- Languages Spoken -->
           <div class="bento-item bento-languages">
-            <h3 class="bento-title">🌐 Languages Spoken</h3>
+           <h3 class="bento-title">
+  🌐 <span data-i18n="languagesSpoken">Languages Spoken</span>
+</h3>
             
-            <div class="lang-bar">
-              <div class="lang-label"><span>English</span><span>65%</span></div>
-              <div class="lang-track"><div class="lang-fill" style="width: 65%;"></div></div>
-            </div>
-            <div class="lang-bar">
-              <div class="lang-label"><span>Chinese</span><span>12%</span></div>
-              <div class="lang-track"><div class="lang-fill" style="width: 12%; background: #E53E3E;"></div></div>
-            </div>
-            <div class="lang-bar">
-              <div class="lang-label"><span>German</span><span>8%</span></div>
-              <div class="lang-track"><div class="lang-fill" style="width: 8%; background: #D69E2E;"></div></div>
-            </div>
-            <div class="lang-bar">
-              <div class="lang-label"><span>French</span><span>5%</span></div>
-              <div class="lang-track"><div class="lang-fill" style="width: 5%; background: #3182CE;"></div></div>
-            </div>
-          </div>
-
+           <div class="lang-label">
+  <span data-i18n="englishLanguage">English</span>
+  <span>65%</span>
+</div>
+           <div class="lang-label">
+  <span data-i18n="chineseLanguage">Chinese</span>
+  <span>12%</span>
+</div>
+           <div class="lang-label">
+  <span data-i18n="germanLanguage">German</span>
+  <span>8%</span>
+</div>
+            <div class="lang-label">
+  <span data-i18n="frenchLanguage">French</span>
+  <span>5%</span>
+</div>
         </div>
       </div>
     </section>
@@ -470,123 +565,251 @@
           
           <!-- Countdown Overlay -->
           <div style="position: absolute; bottom: 20px; left: 20px; right: 20px;">
-            <p style="color: #fff; font-weight: 700; margin-bottom: 5px;">Starts In:</p>
-            <div class="countdown-wrapper">
-              <div class="cd-box"><span id="cd-days">15</span><p>Days</p></div>
-              <div class="cd-box"><span id="cd-hours">08</span><p>Hours</p></div>
-              <div class="cd-box"><span id="cd-mins">42</span><p>Mins</p></div>
-            </div>
+<p
+  style="color: #fff; font-weight: 700; margin-bottom: 5px;"
+  data-i18n="startsIn"
+>
+  Starts In:
+</p>di
+            <v class="countdown-wrapper">
+             <div class="cd-box">
+  <span id="cd-days">15</span>
+  <p data-i18n="days">Days</p>
+</div>
+              <div class="cd-box">
+  <span id="cd-hours">08</span>
+  <p data-i18n="hours">Hours</p>
+</div>
+            <div class="cd-box">
+  <span id="cd-mins">42</span>
+  <p data-i18n="minutes">Mins</p>
+</div>
           </div>
         </div>
         <div class="monthly-content">
-          <span class="badge-special">Upcoming Festival 🎉</span>
-          <h2>Kandy Esala Perahera</h2>
-          <p>Experience the grand festival of the sacred tooth relic. Witness a mesmerizing pageant of elephants, traditional dancers, and fire breathers illuminating the historic streets of Kandy. A cultural spectacle you cannot miss.</p>
-          <button type="button" class="btn-primary">Get Event Tickets</button>
+<span class="badge-special">
+  <span data-i18n="upcomingFestival">Upcoming Festival</span> 🎉
+</span>          <h2>Kandy Esala Perahera</h2>
+          <p data-i18n="festivalDescription">
+  Experience the grand festival of the sacred tooth relic. Witness a mesmerizing pageant of elephants, traditional dancers, and fire breathers illuminating the historic streets of Kandy. A cultural spectacle you cannot miss.
+</p>
+        <button type="button" class="btn-primary" data-i18n="getEventTickets">
+  Get Event Tickets
+</button>
         </div>
       </div>
     </section>
 
     <!-- Popular Locations Section -->
     <section class="popular-locations section-padding">
-      <div class="container">
-        <h2 class="section-title scroll-reveal">Popular Locations</h2>
-        <div class="locations-grid">
-          
-          <div class="location-card scroll-reveal" style="transition-delay: 0.1s" onclick="openModal('Sigiriya', 'The ancient rock fortress and palace ruin, considered by locals as the Eighth Wonder of the World.')">
-            <div class="card-img"><img src="images/Sigiriya1.jpg" onerror="this.src='https://images.unsplash.com/photo-1579693155106-96a92ec2c4eb?q=80&w=600'" alt="Sigiriya"></div>
-            <div class="card-info">
-              <h3>Sigiriya</h3>
-              <div class="rating"><span>⭐ 4.9</span> (2.4k reviews)</div>
-            </div>
-          </div>
+  <div class="container">
+    <h2 class="section-title scroll-reveal" data-i18n="popularLocations">
+      Popular Locations
+    </h2>
 
-          <div class="location-card scroll-reveal" style="transition-delay: 0.2s" onclick="openModal('Ella', 'A small town in the Badulla District known for its breathtaking views, tea plantations, and waterfalls.')">
-            <div class="card-img"><img src="images/Ella1.jpg" onerror="this.src='https://images.unsplash.com/photo-1589139618174-a63e9c7042a9?q=80&w=600'" alt="Ella"></div>
-            <div class="card-info">
-              <h3>Ella</h3>
-              <div class="rating"><span>⭐ 4.8</span> (1.8k reviews)</div>
-            </div>
-          </div>
+    <div class="locations-grid">
 
-          <div class="location-card scroll-reveal" style="transition-delay: 0.3s" onclick="openModal('Galle Fort', 'A historical, archaeological and architectural heritage monument first built by the Portuguese.')">
-            <div class="card-img"><img src="images/gallfort1.jpg" onerror="this.src='https://images.unsplash.com/photo-1585807519105-0967fc03bb69?q=80&w=600'" alt="Galle Fort"></div>
-            <div class="card-info">
-              <h3>Galle Fort</h3>
-              <div class="rating"><span>⭐ 4.7</span> (3.1k reviews)</div>
-            </div>
-          </div>
+      <!-- Sigiriya -->
+      <div class="location-card scroll-reveal" style="transition-delay:0.1s"
+        onclick="openModal('Sigiriya','The ancient rock fortress and palace ruin, considered by locals as the Eighth Wonder of the World.')">
 
-          <div class="location-card scroll-reveal" style="transition-delay: 0.4s" onclick="openModal('Yala National Park', 'The most visited and second largest national park in Sri Lanka, famous for its leopards.')">
-            <div class="card-img"><img src="images/Yala1.jpg" onerror="this.src='https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=600'" alt="Yala National Park"></div>
-            <div class="card-info">
-              <h3>Yala National Park</h3>
-              <div class="rating"><span>⭐ 4.8</span> (1.2k reviews)</div>
-            </div>
-          </div>
+        <div class="card-img">
+          <img src="images/Sigiriya1.jpg"
+            onerror="this.src='https://images.unsplash.com/photo-1579693155106-96a92ec2c4eb?q=80&w=600'"
+            alt="Sigiriya">
+        </div>
 
-          <div class="location-card scroll-reveal" style="transition-delay: 0.1s" onclick="openModal('Nuwara Eliya', 'Often referred to as Little England, this city offers a cool climate and stunning tea estates.')">
-            <div class="card-img"><img src="images/NuwaraEliya1.jpg" onerror="this.src='https://images.unsplash.com/photo-1588612140409-a78c187d95cb?q=80&w=600'" alt="Nuwara Eliya"></div>
-            <div class="card-info">
-              <h3>Nuwara Eliya</h3>
-              <div class="rating"><span>⭐ 4.6</span> (1.5k reviews)</div>
-            </div>
-          </div>
+        <div class="card-info">
+          <h3>Sigiriya</h3>
 
-          <div class="location-card scroll-reveal" style="transition-delay: 0.2s" onclick="openModal('Mirissa Beach', 'A stunning crescent beach located in the south coast, renowned for its whale watching tours.')">
-            <div class="card-img"><img src="images/Mirissa1.jpg" onerror="this.src='https://images.unsplash.com/photo-1533587851505-d119e13bf0b5?q=80&w=600'" alt="Mirissa Beach"></div>
-            <div class="card-info">
-              <h3>Mirissa Beach</h3>
-              <div class="rating"><span>⭐ 4.9</span> (2.9k reviews)</div>
-            </div>
+          <div class="rating">
+            <span>⭐ 4.9</span>
+            (2.4k <span data-i18n="reviews">reviews</span>)
           </div>
-
-          <div class="location-card scroll-reveal" style="transition-delay: 0.3s" onclick="openModal('Adam\'s Peak', 'A tall conical mountain located in central Sri Lanka, well known for the Sri Pada sacred footprint.')">
-            <div class="card-img"><img src="images/AdamsPeak1.jpg" onerror="this.src='https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=600'" alt="Adam's Peak"></div>
-            <div class="card-info">
-              <h3>Adam's Peak</h3>
-              <div class="rating"><span>⭐ 4.7</span> (900 reviews)</div>
-            </div>
-          </div>
-
-          <div class="location-card scroll-reveal" style="transition-delay: 0.4s" onclick="openModal('Arugam Bay', 'A moon-shaped curl of soft sand, internationally renowned as one of the best surfing destinations.')">
-            <div class="card-img"><img src="images/ArugamBay1.jpg" onerror="this.src='https://images.unsplash.com/photo-1574041011853-4bfec6b62719?q=80&w=600'" alt="Arugam Bay"></div>
-            <div class="card-info">
-              <h3>Arugam Bay</h3>
-              <div class="rating"><span>⭐ 4.8</span> (1.4k reviews)</div>
-            </div>
-          </div>
-
         </div>
       </div>
-    </section>
+
+      <!-- Ella -->
+      <div class="location-card scroll-reveal" style="transition-delay:0.2s"
+        onclick="openModal('Ella','A small town in the Badulla District known for its breathtaking views, tea plantations, and waterfalls.')">
+
+        <div class="card-img">
+          <img src="images/Ella1.jpg"
+            onerror="this.src='https://images.unsplash.com/photo-1589139618174-a63e9c7042a9?q=80&w=600'"
+            alt="Ella">
+        </div>
+
+        <div class="card-info">
+          <h3>Ella</h3>
+
+          <div class="rating">
+            <span>⭐ 4.8</span>
+            (1.8k <span data-i18n="reviews">reviews</span>)
+          </div>
+        </div>
+      </div>
+
+      <!-- Galle Fort -->
+      <div class="location-card scroll-reveal" style="transition-delay:0.3s"
+        onclick="openModal('Galle Fort','A historical, archaeological and architectural heritage monument first built by the Portuguese.')">
+
+        <div class="card-img">
+          <img src="images/gallfort1.jpg"
+            onerror="this.src='https://images.unsplash.com/photo-1585807519105-0967fc03bb69?q=80&w=600'"
+            alt="Galle Fort">
+        </div>
+
+        <div class="card-info">
+          <h3>Galle Fort</h3>
+
+          <div class="rating">
+            <span>⭐ 4.7</span>
+            (3.1k <span data-i18n="reviews">reviews</span>)
+          </div>
+        </div>
+      </div>
+
+      <!-- Yala -->
+      <div class="location-card scroll-reveal" style="transition-delay:0.4s"
+        onclick="openModal('Yala National Park','The most visited and second largest national park in Sri Lanka, famous for its leopards.')">
+
+        <div class="card-img">
+          <img src="images/Yala1.jpg"
+            onerror="this.src='https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=600'"
+            alt="Yala National Park">
+        </div>
+
+        <div class="card-info">
+          <h3>Yala National Park</h3>
+
+          <div class="rating">
+            <span>⭐ 4.8</span>
+            (1.2k <span data-i18n="reviews">reviews</span>)
+          </div>
+        </div>
+      </div>
+
+      <!-- Nuwara Eliya -->
+      <div class="location-card scroll-reveal" style="transition-delay:0.1s"
+        onclick="openModal('Nuwara Eliya','Often referred to as Little England, this city offers a cool climate and stunning tea estates.')">
+
+        <div class="card-img">
+          <img src="images/NuwaraEliya1.jpg"
+            onerror="this.src='https://images.unsplash.com/photo-1588612140409-a78c187d95cb?q=80&w=600'"
+            alt="Nuwara Eliya">
+        </div>
+
+        <div class="card-info">
+          <h3>Nuwara Eliya</h3>
+
+          <div class="rating">
+            <span>⭐ 4.6</span>
+            (1.5k <span data-i18n="reviews">reviews</span>)
+          </div>
+        </div>
+      </div>
+
+      <!-- Mirissa -->
+      <div class="location-card scroll-reveal" style="transition-delay:0.2s"
+        onclick="openModal('Mirissa Beach','A stunning crescent beach located in the south coast, renowned for its whale watching tours.')">
+
+        <div class="card-img">
+          <img src="images/Mirissa1.jpg"
+            onerror="this.src='https://images.unsplash.com/photo-1533587851505-d119e13bf0b5?q=80&w=600'"
+            alt="Mirissa Beach">
+        </div>
+
+        <div class="card-info">
+          <h3>Mirissa Beach</h3>
+
+          <div class="rating">
+            <span>⭐ 4.9</span>
+            (2.9k <span data-i18n="reviews">reviews</span>)
+          </div>
+        </div>
+      </div>
+
+      <!-- Adam's Peak -->
+      <div class="location-card scroll-reveal" style="transition-delay:0.3s"
+        onclick="openModal('Adam\'s Peak','A tall conical mountain located in central Sri Lanka, well known for the Sri Pada sacred footprint.')">
+
+        <div class="card-img">
+          <img src="images/AdamsPeak1.jpg"
+            onerror="this.src='https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=600'"
+            alt="Adam's Peak">
+        </div>
+
+        <div class="card-info">
+          <h3>Adam's Peak</h3>
+
+          <div class="rating">
+            <span>⭐ 4.7</span>
+            (900 <span data-i18n="reviews">reviews</span>)
+          </div>
+        </div>
+      </div>
+
+      <!-- Arugam Bay -->
+      <div class="location-card scroll-reveal" style="transition-delay:0.4s"
+        onclick="openModal('Arugam Bay','A moon-shaped curl of soft sand, internationally renowned as one of the best surfing destinations.')">
+
+        <div class="card-img">
+          <img src="images/ArugamBay1.jpg"
+            onerror="this.src='https://images.unsplash.com/photo-1574041011853-4bfec6b62719?q=80&w=600'"
+            alt="Arugam Bay">
+        </div>
+
+        <div class="card-info">
+          <h3>Arugam Bay</h3>
+
+          <div class="rating">
+            <span>⭐ 4.8</span>
+            (1.4k <span data-i18n="reviews">reviews</span>)
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
 
     <!-- NEW: Live Tourist Distribution Map -->
     <section class="distribution-section scroll-reveal">
       <div class="container dist-grid">
         <div>
-          <h2 class="section-title" style="color: #fff; margin-bottom: 30px;">Live Tourist Distribution</h2>
-          <p style="color: #A0AEC0; margin-bottom: 30px; font-size: 1.1rem; line-height: 1.6;">See where travelers are exploring right now. Our dynamic heat map tracks active bookings and check-ins across the island.</p>
+         <h2
+  class="section-title"
+  style="color: #fff; margin-bottom: 30px;"
+  data-i18n="liveTouristDistribution"
+>
+  Live Tourist Distribution
+</h2>
+         <p
+  style="color: #A0AEC0; margin-bottom: 30px; font-size: 1.1rem; line-height: 1.6;"
+  data-i18n="touristDistributionDesc"
+>
+  See where travelers are exploring right now. Our dynamic heat map tracks active bookings and check-ins across the island.
+</p>
           
           <div class="dist-bars">
             <div class="lang-bar">
-              <div class="lang-label"><span>Colombo</span><span>High Activity</span></div>
+              <div class="lang-label"><span>Colombo</span><span data-i18n="highActivity">High Activity</span></div>
               <div class="lang-track"><div class="lang-fill glow-bar" style="width: 85%;"></div></div>
             </div>
             <div class="lang-bar">
-              <div class="lang-label"><span>Galle</span><span>High Activity</span></div>
+              <div class="lang-label"><span>Galle</span><span data-i18n="highActivity">High Activity</span></div>
               <div class="lang-track"><div class="lang-fill glow-bar" style="width: 75%;"></div></div>
             </div>
             <div class="lang-bar">
-              <div class="lang-label"><span>Kandy</span><span>Moderate</span></div>
+              <div class="lang-label"><span>Kandy</span><span data-i18n="moderateActivity">Moderate</span></div>
               <div class="lang-track"><div class="lang-fill glow-bar" style="width: 60%; background: #F6AD55; box-shadow: 0 0 10px #F6AD55;"></div></div>
             </div>
             <div class="lang-bar">
-              <div class="lang-label"><span>Ella</span><span>Moderate</span></div>
+              <div class="lang-label"><span>Ella</span><span data-i18n="moderateActivity">Moderate</span></div>
               <div class="lang-track"><div class="lang-fill glow-bar" style="width: 50%; background: #F6AD55; box-shadow: 0 0 10px #F6AD55;"></div></div>
             </div>
             <div class="lang-bar">
-              <div class="lang-label"><span>Jaffna</span><span>Growing</span></div>
+              <div class="lang-label"><span>Jaffna</span><span data-i18n="growingActivity">Growing</span></div>
               <div class="lang-track"><div class="lang-fill glow-bar" style="width: 30%; background: #63B3ED; box-shadow: 0 0 10px #63B3ED;"></div></div>
             </div>
           </div>
@@ -601,18 +824,29 @@
     <!-- NEW: Sustainability Banner -->
     <div class="container scroll-reveal">
       <section class="sustainability-banner">
-        <h2 style="font-family: var(--font-display); font-size: 2.2rem; margin-bottom: 10px;">💚 Roamly Sustainability Impact</h2>
-        <p style="font-size: 1.1rem; opacity: 0.9;">Travel responsibly. We contribute a portion of all bookings towards eco-initiatives.</p>
-        
+       <h2
+  style="font-family: var(--font-display); font-size: 2.2rem; margin-bottom: 10px;"
+>
+  💚 <span data-i18n="sustainabilityImpact">Roamly Sustainability Impact</span>
+</h2>
+       <p
+  style="font-size: 1.1rem; opacity: 0.9;"
+  data-i18n="sustainabilityDesc"
+>
+  Travel responsibly. We contribute a portion of all bookings towards eco-initiatives.
+</p>
         <div class="sus-grid">
           <div class="sus-stat">
-            <span>🌱 <span class="counter" data-target="24800">0</span></span>
-            Trees Planted
-          </div>
+  <span>🌱 <span class="counter" data-target="24800">0</span></span>
+  <span data-i18n="treesPlanted">Trees Planted</span>
+</div>
           <div class="sus-stat">
-            <span>♻️ <span class="counter" data-target="15">0</span>.8 Tons</span>
-            Plastic Saved
-          </div>
+  <span>
+    ♻️ <span class="counter" data-target="15">0</span>.8
+    <span data-i18n="tons">Tons</span>
+  </span>
+  <span data-i18n="plasticSaved">Plastic Saved</span>
+</div>
         </div>
       </section>
     </div>
@@ -623,10 +857,11 @@
     <div class="footer-top">
       <div class="footer-brand">
         <img src="assets/logo.png" alt="Brand logo">
-        <p>Community-driven travel discovery for Sri Lanka — built by travellers, for travellers.</p>
-      </div>
+<p data-i18n="footerDescription">
+  Community-driven travel discovery for Sri Lanka — built by travellers, for travellers.
+</p>      </div>
       <div class="footer-col">
-        <h4>Quick Links</h4>
+        <h4 data-i18n="quickLinks">Quick Links</h4>
         <ul>
           <li><a href="index.html">Home</a></li>
           <li><a href="map.html">Map</a></li>
@@ -636,26 +871,43 @@
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Emergency Numbers</h4>
+        <h4 data-i18n="emergencyNumbers">Emergency Numbers</h4>
         <ul class="emergency-list">
-          <li><span>Police Emergency</span><a href="tel:119">119</a></li>
-          <li><span>Ambulance (Suwa Seriya)</span><a href="tel:1990">1990</a></li>
-          <li><span>Tourist Police Hotline</span><a href="tel:1912">1912</a></li>
-          <li><span>Fire &amp; Rescue</span><a href="tel:110">110</a></li>
-        </ul>
+  <li>
+    <span data-i18n="policeEmergency">Police Emergency</span>
+    <a href="tel:119">119</a>
+  </li>
+
+  <li>
+    <span data-i18n="ambulanceService">Ambulance (Suwa Seriya)</span>
+    <a href="tel:1990">1990</a>
+  </li>
+
+  <li>
+    <span data-i18n="touristPoliceHotline">Tourist Police Hotline</span>
+    <a href="tel:1912">1912</a>
+  </li>
+
+  <li>
+    <span data-i18n="fireRescue">Fire &amp; Rescue</span>
+    <a href="tel:110">110</a>
+  </li>
+</ul>
       </div>
       <div class="footer-col">
-        <h4>Legal</h4>
+        <h4 data-i18n="legal">Legal</h4>
         <ul>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Terms of Service</a></li>
-          <li><a href="#">Cookie Policy</a></li>
-        </ul>
+  <li><a href="#" data-i18n="privacyPolicy">Privacy Policy</a></li>
+  <li><a href="#" data-i18n="termsOfService">Terms of Service</a></li>
+  <li><a href="#" data-i18n="cookiePolicy">Cookie Policy</a></li>
+</ul>
       </div>
     </div>
     <div class="footer-divider"></div>
     <div class="footer-bottom">
-      <p>© 2026 Roamly. All rights reserved.</p>
+      <p data-i18n="allRightsReserved">
+  © 2026 Roamly. All rights reserved.
+</p>
       <p class="footer-note">ICT 2022 — Full Stack Development Project</p>
     </div>
   </footer>
@@ -692,11 +944,13 @@
       </div>
 
       <div class="modal-info">
-        <h2 id="modalTitle">Location Title</h2>
+       <p id="modalDesc" data-i18n="locationDescription">
+  Location description goes here.
+</p>
         <p id="modalDesc">Location description goes here.</p>
-        <div class="modal-actions">
-          <a href="#" onclick="alert('Booking system currently not available.'); return false;" class="btn-book-special">
-            <span>Book Now</span>
+        <div class="modal-actions">onclick="alert(getTranslation('bookingUnavailable')); return false;""
+          <a href="#"  class="btn-book-special">
+           <span data-i18n="bookNow">Book Now</span>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <path d="M5 12h14M12 5l7 7-7 7"/>
             </svg>
@@ -707,15 +961,16 @@
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
               <circle cx="12" cy="10" r="3"></circle>
             </svg>
-            <span>Get Directions</span>
+          <span data-i18n="getDirections">Get Directions</span>
           </a>
         </div>
       </div>
     </div>
   </div>
+  
 
-  <script src="script.js"></script>
-
+<script src="translations.js"></script>
+<script src="script.js"></script>
   <!-- Interactive Modal & Dashboard Widgets Logic -->
   <script>
     /* =========================================
@@ -831,7 +1086,7 @@
 
       const weatherTemp = document.getElementById('weatherTemp');
       const weatherIcon = document.getElementById('weatherIcon');
-      weatherTemp.textContent = "Loading...";
+      weatherTemp.textweatherTemp.textContent = getTranslation("loading");Content = "Loading...";
       weatherIcon.textContent = "⏳";
       
       modal.classList.add('active');

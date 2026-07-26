@@ -94,8 +94,8 @@
           </button>
           <ul class="lang-menu" id="langMenu" role="listbox" hidden>
             <li><button type="button" class="active" data-code="EN">English</button></li>
-            <li><button type="button" data-code="TA">Tamil</button></li>
-            <li><button type="button" data-code="ZH">Chinese</button></li>
+            <li><button type="button" data-code="SI">සිංහල</button></li>
+<li><button type="button" data-code="TA">தமிழ்</button></li>
           </ul>
         </div>
 
@@ -125,59 +125,98 @@
   </header>
 
   <nav class="navbar">
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="map.html">Map</a></li>
-      <li><a href="bookings.html">Bookings</a></li>
-      <li><a href="emergency.html">Emergency</a></li>
-      <li><a href="gallery.html">Gallery</a></li>
-      <li><a href="about.html" class="active">About Us</a></li>
-    </ul>
-  </nav>
+  <ul>
+    <li><a href="index.html" data-i18n="home">Home</a></li>
+    <li><a href="map.html" data-i18n="map">Map</a></li>
+    <li><a href="bookings.html" data-i18n="bookings">Bookings</a></li>
+    <li><a href="emergency.html" data-i18n="emergency">Emergency</a></li>
+    <li><a href="gallery.html" data-i18n="gallery">Gallery</a></li>
+    <li><a href="about.html" class="active" data-i18n="about">About Us</a></li>
+  </ul>
+</nav>
 
   <main style="overflow-x: hidden;">
     
     <!-- SECTION 1: Project Description -->
     <section class="section-padding scroll-reveal">
       <div class="container" style="max-width: 800px; text-align: center;">
-        <h1 class="section-title">About Roamly</h1>
-        <p style="color: var(--ink-soft); font-size: 1.15rem; line-height: 1.8; margin-bottom: 20px;">
-          <strong>Roamly</strong> is a comprehensive travel and tourism platform designed to connect travellers with the breathtaking beauty, rich culture, and vibrant industries of Sri Lanka. 
-        </p>
-        <p style="color: var(--ink-soft); font-size: 1.1rem; line-height: 1.8;">
-          Originally conceived as a capstone project for the <strong>ICT 2022 Full Stack Development Project</strong>, Roamly has grown into a highly interactive, community-driven ecosystem. Our goal is to streamline the travel experience by offering unified maps, seamless booking directories, dynamic galleries, and critical emergency support—all wrapped in a premium, accessible user interface.
-        </p>
+       <h1 class="section-title" data-i18n="aboutTitle">
+    About Roamly
+</h1>
+       <p
+data-i18n="aboutDesc1"
+style="color: var(--ink-soft); font-size: 1.15rem; line-height: 1.8; margin-bottom: 20px;">
+        <p
+data-i18n="aboutDesc2"
+style="color: var(--ink-soft); font-size: 1.1rem; line-height: 1.8;">
       </div>
     </section>
 
     <!-- SECTION 2: Project Features -->
     <section class="section-padding scroll-reveal" style="background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
       <div class="container">
-        <h2 class="section-title" style="text-align: center; margin-bottom: 50px;">Key Features</h2>
+        <h2
+  class="section-title"
+  data-i18n="keyFeatures"
+  style="text-align: center; margin-bottom: 50px;">
+  Key Features
+</h2>
         
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 30px;">
           <div style="padding: 40px 30px; background: rgba(215, 38, 61, 0.04); border: 1px solid rgba(215, 38, 61, 0.1); border-radius: var(--radius-lg); text-align: center;">
             <div style="font-size: 3rem; margin-bottom: 20px;">🗺️</div>
-            <h3 style="margin-bottom: 12px; color: var(--ink);">Interactive Mapping</h3>
-            <p style="color: var(--ink-soft); font-size: 0.95rem; line-height: 1.6;">Explore all 25 districts of Sri Lanka with our custom-built, highly responsive SVG map interfaces.</p>
+           <h3
+  data-i18n="interactiveMapping"
+  style="margin-bottom: 12px; color: var(--ink);">
+  Interactive Mapping
+</h3>
+            <p
+  data-i18n="interactiveMappingDesc"
+  style="color: var(--ink-soft); font-size: 0.95rem; line-height: 1.6;">
+  Explore all 25 districts of Sri Lanka with our custom-built, highly responsive SVG map interfaces.
+</p>
           </div>
 
           <div style="padding: 40px 30px; background: rgba(215, 38, 61, 0.04); border: 1px solid rgba(215, 38, 61, 0.1); border-radius: var(--radius-lg); text-align: center;">
             <div style="font-size: 3rem; margin-bottom: 20px;">📅</div>
-            <h3 style="margin-bottom: 12px; color: var(--ink);">Dynamic Bookings</h3>
-            <p style="color: var(--ink-soft); font-size: 0.95rem; line-height: 1.6;">A fully-featured directory for Transports, Guides, Hotels, and Restaurants with real-time sorting capabilities.</p>
+           <h3
+  data-i18n="dynamicBookings"
+  style="margin-bottom: 12px; color: var(--ink);">
+  Dynamic Bookings
+</h3>
+            <p
+  data-i18n="dynamicBookingsDesc"
+  style="color: var(--ink-soft); font-size: 0.95rem; line-height: 1.6;">
+  A fully-featured directory for Transports, Guides, Hotels, and Restaurants with real-time sorting capabilities.
+</p>
           </div>
 
           <div style="padding: 40px 30px; background: rgba(215, 38, 61, 0.04); border: 1px solid rgba(215, 38, 61, 0.1); border-radius: var(--radius-lg); text-align: center;">
             <div style="font-size: 3rem; margin-bottom: 20px;">✨</div>
-            <h3 style="margin-bottom: 12px; color: var(--ink);">Immersive UI/UX</h3>
-            <p style="color: var(--ink-soft); font-size: 0.95rem; line-height: 1.6;">Built with modern frontend standards featuring seamless Dark Mode integration and stunning scrolling animations.</p>
+           <h3
+  data-i18n="immersiveUi"
+  style="margin-bottom: 12px; color: var(--ink);">
+  Immersive UI/UX
+</h3>
+            <p
+  data-i18n="immersiveUiDesc"
+  style="color: var(--ink-soft); font-size: 0.95rem; line-height: 1.6;">
+  Built with modern frontend standards featuring seamless Dark Mode integration and stunning scrolling animations.
+</p>
           </div>
 
           <div style="padding: 40px 30px; background: rgba(215, 38, 61, 0.04); border: 1px solid rgba(215, 38, 61, 0.1); border-radius: var(--radius-lg); text-align: center;">
             <div style="font-size: 3rem; margin-bottom: 20px;">🚨</div>
-            <h3 style="margin-bottom: 12px; color: var(--ink);">Emergency Hub</h3>
-            <p style="color: var(--ink-soft); font-size: 0.95rem; line-height: 1.6;">A one-tap emergency contact directory ensuring tourist safety and peace of mind across the island.</p>
+           <h3
+  data-i18n="emergencyHub"
+  style="margin-bottom: 12px; color: var(--ink);">
+  Emergency Hub
+</h3>
+           <p
+  data-i18n="emergencyHubDesc"
+  style="color: var(--ink-soft); font-size: 0.95rem; line-height: 1.6;">
+  A one-tap emergency contact directory ensuring tourist safety and peace of mind across the island.
+</p>
           </div>
         </div>
       </div>
@@ -340,11 +379,12 @@
       <div class="footer-col">
         <h4>Quick Links</h4>
         <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="map.html">Map</a></li>
-          <li><a href="bookings.html">Bookings</a></li>
-          <li><a href="gallery.html">Gallery</a></li>
-          <li><a href="about.html">About Us</a></li>
+         <a href="index.html" data-i18n="home">Home</a>
+         <a href="map.html" data-i18n="map">Map</a>
+          <a href="bookings.html" data-i18n="bookings">Bookings</a>
+          <a href="emergency.html" data-i18n="emergency">Emergency</a>
+          <a href="gallery.html" data-i18n="gallery">Gallery</a>
+         <a href="about.html" class="active" data-i18n="about">About Us</a>
         </ul>
       </div>
       <div class="footer-col">
@@ -372,7 +412,8 @@
     </div>
   </footer>
 
-  <script src="script.js"></script>
+ <script src="translations.js"></script>
+<script src="script.js"></script>
 
   <!-- Interactive JavaScript for the Review System -->
   <script>
