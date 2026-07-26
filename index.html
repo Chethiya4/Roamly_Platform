@@ -8,8 +8,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
   <link rel="stylesheet" href="/style.css">
   <title>Roamly — Plan Your Tour</title>
+  <link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+/>
 
   <style>
     /* =========================================
@@ -153,7 +159,6 @@
       .sus-grid { gap: 20px; flex-direction: column; }
     }
   </style>
-</head>
 <body>
 
   <header class="header">
@@ -382,11 +387,13 @@
     ${getTranslation('searchFailed')}
   </p>`;
 }
+    }
     document.getElementById('homeSearchBtn').addEventListener('click', runSearch);
     document.getElementById('homeSearchInput').addEventListener('keydown', e => { if(e.key==='Enter') runSearch(); });
     document.addEventListener('click', e => {
       if (!e.target.closest('#homeSearchBox') && !e.target.closest('#searchDropdown'))
         document.getElementById('searchDropdown').style.display = 'none';
+    
     });
     </script>
 
@@ -572,7 +579,7 @@
   data-i18n="startsIn"
 >
   Starts In:
-</p>di
+</p>
             <v class="countdown-wrapper">
              <div class="cd-box">
   <span id="cd-days">15</span>
@@ -616,10 +623,17 @@
         onclick="openModal('Sigiriya','The ancient rock fortress and palace ruin, considered by locals as the Eighth Wonder of the World.')">
 
         <div class="card-img">
-          <img src="images/Sigiriya1.jpg"
-            onerror="this.src='https://images.unsplash.com/photo-1579693155106-96a92ec2c4eb?q=80&w=600'"
-            alt="Sigiriya">
-        </div>
+  <img src="images/Sigiriya1.jpg"
+    onerror="this.src='https://images.unsplash.com/photo-1579693155106-96a92ec2c4eb?q=80&w=600'"
+    alt="Sigiriya">
+
+ <button
+  class="popular-heart-btn"
+  type="button"
+  onclick="event.stopPropagation(); togglePopularHeart(this)">
+  <i class="fa-regular fa-heart heart-icon"></i>
+</button>
+</div>
 
         <div class="card-info">
           <h3>Sigiriya</h3>
@@ -639,6 +653,12 @@
           <img src="images/Ella1.jpg"
             onerror="this.src='https://images.unsplash.com/photo-1589139618174-a63e9c7042a9?q=80&w=600'"
             alt="Ella">
+            <button
+    class="popular-heart-btn"
+    type="button"
+    onclick="event.stopPropagation(); togglePopularHeart(this)">
+    <i class="fa-regular fa-heart heart-icon"></i>
+  </button>
         </div>
 
         <div class="card-info">
@@ -659,6 +679,12 @@
           <img src="images/gallfort1.jpg"
             onerror="this.src='https://images.unsplash.com/photo-1585807519105-0967fc03bb69?q=80&w=600'"
             alt="Galle Fort">
+            <button
+    class="popular-heart-btn"
+    type="button"
+    onclick="event.stopPropagation(); togglePopularHeart(this)">
+    <i class="fa-regular fa-heart heart-icon"></i>
+  </button>
         </div>
 
         <div class="card-info">
@@ -679,6 +705,12 @@
           <img src="images/Yala1.jpg"
             onerror="this.src='https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=600'"
             alt="Yala National Park">
+            <button
+    class="popular-heart-btn"
+    type="button"
+    onclick="event.stopPropagation(); togglePopularHeart(this)">
+    <i class="fa-regular fa-heart heart-icon"></i>
+  </button>
         </div>
 
         <div class="card-info">
@@ -699,6 +731,12 @@
           <img src="images/NuwaraEliya1.jpg"
             onerror="this.src='https://images.unsplash.com/photo-1588612140409-a78c187d95cb?q=80&w=600'"
             alt="Nuwara Eliya">
+            <button
+    class="popular-heart-btn"
+    type="button"
+    onclick="event.stopPropagation(); togglePopularHeart(this)">
+    <i class="fa-regular fa-heart heart-icon"></i>
+  </button>
         </div>
 
         <div class="card-info">
@@ -719,6 +757,12 @@
           <img src="images/Mirissa1.jpg"
             onerror="this.src='https://images.unsplash.com/photo-1533587851505-d119e13bf0b5?q=80&w=600'"
             alt="Mirissa Beach">
+            <button
+    class="popular-heart-btn"
+    type="button"
+    onclick="event.stopPropagation(); togglePopularHeart(this)">
+    <i class="fa-regular fa-heart heart-icon"></i>
+  </button>
         </div>
 
         <div class="card-info">
@@ -739,6 +783,12 @@
           <img src="images/AdamsPeak1.jpg"
             onerror="this.src='https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=600'"
             alt="Adam's Peak">
+            <button
+    class="popular-heart-btn"
+    type="button"
+    onclick="event.stopPropagation(); togglePopularHeart(this)">
+    <i class="fa-regular fa-heart heart-icon"></i>
+  </button>
         </div>
 
         <div class="card-info">
@@ -759,6 +809,12 @@
           <img src="images/ArugamBay1.jpg"
             onerror="this.src='https://images.unsplash.com/photo-1574041011853-4bfec6b62719?q=80&w=600'"
             alt="Arugam Bay">
+            <button
+    class="popular-heart-btn"
+    type="button"
+    onclick="event.stopPropagation(); togglePopularHeart(this)">
+    <i class="fa-regular fa-heart heart-icon"></i>
+  </button>
         </div>
 
         <div class="card-info">
@@ -950,7 +1006,7 @@
   Location description goes here.
 </p>
         <p id="modalDesc">Location description goes here.</p>
-        <div class="modal-actions">onclick="alert(getTranslation('bookingUnavailable')); return false;""
+        <div class="modal-actions" onclick="alert(getTranslation('bookingUnavailable')); return false;"">
           <a href="#"  class="btn-book-special">
            <span data-i18n="bookNow">Book Now</span>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -1106,8 +1162,7 @@
 
       const weatherTemp = document.getElementById('weatherTemp');
       const weatherIcon = document.getElementById('weatherIcon');
-      weatherTemp.textweatherTemp.textContent = getTranslation("loading");Content = "Loading...";
-      weatherIcon.textContent = "⏳";
+      weatherTemp.textContent = getTranslation("loading") || "Loading...";      weatherIcon.textContent = "⏳";
       
       modal.classList.add('active');
       document.body.style.overflow = 'hidden';
@@ -1174,5 +1229,6 @@
       }
     };
   </script>
+<script src="scripts/wishlist.js"></script>
 </body>
 </html>

@@ -177,38 +177,80 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------------- WISHLIST HEADER & BADGE ---------------- */
   initWishlistHeader();
+async function initWishlistHeader() {
+  const wishlistBtns = document.querySelectorAll(
+    '.icon-btn[aria-label="Wishlist"]'
+  );
 
-  async function initWishlistHeader() {
-    const wishlistBtns = document.querySelectorAll('.icon-btn[aria-label="Wishlist"]');
-    const token = localStorage.getItem('roamly_token');
+  const token = localStorage.getItem('roamly_token');
 
-    if (token) {
-      try {
-        const res = await fetch('/api/wishlist/mine', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const body = await res.json();
-        if (body.success && Array.isArray(body.data)) {
-          const count = body.data.length;
-          document.querySelectorAll('.icon-btn[aria-label="Wishlist"] .badge').forEach(b => {
-            b.textContent = count;
-          });
-        }
-      } catch (e) {}
+  let homeWishlistCount = 0;
+  let databaseWishlistCount = 0;
+
+  /* Home page localStorage wishlist */
+  try {
+    const homeWishlist = JSON.parse(
+      localStorage.getItem('roamly_home_wishlist') || '[]'
+    );
+
+    if (Array.isArray(homeWishlist)) {
+      homeWishlistCount = homeWishlist.length;
     }
+  } catch (error) {
+    console.error('Unable to read home wishlist:', error);
+  }
 
-    wishlistBtns.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const currentToken = localStorage.getItem('roamly_token');
-        if (currentToken) {
-          window.location.href = 'account.html';
-        } else {
-          window.location.href = 'auth.html';
+  /* Database wishlist */
+  if (token) {
+    try {
+      const res = await fetch('/api/wishlist/mine', {
+        headers: {
+          Authorization: `Bearer ${token}`
         }
       });
-    });
+
+      const body = await res.json();
+
+      if (body.success && Array.isArray(body.data)) {
+        databaseWishlistCount = body.data.length;
+      }
+    } catch (error) {
+      console.error('Unable to load database wishlist:', error);
+    }
   }
+
+  const totalCount =
+    homeWishlistCount + databaseWishlistCount;
+
+  document
+    .querySelectorAll(
+      '.icon-btn[aria-label="Wishlist"] .badge'
+    )
+    .forEach((badge) => {
+      badge.textContent = totalCount;
+    });
+
+  wishlistBtns.forEach((btn) => {
+    if (btn.dataset.wishlistListenerAdded === 'true') {
+      return;
+    }
+
+    btn.dataset.wishlistListenerAdded = 'true';
+
+    btn.addEventListener('click', (event) => {
+      event.preventDefault();
+
+      const currentToken =
+        localStorage.getItem('roamly_token');
+
+      if (currentToken) {
+        window.location.href = 'wishlist.html';
+      } else {
+        window.location.href = 'auth.html';
+      }
+    });
+  });
+}
   window.refreshWishlistBadge = initWishlistHeader;
 
   /* ---------------- GOOGLE TRANSLATE INTEGRATION ---------------- */
