@@ -1214,3 +1214,42 @@ textarea.is-invalid {
   content: '⚠️';
   font-size: 0.85rem;
 }
+
+/* ---------- GOOGLE TRANSLATE CLEAN OVERRIDES ---------- */
+html, body {
+  top: 0px !important;
+  position: static !important;
+  margin-top: 0px !important;
+}
+
+iframe.goog-te-banner-frame,
+iframe[class*="goog"],
+iframe[src*="translate"],
+.goog-te-banner-frame,
+.goog-te-banner,
+.VIpgJd-yD54df-SkJuBc-i5tdBd,
+.VIpgJd-ZGain-SCstLd,
+#goog-gt-tt,
+.goog-te-balloon-frame,
+.goog-tooltip,
+.goog-tooltip:hover {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  width: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  top: -9999px !important;
+}
+
+.goog-text-highlight {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+#google_translate_element {
+  display: none !important;
+}

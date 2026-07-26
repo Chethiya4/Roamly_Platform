@@ -158,164 +158,132 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   window.refreshWishlistBadge = initWishlistHeader;
 
-  /* ---------------- LANGUAGE & CURRENCY (i18n Text Engine) ---------------- */
-  const TRANSLATIONS = {
-    EN: {
-      "Home": "Home",
-      "Map": "Map",
-      "Bookings": "Bookings",
-      "Emergency": "Emergency",
-      "Gallery": "Gallery",
-      "About Us": "About Us",
-      "Explore": "Explore",
-      "Plan a Trip": "Plan a Trip",
-      "Sign In": "Sign In",
-      "Log Out": "Log Out",
-      "Where do you want to go?": "Where do you want to go?",
-      "Explore by District": "Explore by District",
-      "About Roamly": "About Roamly",
-      "Key Features": "Key Features",
-      "Meet the Team": "Meet the Team",
-      "Traveller Reviews": "Traveller Reviews",
-      "Emergency Numbers": "Emergency Numbers",
-      "Quick Links": "Quick Links",
-      "Popular:": "Popular:"
-    },
-    SI: {
-      "Home": "මුල් පිටුව",
-      "Map": "සිතියම",
-      "Bookings": "වෙන් කිරීම්",
-      "Emergency": "අදිසි සහන",
-      "Gallery": "ඡායාරූප",
-      "About Us": "අප ගැන",
-      "Explore": "ගවේෂණය කරන්න",
-      "Plan a Trip": "ගමනක් සැලසුම් කරන්න",
-      "Sign In": "ඇතුළු වන්න",
-      "Log Out": "ඉවත් වන්න",
-      "Where do you want to go?": "ඔබට යන්න අවශ්‍ය කොහේද?",
-      "Explore by District": "දිස්ත්‍රික්ක අනුව ගවේෂණය කරන්න",
-      "About Roamly": "රෝම්ලි ගැන",
-      "Key Features": "ප්‍රධාන ලක්ෂණ",
-      "Meet the Team": "අපගේ කණ්ඩායම",
-      "Traveller Reviews": "සංචාරක අදහස්",
-      "Emergency Numbers": "අදිසි සහන අංක",
-      "Quick Links": "ඉක්මන් යොමු",
-      "Popular:": "ජනප්‍රිය:"
-    },
-    TA: {
-      "Home": "முகப்பு",
-      "Map": "வரைபடம்",
-      "Bookings": "பதிவுகள்",
-      "Emergency": "அவசரம்",
-      "Gallery": "கேலரி",
-      "About Us": "எங்களைப் பற்றி",
-      "Explore": "ஆராயுங்கள்",
-      "Plan a Trip": "பயணம் திட்டமிடுங்கள்",
-      "Sign In": "உள்நுழையவும்",
-      "Log Out": "வெளியேறவும்",
-      "Where do you want to go?": "நீங்கள் எங்கு செல்ல விரும்புகிறீர்கள்?",
-      "Explore by District": "மாவட்டங்கள் வாரியாக ஆராயுங்கள்",
-      "About Roamly": "ரோம்லி பற்றி",
-      "Key Features": "முக்கிய அம்சங்கள்",
-      "Meet the Team": "எங்கள் குழு",
-      "Traveller Reviews": "பயணிகளின் விமர்சனங்கள்",
-      "Emergency Numbers": "அவசர எண்கள்",
-      "Quick Links": "விரைவு இணைப்புகள்",
-      "Popular:": "பிரபலமானவை:"
-    },
-    ZH: {
-      "Home": "首页",
-      "Map": "地图",
-      "Bookings": "预订",
-      "Emergency": "紧急情况",
-      "Gallery": "画廊",
-      "About Us": "关于我们",
-      "Explore": "探索",
-      "Plan a Trip": "计划旅行",
-      "Sign In": "登录",
-      "Log Out": "退出",
-      "Where do you want to go?": "你想去哪里？",
-      "Explore by District": "按地区探索",
-      "About Roamly": "关于 Roamly",
-      "Key Features": "主要特点",
-      "Meet the Team": "团队成员",
-      "Traveller Reviews": "游客评价",
-      "Emergency Numbers": "紧急电话",
-      "Quick Links": "快速链接",
-      "Popular:": "热门："
-    },
-    DE: {
-      "Home": "Startseite",
-      "Map": "Karte",
-      "Bookings": "Buchungen",
-      "Emergency": "Notfall",
-      "Gallery": "Galerie",
-      "About Us": "Über uns",
-      "Explore": "Entdecken",
-      "Plan a Trip": "Reise planen",
-      "Sign In": "Anmelden",
-      "Log Out": "Abmelden",
-      "Where do you want to go?": "Wohin möchten Sie reisen?",
-      "Explore by District": "Nach Distrikt erkunden",
-      "About Roamly": "Über Roamly",
-      "Key Features": "Hauptmerkmale",
-      "Meet the Team": "Unser Team",
-      "Traveller Reviews": "Reisebewertungen",
-      "Emergency Numbers": "Notrufnummern",
-      "Quick Links": "Quick-Links",
-      "Popular:": "Beliebt:"
-    }
+  /* ---------------- GOOGLE TRANSLATE INTEGRATION ---------------- */
+  const LANG_MAPPING = {
+    'EN': 'en',
+    'SI': 'si',
+    'TA': 'ta',
+    'ZH': 'zh-CN',
+    'DE': 'de',
+    'FR': 'fr',
+    'ES': 'es',
+    'RU': 'ru',
+    'JA': 'ja',
+    'KO': 'ko',
+    'AR': 'ar',
+    'HI': 'hi'
   };
 
-  function translateNode(node, dict) {
-    if (node.nodeType === Node.TEXT_NODE) {
-      const trimmed = node.nodeValue.trim();
-      if (trimmed.length > 0) {
-        if (!node._origText) {
-          node._origText = trimmed;
-        }
-        const orig = node._origText;
-        if (dict[orig]) {
-          node.nodeValue = node.nodeValue.replace(orig, dict[orig]);
-        }
-      }
-    } else if (node.nodeType === Node.ELEMENT_NODE) {
-      const tag = node.tagName.toLowerCase();
-      if (tag === 'script' || tag === 'style' || tag === 'svg' || tag === 'iframe' || node.id === 'langMenu') {
-        return;
-      }
+  function setTranslateCookie(targetLang) {
+    const domain = window.location.hostname;
+    document.cookie = `googtrans=/en/${targetLang}; path=/; domain=${domain}`;
+    document.cookie = `googtrans=/en/${targetLang}; path=/;`;
+  }
 
-      if (node.placeholder) {
-        if (!node._origPlaceholder) {
-          node._origPlaceholder = node.placeholder;
-        }
-        const origP = node._origPlaceholder;
-        if (dict[origP]) {
-          node.placeholder = dict[origP];
-        }
-      }
+  function applyGoogleTranslate(code) {
+    const targetLang = LANG_MAPPING[code] || code.toLowerCase();
+    setTranslateCookie(targetLang);
 
-      for (let child of node.childNodes) {
-        translateNode(child, dict);
-      }
+    const combo = document.querySelector('.goog-te-combo');
+    if (combo) {
+      combo.value = targetLang;
+      combo.dispatchEvent(new Event('change'));
+    } else {
+      let retries = 0;
+      const interval = setInterval(() => {
+        retries++;
+        const c = document.querySelector('.goog-te-combo');
+        if (c) {
+          c.value = targetLang;
+          c.dispatchEvent(new Event('change'));
+          clearInterval(interval);
+        } else if (retries > 10) {
+          clearInterval(interval);
+          window.location.reload();
+        }
+      }, 300);
     }
   }
 
-  function applyLanguageText(langCodeVal) {
-    if (!TRANSLATIONS[langCodeVal]) langCodeVal = 'EN';
-    const dict = TRANSLATIONS[langCodeVal];
-    translateNode(document.body, dict);
+  function initGoogleTranslateScript() {
+    if (!document.getElementById('google_translate_element')) {
+      const gDiv = document.createElement('div');
+      gDiv.id = 'google_translate_element';
+      gDiv.style.display = 'none';
+      document.body.appendChild(gDiv);
+    }
+
+    window.googleTranslateElementInit = function() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,si,ta,zh-CN,de,fr,es,ru,ja,ko,it,ar,hi',
+        autoDisplay: false
+      }, 'google_translate_element');
+    };
+
+    if (!document.getElementById('google-translate-js')) {
+      const script = document.createElement('script');
+      script.id = 'google-translate-js';
+      script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+      script.async = true;
+      document.head.appendChild(script);
+    }
   }
+  function suppressGoogleTranslateBanner() {
+    if (document.documentElement) {
+      document.documentElement.style.setProperty('top', '0px', 'important');
+      document.documentElement.style.setProperty('position', 'static', 'important');
+      document.documentElement.style.setProperty('margin-top', '0px', 'important');
+    }
+    if (document.body) {
+      document.body.style.setProperty('top', '0px', 'important');
+      document.body.style.setProperty('position', 'static', 'important');
+      document.body.style.setProperty('margin-top', '0px', 'important');
+    }
+
+    const elements = document.querySelectorAll('iframe.goog-te-banner-frame, iframe[class*="goog"], iframe[src*="translate"], .goog-te-banner-frame, .goog-te-banner, .VIpgJd-yD54df-SkJuBc-i5tdBd, .VIpgJd-ZGain-SCstLd, #goog-gt-tt, .goog-te-balloon-frame');
+    elements.forEach(el => {
+      if (!el.classList.contains('goog-te-combo') && !el.querySelector('.goog-te-combo')) {
+        el.style.setProperty('display', 'none', 'important');
+        el.style.setProperty('visibility', 'hidden', 'important');
+        el.style.setProperty('height', '0px', 'important');
+        el.style.setProperty('width', '0px', 'important');
+        el.style.setProperty('opacity', '0', 'important');
+        el.style.setProperty('position', 'absolute', 'important');
+        el.style.setProperty('top', '-9999px', 'important');
+      }
+    });
+  }
+
+  const translateObserver = new MutationObserver(() => {
+    suppressGoogleTranslateBanner();
+  });
+  
+  if (document.body) {
+    translateObserver.observe(document.body, { childList: true, subtree: true, attributes: true });
+  } else {
+    document.addEventListener('DOMContentLoaded', () => {
+      if (document.body) translateObserver.observe(document.body, { childList: true, subtree: true, attributes: true });
+    });
+  }
+
+  setInterval(suppressGoogleTranslateBanner, 300);
+
+  initGoogleTranslateScript();
 
   const langTrigger = document.getElementById('langTrigger');
   const langMenu = document.getElementById('langMenu');
   const langCode = document.getElementById('langCode');
 
-  if (langTrigger && langMenu && langCode) {
-    const savedLang = localStorage.getItem('roamly_lang') || 'EN';
-    langCode.textContent = savedLang;
-    applyLanguageText(savedLang);
+  const savedLang = localStorage.getItem('roamly_lang') || 'EN';
+  if (langCode) langCode.textContent = savedLang;
 
+  if (savedLang !== 'EN') {
+    const targetLang = LANG_MAPPING[savedLang] || savedLang.toLowerCase();
+    setTranslateCookie(targetLang);
+  }
+
+  if (langTrigger && langMenu && langCode) {
     langMenu.querySelectorAll('button').forEach((b) => {
       if (b.dataset.code === savedLang) b.classList.add('active');
       else b.classList.remove('active');
@@ -336,7 +304,8 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('roamly_lang', code);
         langMenu.hidden = true;
         langTrigger.setAttribute('aria-expanded', 'false');
-        applyLanguageText(code);
+        
+        applyGoogleTranslate(code);
       });
     });
 
