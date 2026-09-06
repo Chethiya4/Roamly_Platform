@@ -219,8 +219,8 @@ async function initWishlistHeader() {
     }
   }
 
-  const totalCount =
-    homeWishlistCount + databaseWishlistCount;
+  
+  const totalCount = homeWishlistCount;
 
   document
     .querySelectorAll(
@@ -240,14 +240,7 @@ async function initWishlistHeader() {
     btn.addEventListener('click', (event) => {
       event.preventDefault();
 
-      const currentToken =
-        localStorage.getItem('roamly_token');
-
-      if (currentToken) {
-        window.location.href = 'wishlist.html';
-      } else {
-        window.location.href = 'auth.html';
-      }
+      window.location.href = 'wishlist.html';
     });
   });
 }
@@ -499,14 +492,32 @@ applyLanguage(savedLanguage);
   const savedCurrency = localStorage.getItem('roamly_currency') || 'LKR';
   updateCurrencyUI(savedCurrency);
 
-  /* ---------------- DARK MODE TOGGLE ---------------- */
-  const darkModeToggle = document.getElementById('darkModeToggle');
-  if (darkModeToggle) {
-    darkModeToggle.addEventListener('click', () => {
-      document.body.classList.toggle('dark-mode');
-    });
-  }
+ /* ---------------- DARK MODE TOGGLE ---------------- */
+const darkModeToggle = document.getElementById('darkModeToggle');
 
+/* Restore saved theme when a page loads */
+const savedTheme = localStorage.getItem('roamly_theme');
+
+if (savedTheme === 'dark') {
+  document.body.classList.add('dark-mode');
+} else {
+  document.body.classList.remove('dark-mode');
+}
+
+/* Toggle and save theme */
+if (darkModeToggle) {
+  darkModeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+
+    const isDarkMode =
+      document.body.classList.contains('dark-mode');
+
+    localStorage.setItem(
+      'roamly_theme',
+      isDarkMode ? 'dark' : 'light'
+    );
+  });
+}
   /* ---------------- 3D SCROLL REVEAL ---------------- */
   const revealElements = document.querySelectorAll('.scroll-reveal');
   const revealOptions = { 

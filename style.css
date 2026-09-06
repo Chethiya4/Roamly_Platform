@@ -1409,5 +1409,420 @@ iframe[class*="goog-te-banner"],
     box-shadow: 0 0 8px rgba(255,77,109,.45);
 }
 
+/* ==================================================
+   WISHLIST PAGE
+   Only applies to wishlist.html
+   ================================================== */
+
+body.wishlist-page {
+  min-height: 100vh;
+  background: #081a33;
+}
 
 
+/* PAGE HEADING */
+
+.wishlist-page .wishlist-page-heading {
+  position: relative;
+
+  margin-bottom: 34px;
+  padding-bottom: 18px;
+}
+
+.wishlist-page .wishlist-page-heading::after {
+  content: "";
+
+  position: absolute;
+  left: 0;
+  bottom: 0;
+
+  width: 70px;
+  height: 4px;
+
+  border-radius: 999px;
+
+  background: #e8243f;
+}
+
+.wishlist-page .wishlist-page-heading h1 {
+  margin: 0 0 8px;
+
+  font-family: var(--font-display);
+
+  font-size: clamp(2.2rem, 4vw, 3.3rem);
+  line-height: 1.05;
+
+  color: #ffffff;
+}
+
+.wishlist-page .wishlist-page-heading p {
+  margin: 0;
+
+  color: rgba(255, 255, 255, 0.68);
+
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+
+/* WISHLIST GRID */
+
+.wishlist-page .wishlist-page-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 24px;
+}
+
+
+/* DESTINATION CARD */
+
+.wishlist-page .wishlist-destination-card {
+  overflow: hidden;
+
+  background: #102642;
+
+  border:
+    1px solid rgba(255, 255, 255, 0.1);
+
+  border-radius: 20px;
+
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.25);
+
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.wishlist-page .wishlist-destination-card:hover {
+  transform: translateY(-6px);
+
+  border-color:
+    rgba(232, 36, 63, 0.4);
+
+  box-shadow:
+    0 24px 50px rgba(0, 0, 0, 0.35);
+}
+
+
+/* IMAGE */
+
+.wishlist-page .wishlist-card-media {
+  position: relative;
+
+  height: 220px;
+
+  overflow: hidden;
+}
+
+.wishlist-page .wishlist-card-media::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      to top,
+      rgba(5, 18, 36, 0.65),
+      transparent 55%
+    );
+
+  pointer-events: none;
+}
+
+.wishlist-page .wishlist-card-media img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  transition:
+    transform 0.4s ease;
+}
+
+.wishlist-page
+.wishlist-destination-card:hover
+.wishlist-card-media img {
+  transform: scale(1.05);
+}
+
+
+/* HEART BUTTON */
+
+.wishlist-page .wishlist-card-heart {
+  position: absolute;
+
+  top: 16px;
+  right: 16px;
+
+  z-index: 2;
+
+  width: 44px;
+  height: 44px;
+
+  display: grid;
+  place-items: center;
+
+  border:
+    1px solid rgba(255, 255, 255, 0.25);
+
+  border-radius: 50%;
+
+  background:
+    rgba(8, 26, 51, 0.85);
+
+  color: #e8243f;
+
+  cursor: pointer;
+
+  backdrop-filter: blur(10px);
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.wishlist-page .wishlist-card-heart:hover {
+  transform: scale(1.08);
+
+  background: #ffffff;
+}
+
+
+/* CARD CONTENT */
+
+.wishlist-page .wishlist-card-content {
+  padding: 20px;
+}
+
+
+/* SAVED LABEL */
+
+.wishlist-page .wishlist-saved-label {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  margin-bottom: 12px;
+
+  padding: 6px 10px;
+
+  border-radius: 999px;
+
+  background:
+    rgba(232, 36, 63, 0.14);
+
+  color: #ff6279;
+
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+
+/* LOCATION TITLE */
+
+.wishlist-page .wishlist-card-content h3 {
+  margin: 0 0 10px;
+
+  color: #ffffff;
+
+  font-size: 1.28rem;
+  font-weight: 800;
+}
+
+
+/* RATING */
+
+.wishlist-page .wishlist-card-meta {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  margin-bottom: 20px;
+
+  color:
+    rgba(255, 255, 255, 0.62);
+
+  font-size: 0.88rem;
+}
+
+.wishlist-page .wishlist-rating {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  color: #ffffff;
+
+  font-weight: 700;
+}
+
+.wishlist-page .wishlist-rating i {
+  color: #ffc857;
+}
+
+
+/* EXPLORE LINK */
+
+.wishlist-page .wishlist-card-action {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  color: #ffffff;
+
+  text-decoration: none;
+
+  font-weight: 700;
+
+  transition:
+    gap 0.2s ease,
+    color 0.2s ease;
+}
+
+.wishlist-page .wishlist-card-action:hover {
+  gap: 13px;
+
+  color: #ff4d67;
+}
+
+
+/* EMPTY WISHLIST */
+
+.wishlist-page .wishlist-empty-state {
+  grid-column: 1 / -1;
+
+  max-width: 650px;
+  width: 100%;
+
+  margin: 30px auto 0;
+
+  padding: 60px 30px;
+
+  text-align: center;
+
+  background: #102642;
+
+  border:
+    1px solid rgba(255, 255, 255, 0.1);
+
+  border-radius: 22px;
+
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.25);
+}
+
+.wishlist-page .wishlist-empty-icon {
+  width: 70px;
+  height: 70px;
+
+  display: grid;
+  place-items: center;
+
+  margin: 0 auto 20px;
+
+  border-radius: 20px;
+
+  background:
+    rgba(232, 36, 63, 0.12);
+
+  color: #e8243f;
+
+  font-size: 1.8rem;
+}
+
+.wishlist-page .wishlist-empty-state h2 {
+  margin: 0 0 8px;
+
+  color: #ffffff;
+}
+
+.wishlist-page .wishlist-empty-state p {
+  margin: 0 0 24px;
+
+  color:
+    rgba(255, 255, 255, 0.65);
+
+  line-height: 1.6;
+}
+
+
+/* EXPLORE BUTTON */
+
+.wishlist-page .wishlist-explore-btn {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  min-height: 46px;
+
+  padding: 0 20px;
+
+  border-radius: 12px;
+
+  background: #e8243f;
+
+  color: #ffffff;
+
+  text-decoration: none;
+
+  font-weight: 800;
+
+  box-shadow:
+    0 12px 28px rgba(232, 36, 63, 0.3);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.wishlist-page .wishlist-explore-btn:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 16px 32px rgba(232, 36, 63, 0.38);
+}
+
+
+/* TABLET */
+
+@media (max-width: 1000px) {
+
+  .wishlist-page .wishlist-page-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+
+/* MOBILE */
+
+@media (max-width: 650px) {
+
+  .wishlist-page .wishlist-page-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .wishlist-page .wishlist-card-media {
+    height: 200px;
+  }
+
+}

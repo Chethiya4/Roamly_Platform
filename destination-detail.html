@@ -903,55 +903,63 @@ async function loadWeather(districtName) {
   }
 }
 
-// ── Render Tourist Spots ──────────────────────────────────────────────────────
-const savedSpotIds = new Set();
-async function loadSavedWishlistItems() {
-  if (!TOKEN) {
-    
-    return;
-  }
-
-  try {
-    const res = await fetch('/api/wishlist/mine', {
-      headers: {
-        Authorization: `Bearer ${TOKEN}`
-      }
-    });
-
-    const body = await res.json();
-
-    if (!res.ok || !body.success || !Array.isArray(body.data)) {
-      return;
-    }
-
-    savedSpotIds.clear();
-
-    body.data.forEach(entry => {
-      if (entry.itemType === 'spot' && entry.itemId) {
-        savedSpotIds.add(String(entry.itemId));
-      }
-    });
-
-    updateHeroWishlistCount(body.totalItems ?? body.data.length);
-  } catch (error) {
-    console.error('Failed to load wishlist:', error);
-  }
-}
-function handleSpotWishlistClick(event, spotId, button) {
+function handleSpotWishlistClick(event, spotIndex, button) {
   event.preventDefault();
   event.stopPropagation();
 
- if (!spotId) {
+  const spot = allApprovedSpots[spotIndex];
 
-    button.classList.add("active");
+  if (!spot || !button) return;
+
+  const spotName = String(spot.name || '').trim();
+
+  if (!spotName) return;
+
+  let wishlist = [];
+
+  try {
+    wishlist =
+      JSON.parse(
+        localStorage.getItem('roamly_home_wishlist')
+      ) || [];
+  } catch (error) {
+    wishlist = [];
+  }
+
+  const alreadySaved = wishlist.includes(spotName);
+
+  if (alreadySaved) {
+    wishlist = wishlist.filter(
+      name => name !== spotName
+    );
+
+    button.classList.remove('active');
+    button.title = 'Add to wishlist';
+    button.setAttribute(
+      'aria-label',
+      'Add to wishlist'
+    );
+  } else {
+    wishlist.push(spotName);
+
+    button.classList.add('active');
+    button.title = 'Remove from wishlist';
+    button.setAttribute(
+      'aria-label',
+      'Remove from wishlist'
+    );
 
     flyHeartToHeader(button);
+  }
 
-    return;
+  localStorage.setItem(
+    'roamly_home_wishlist',
+    JSON.stringify([...new Set(wishlist)])
+  );
 
-}
-
-  toggleSpotWishlist(event, spotId, button);
+  if (typeof window.refreshWishlistBadge === 'function') {
+    window.refreshWishlistBadge();
+  }
 }
 async function toggleSpotWishlist(event, spotId, button) {
   event.preventDefault();
@@ -1086,7 +1094,18 @@ function renderSpots() {
   grid.innerHTML = filtered.map((s, idx) => {
    const originalIndex = allApprovedSpots.indexOf(s);
 
-    const isSaved = savedSpotIds.has(String(s._id));
+    let localWishlist = [];
+
+try {
+  localWishlist =
+    JSON.parse(
+      localStorage.getItem('roamly_home_wishlist')
+    ) || [];
+} catch (error) {
+  localWishlist = [];
+}
+
+const isSaved = localWishlist.includes(s.name);
     const photo = (s.photos && s.photos[0]) || CATEGORY_PHOTOS[s.category] || DISTRICT_PHOTOS[currentDestinationData?.name] || 'images/colombo.jpg';
     const feeText = s.entryFee ? `🎟️ ${window.formatPriceFromLKR ? window.formatPriceFromLKR(s.entryFee) : 'LKR ' + s.entryFee}` : '🎟️ Free Entry';
     const hoursText = s.openingHours ? `🕒 ${esc(s.openingHours)}` : '🕒 Open Daily';
@@ -1102,9 +1121,9 @@ function renderSpots() {
 <button
   type="button"
   class="spot-wishlist-btn ${isSaved ? 'active' : ''}"
-  title="${s._id ? (isSaved ? 'Remove from wishlist' : 'Add to wishlist') : 'This spot is not saved in the database yet'}"
+title="${isSaved ? 'Remove from wishlist' : 'Add to wishlist'}"
   aria-label="Wishlist"
-  onclick="handleSpotWishlistClick(event, '${s._id ? String(s._id) : ''}', this)"
+  onclick="handleSpotWishlistClick(event, ${originalIndex}, this)"
 >
   <svg
     viewBox="0 0 24 24"
@@ -1209,22 +1228,50 @@ async function load() {
   loadWeather(d.name);
 
   // Store approved spots only (public view)
-  const dbApproved = (d.touristSpots || []).filter(s => s.status === 'approved');
-  if (dbApproved.length) {
-    allApprovedSpots = dbApproved;
-  } else {
-    allApprovedSpots = DEFAULT_SPOTS_MAP[d.name] || [
-      { name: `${d.name} Scenic Point`, category: "Viewpoint", openingHours: "6:00 AM - 6:00 PM", entryFee: 0, description: `Popular scenic attraction and viewpoint in ${d.name} district.`, photos: [suitableImage], averageRating: 4.8, reviewCount: 8 },
-      { name: `${d.name} Cultural Site`, category: "Historical", openingHours: "8:00 AM - 5:00 PM", entryFee: 200, description: `Historic monument and cultural heritage landmark in ${d.name} district.`, photos: [suitableImage], averageRating: 4.6, reviewCount: 5 }
-    ];
-  }
+ const dbApproved = (d.touristSpots || []).filter(
+  s => s.status === 'approved'
+);
 
+/* First try database approved spots */
+allApprovedSpots = dbApproved;
+
+/* If database has no approved spots, use district default spots */
+if (!Array.isArray(allApprovedSpots) || allApprovedSpots.length === 0) {
+  allApprovedSpots = DEFAULT_SPOTS_MAP[d.name];
+}
+
+/* Final fallback - always show at least 2 spots */
+if (!Array.isArray(allApprovedSpots) || allApprovedSpots.length === 0) {
+  allApprovedSpots = [
+    {
+      name: `${d.name} Scenic Point`,
+      category: "Viewpoint",
+      openingHours: "6:00 AM - 6:00 PM",
+      entryFee: 0,
+      description: `Popular scenic attraction and viewpoint in ${d.name} district.`,
+      photos: [suitableImage],
+      averageRating: 4.8,
+      reviewCount: 8
+    },
+    {
+      name: `${d.name} Cultural Site`,
+      category: "Historical",
+      openingHours: "8:00 AM - 5:00 PM",
+      entryFee: 200,
+      description: `Historic monument and cultural heritage landmark in ${d.name} district.`,
+      photos: [suitableImage],
+      averageRating: 4.6,
+      reviewCount: 5
+    }
+  ];
+}
 
 await loadSavedWishlistItems();
 
 renderSpots();
 
-loadReviews(d._id || DEST_ID);}
+loadReviews(d._id || DEST_ID);
+}
 
 // ── Add Spot Modal Controls ───────────────────────────────────────────────────
 function openAddSpotModal() {
