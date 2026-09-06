@@ -1826,3 +1826,90 @@ body.wishlist-page {
   }
 
 }
+
+/* ---------- HOME SEARCH DROPDOWN ---------- */
+
+.search-section {
+  overflow: visible !important;
+  position: relative;
+  z-index: 5;
+}
+
+.search-section .container {
+  overflow: visible !important;
+}
+
+/* Dropdown */
+#searchDropdown {
+  padding: 10px 12px !important;
+
+  height: auto !important;
+  min-height: 90px !important;
+  max-height: 150px !important;
+
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+
+  background: var(--surface) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 16px !important;
+
+  box-shadow: 0 12px 30px rgba(10, 27, 51, 0.12) !important;
+
+  box-sizing: border-box !important;
+  z-index: 9999 !important;
+
+  /* Hide native scrollbar */
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+/* Hide Chrome / Edge scrollbar */
+#searchDropdown::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Result row */
+.home-search-result {
+  border: none !important;
+  border-radius: 12px !important;
+
+  padding: 8px 10px !important;
+  gap: 8px !important;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease !important;
+}
+
+.home-search-result:hover {
+  background: var(--bg) !important;
+  transform: translateY(-1px);
+}
+
+/* Result icon */
+.home-search-result > div:first-child {
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+}
+
+.home-search-result > div:first-child svg {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+/* Section heading */
+#searchDropdown > div:first-child {
+  text-align: left !important;
+
+  padding: 3px 10px 5px !important;
+
+  font-size: 0.72rem !important;
+  letter-spacing: 0.8px !important;
+}
+#searchDropdown > div:first-child {
+  text-align: center !important;
+}
