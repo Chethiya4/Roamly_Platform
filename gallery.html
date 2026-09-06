@@ -70,119 +70,264 @@
 
   <main style="overflow-x: hidden;">
     
-    <section class="section-padding scroll-reveal">
-      <div class="container">
-       <h1 class="section-title" data-i18n="galleryTitle">
-    Roamly Gallery
-</h1>
-       <p
-data-i18n="gallerySubtitle"
-style="text-align:center; color: var(--ink-soft); font-size: 1.1rem;">
-      </div>
-    </section>
+    <!-- Gallery Hero -->
+<section class="gallery-hero">
+    <div class="gallery-overlay"></div>
 
-    <!-- Category 1: Tourist Destinations -->
-    <section class="section-padding scroll-reveal" style="background: var(--bg); padding-bottom: 80px;">
-      <div class="container">
-        <h2
-class="section-title"
-data-i18n="touristDestinations"
-style="font-size: 2rem; margin-bottom: 40px; text-align: left;">
-Tourist Destinations
-</h2>
-      </div>
-      
-      <!-- Seamless Scrolling Track -->
-      <div class="scrolling-gallery">
-        <div class="scrolling-track">
-          <!-- Block 1 -->
-          <div class="track-inner">
-            <img src="https://picsum.photos/seed/sigiriya1/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/sigiriya2/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/sigiriya3/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/sigiriya4/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/sigiriya5/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/sigiriya6/800/600" onclick="openLightbox(this.src)">
-          </div>
-          <!-- Block 2 (Exact Duplicate for endless illusion) -->
-          <div class="track-inner">
-            <img src="https://picsum.photos/seed/sigiriya1/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/sigiriya2/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/sigiriya3/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/sigiriya4/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/sigiriya5/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/sigiriya6/800/600" onclick="openLightbox(this.src)">
-          </div>
-        </div>
-      </div>
-    </section>
+    <div class="gallery-content">
+        <span class="gallery-badge">📸 Explore Sri Lanka</span>
 
-    <!-- Category 2: Cultural Events -->
-    <section class="section-padding scroll-reveal" style="background: var(--surface); padding-bottom: 80px;">
-      <div class="container">
-<h2
-class="section-title"
-data-i18n="culturalEvents"
-style="font-size: 2rem; margin-bottom: 40px; text-align: left;">
-Cultural Events
-</h2>
-      </div>
-      
-      <div class="scrolling-gallery">
-        <!-- Adding the 'reverse' class makes this one scroll left-to-right! -->
-        <div class="scrolling-track reverse">
-          <div class="track-inner">
-            <img src="https://picsum.photos/seed/culture1/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/culture2/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/culture3/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/culture4/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/culture5/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/culture6/800/600" onclick="openLightbox(this.src)">
-          </div>
-          <div class="track-inner">
-            <img src="https://picsum.photos/seed/culture1/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/culture2/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/culture3/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/culture4/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/culture5/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/culture6/800/600" onclick="openLightbox(this.src)">
-          </div>
-        </div>
-      </div>
-    </section>
+        <h1>
+            Every Journey<br>
+            Begins with a Story
+        </h1>
 
-    <!-- Category 3: Famous Industries -->
-    <section class="section-padding scroll-reveal" style="background: var(--bg); padding-bottom: 80px;">
-      <div class="container">
-       <h2
-class="section-title"
-data-i18n="famousIndustries"
-style="font-size: 2rem; margin-bottom: 40px; text-align: left;">
-Famous Industries
-</h2>
-      </div>
-      
-      <div class="scrolling-gallery">
-        <div class="scrolling-track" style="animation-duration: 40s;"> <!-- This one scrolls slightly slower -->
-          <div class="track-inner">
-            <img src="https://picsum.photos/seed/tea1/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/tea2/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/tea3/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/tea4/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/tea5/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/tea6/800/600" onclick="openLightbox(this.src)">
-          </div>
-          <div class="track-inner">
-            <img src="https://picsum.photos/seed/tea1/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/tea2/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/tea3/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/tea4/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/tea5/800/600" onclick="openLightbox(this.src)">
-            <img src="https://picsum.photos/seed/tea6/800/600" onclick="openLightbox(this.src)">
-          </div>
+        <p>
+            Discover breathtaking landscapes, vibrant culture,
+            golden beaches and unforgettable experiences from every
+            corner of Sri Lanka.
+        </p>
+
+        <a href="#tourist-gallery" class="btn-primary">
+            Explore Gallery
+        </a>  
+    </div>
+</section>
+
+  <section class="gallery-section">
+
+    <div class="container">
+
+        <div class="gallery-header">
+
+            <h2>Explore Sri Lanka</h2>
+
+            <p>
+                Discover breathtaking destinations, vibrant culture,
+                and unique experiences across the island.
+            </p>
+
         </div>
-      </div>
-    </section>
+
+        <div class="gallery-filters">
+
+            <button class="filter-btn active" data-filter="all">All</button>
+
+            <button class="filter-btn" data-filter="tourist">Tourist</button>
+
+            <button class="filter-btn" data-filter="culture">Culture</button>
+
+            <button class="filter-btn" data-filter="industry">Industry</button>
+
+        </div>
+
+        <div class="gallery-grid">
+
+    <div class="gallery-card wide" data-category="tourist">
+        <img src="assets/gallery/tourist/sigiriya.jpg" alt="Sigiriya">
+        <div class="gallery-card-overlay">
+            <h3>📍 Sigiriya</h3>
+            <p>UNESCO World Heritage Site</p>
+        </div>
+    </div>
+
+    <div class="gallery-card tall" data-category="tourist">
+        <img src="assets/gallery/tourist/ella.jpg" alt="Ella">
+        <div class="gallery-card-overlay">
+            <h3>📍 Ella</h3>
+            <p>Mountain Paradise</p>
+        </div>
+    </div>
+
+    <div class="gallery-card wide" data-category="tourist">
+        <img src="assets/gallery/tourist/mirissa.jpg" alt="Mirissa">
+        <div class="gallery-card-overlay">
+            <h3>📍 Mirissa</h3>
+            <p>Golden Beach</p>
+        </div>
+    </div>
+
+    <div class="gallery-card" data-category="tourist">
+        <img src="assets/gallery/tourist/yala.jpg" alt="Yala">
+        <div class="gallery-card-overlay">
+            <h3>📍 Yala National Park</h3>
+            <p>Wildlife Safari</p>
+        </div>
+    </div>
+
+    <div class="gallery-card" data-category="tourist">
+        <img src="assets/gallery/tourist/galle-fort.jpg" alt="Galle Fort">
+        <div class="gallery-card-overlay">
+            <h3>📍 Galle Fort</h3>
+            <p>Historic Dutch Fortress</p>
+        </div>
+    </div>
+
+    <div class="gallery-card" data-category="tourist">
+        <img src="assets/gallery/tourist/nine-arches.jpg" alt="Nine Arches Bridge">
+        <div class="gallery-card-overlay">
+            <h3>📍 Nine Arches Bridge</h3>
+            <p>Iconic Railway Bridge</p>
+        </div>
+    </div>
+
+    <div class="gallery-card" data-category="tourist">
+
+    <img src="assets/gallery/tourist/adams-peak.jpg" alt="Adams Peak">
+
+    <div class="gallery-card-overlay">
+        <h3>📍 Adam's Peak</h3>
+        <p>Sacred Pilgrimage Site</p>
+    </div>
+
+    </div>
+
+    <div class="gallery-card" data-category="tourist">
+
+    <img src="assets/gallery/tourist/horton-plains.jpg" alt="Horton Plains">
+
+    <div class="gallery-card-overlay">
+        <h3>📍 Horton Plains</h3>
+        <p>Home of World's End</p>
+    </div>
+
+</div>
+
+    <div class="gallery-card" data-category="tourist">
+
+    <img src="assets/gallery/tourist/hikkaduwa.jpg" alt="Hikkaduwa">
+
+    <div class="gallery-card-overlay">
+        <h3>📍 Hikkaduwa</h3>
+        <p>Coral Reef & Surfing</p>
+    </div>
+
+    </div>
+
+    <div class="gallery-card" data-category="culture">
+
+    <img src="assets/gallery/culture/esala-perahara.jpg" alt="Esala Perahara">
+
+    <div class="gallery-card-overlay">
+        <h3>📍 Kandy Esala Perahara</h3>
+        <p>Sri Lanka's Grand Cultural Festival</p>
+    </div>
+
+    </div>
+
+    <div class="gallery-card" data-category="culture">
+
+    <img src="assets/gallery/culture/vesak.jpg" alt="Vesak Festival">
+
+    <div class="gallery-card-overlay">
+        <h3>📍 Vesak Festival</h3>
+        <p>Festival of Lights</p>
+    </div>
+
+    </div>
+
+    <div class="gallery-card" data-category="culture">
+
+    <img src="assets/gallery/culture/traditional-dance.jpg" alt="Traditional Dance">
+
+    <div class="gallery-card-overlay">
+        <h3>📍 Traditional Kandyan Dance</h3>
+        <p>Heritage Performing Arts</p>
+    </div>
+
+    </div>
+
+    <div class="gallery-card" data-category="industry">
+
+    <img src="assets/gallery/industry/tea-plantation.jpg" alt="Tea Plantaion">
+
+    <div class="gallery-card-overlay">
+        <h3>📍 Tea Plantation</h3>
+        <p>World Famous Ceylon Tea</p>
+    </div>
+
+    </div>
+
+    <div class="gallery-card" data-category="industry">
+
+    <img src="assets/gallery/industry/gem-mining.jpg" alt="Gem Mining">
+
+    <div class="gallery-card-overlay">
+        <h3>📍 Gem Mining</h3>
+        <p>Ratnapura Gem Industry</p>
+    </div>
+
+    </div>
+
+    <div class="gallery-card" data-category="industry">
+
+    <img src="assets/gallery/industry/cinnamon.jpg" alt="Cinnamon">
+
+    <div class="gallery-card-overlay">
+        <h3>📍 Cinnamon</h3>
+        <p>Premium Ceylon Cinnamon</p>
+    </div>
+
+    </div>
+
+    <div class="gallery-card" data-category="industry">
+
+    <img src="assets/gallery/industry/fishing.jpg" alt="Fishing">
+
+    <div class="gallery-card-overlay">
+        <h3>📍 Fishing</h3>
+        <p>Coastal Fishing Industry</p>
+    </div>
+
+    </div>
+
+    <div class="gallery-card" data-category="industry">
+
+    <img src="assets/gallery/industry/handloom.jpg" alt="Handloom">
+
+    <div class="gallery-card-overlay">
+        <h3>📍 Handloom</h3>
+        <p>Traditional Textile Industry</p>
+    </div>
+
+    </div>
+
+    <div class="gallery-card" data-category="industry">
+
+    <img src="assets/gallery/industry/wood-carving.jpg" alt="Wood Carving">
+
+    <div class="gallery-card-overlay">
+        <h3>📍 Wood Carving</h3>
+        <p>Sri Lankan Handicrafts</p>
+    </div>
+
+    </div>
+
+
+</div>
+
+    </div>
+
+</section>
+
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+
+    <span class="lightbox-close">&times;</span>
+
+    <button class="lightbox-prev">&#10094;</button>
+
+<img class="lightbox-image" src="" alt="Gallery Image">
+
+<button class="lightbox-next">&#10095;</button>
+
+    <div class="lightbox-caption">
+        <h2 id="lightbox-title"></h2>
+        <p id="lightbox-description"></p>
+    </div>
+
+</div>
 
   </main>
 
@@ -228,26 +373,7 @@ Famous Industries
     </div>
   </footer>
 
-  <!-- Lightbox Modal -->
-  <div id="lightbox" class="lightbox-modal" onclick="closeLightbox()">
-    <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
-    <img id="lightboxImg" src="" alt="Expanded Image" onclick="event.stopPropagation()">
-  </div>
-
-  <script src="translations.js"></script>
   <script src="script.js"></script>
-  
-  <script>
-    // Simple Lightbox Logic
-    function openLightbox(src) {
-      document.getElementById('lightboxImg').src = src;
-      const modal = document.getElementById('lightbox');
-      modal.classList.add('active');
-    }
 
-    function closeLightbox() {
-      document.getElementById('lightbox').classList.remove('active');
-    }
-  </script>
 </body>
 </html>

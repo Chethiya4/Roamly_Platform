@@ -1229,3 +1229,149 @@ renderFeaturedDistricts();
 }
 });
 
+
+
+
+// ===== Gallery Filter =====
+
+const filterButtons = document.querySelectorAll(".filter-btn");
+const galleryCards = document.querySelectorAll(".gallery-card");
+
+filterButtons.forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        // Remove active button
+        filterButtons.forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+        // Activate clicked button
+        button.classList.add("active");
+
+        // Selected category
+        const filter = button.dataset.filter;
+
+        galleryCards.forEach(card => {
+
+            if (filter === "all") {
+
+                card.style.display = "block";
+
+            } else if (card.dataset.category === filter) {
+
+                card.style.display = "block";
+
+            } else {
+
+                card.style.display = "none";
+
+            }
+
+        });
+
+    });
+
+});
+
+
+// ============================
+// Gallery Lightbox
+// ============================
+
+const lightbox = document.getElementById("lightbox");
+const lightboxImage = document.querySelector(".lightbox-image");
+const lightboxTitle = document.getElementById("lightbox-title");
+const lightboxDescription = document.getElementById("lightbox-description");
+const closeLightbox = document.querySelector(".lightbox-close");
+
+const cards = document.querySelectorAll(".gallery-card");
+
+const prevButton = document.querySelector(".lightbox-prev");
+const nextButton = document.querySelector(".lightbox-next");
+
+let currentIndex = 0;
+
+function openLightbox(index){
+
+    currentIndex = index;
+
+    const card = cards[index];
+
+    const image = card.querySelector("img");
+    const title = card.querySelector("h3").textContent;
+    const description = card.querySelector("p").textContent;
+
+    lightboxImage.src = image.src;
+    lightboxTitle.textContent = title;
+    lightboxDescription.textContent = description;
+
+    lightbox.classList.add("active");
+}
+
+cards.forEach((card, index) => {
+
+    card.addEventListener("click", () => {
+
+        openLightbox(index);
+
+    });
+
+});
+
+
+
+closeLightbox.addEventListener("click", () => {
+
+    lightbox.classList.remove("active");
+
+});
+
+lightbox.addEventListener("click", (e) => {
+
+    if (e.target === lightbox) {
+
+        lightbox.classList.remove("active");
+
+    }
+
+});
+
+document.addEventListener("keydown", (e) => {
+
+    if (e.key === "Escape") {
+
+        lightbox.classList.remove("active");
+
+    }
+
+});
+
+nextButton.addEventListener("click",()=>{
+
+    currentIndex++;
+
+    if(currentIndex >= cards.length){
+
+        currentIndex = 0;
+
+    }
+
+    openLightbox(currentIndex);
+
+});
+
+prevButton.addEventListener("click",()=>{
+
+    currentIndex--;
+
+    if(currentIndex < 0){
+
+        currentIndex = cards.length - 1;
+
+    }
+
+    openLightbox(currentIndex);
+
+});
+
