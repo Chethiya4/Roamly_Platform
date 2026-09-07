@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="assets/logo.png" rel="icon" type="image/png"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="style.css" rel="stylesheet"/>
+<title>Roamly — Business Registration</title>
+<style>
+    /* Premium Form Styling */
+    .form-container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .form-section {
+      background: var(--surface);
+      padding: 40px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--line);
+      margin-bottom: 40px;
+    }
+    .form-section-title {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      margin-bottom: 24px;
+      color: var(--ink);
+      border-bottom: 2px solid var(--line);
+      padding-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .form-section-title span {
+      background: rgba(215, 38, 61, 0.1);
+      color: var(--red);
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      font-size: 1rem;
+      font-weight: 800;
+    }
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .form-grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 24px;
+    }
+    .form-group {
+      margin-bottom: 24px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--ink-soft);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: var(--bg);
+      color: var(--ink);
+      font-family: inherit;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px rgba(215, 38, 61, 0.15);
+    }
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1rem;
+      color: var(--ink);
+      cursor: pointer;
+      background: var(--bg);
+      padding: 12px 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      transition: 0.2s;
+    }
+    .checkbox-label:hover {
+      border-color: var(--navy-500);
+    }
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--red);
+    }
+    input[type="file"] {
+      background: none;
+      border: none;
+      padding: 0;
+    }
+    
+    @media (max-width: 768px) {
+      .form-grid-2, .form-grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+<!-- Isolated Business Header -->
+<header class="header">
+<div class="header-inner">
+<a class="logo" href="business.html">
+<img alt="Brand logo" src="assets/logo.png"/>
+</a>
+<div class="header-actions">
+<button class="btn-signin" onclick="window.location.href='business.html'" style="background: var(--red); border-color: var(--red);" type="button">Back to Portal</button>
+</div>
+</div>
+</header>
+<main style="background: var(--bg);">
+<section class="section-padding">
+<div class="form-container">
+<div style="text-align: center; margin-bottom: 50px;">
+<h1 style="font-family: var(--font-display); font-size: 3rem; color: var(--ink); margin-bottom: 12px;">Partner Registration</h1>
+<p style="color: var(--ink-soft); font-size: 1.15rem;">Complete the form below to submit your business for listing on Roamly.</p>
+</div>
+<!-- Success Message Container (Hidden by default) -->
+<div class="scroll-reveal" id="successMessage" style="display: none; text-align: center; background: var(--surface); padding: 80px 40px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); border: 1px solid var(--line); margin-bottom: 40px;">
+<!-- Animated Green Tick Icon -->
+<div style="width: 90px; height: 90px; background: #E8F5E9; color: #4CAF50; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; box-shadow: 0 4px 14px rgba(76, 175, 80, 0.2);">
+<svg fill="none" height="44" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" viewbox="0 0 24 24" width="44">
+<polyline points="20 6 9 17 4 12"></polyline>
+</svg>
+</div>
+<h2 style="font-family: var(--font-display); font-size: 2.5rem; margin-bottom: 16px; color: var(--ink);">Successfully Submitted!</h2>
+<p style="color: var(--ink-soft); font-size: 1.2rem; margin-bottom: 40px; max-width: 500px; margin-left: auto; margin-right: auto;">
+            Submitted to admin panel to accept your business. We will notify you via email once your listing is approved and live on Roamly.
+          </p>
+<button class="btn-primary" onclick="window.location.href='business.html'" style="padding: 16px 40px; font-size: 1.1rem; border-radius: 999px;" type="button">
+            Return to Business Portal
+          </button>
+</div>
+<div id="errorBanner" style="display: none; background: #ffebee; color: #c62828; padding: 12px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: 600;"></div><form action="#" enctype="multipart/form-data" id="registrationForm" method="POST" novalidate="">
+<!-- 1. Business Information -->
+<div class="form-section scroll-reveal">
+<h2 class="form-section-title"><span>1</span> Business Information</h2>
+<div class="form-group">
+<label>Business Name</label>
+<input class="form-input" name="businessName" placeholder="Enter your business name" required="" type="text"/>
+</div>
+<div class="form-grid-2">
+<div class="form-group">
+<label>Business Category</label>
+<select class="form-select" name="category" required="">
+<option disabled="" selected="" value="">Select a category</option>
+<option value="Hotel">Hotel / Accommodation</option>
+<option value="Restaurant">Restaurant</option>
+<option value="Vehicle Rental">Vehicle Rental</option>
+<option value="Tour Guide">Tour Guide</option>
+<option value="Camping">Camping</option>
+<option value="Adventure">Adventure</option>
+<option value="Cafe">Café</option>
+<option value="Homestay">Homestay</option>
+</select>
+</div>
+<div class="form-group">
+<label>Business Registration Number <span style="text-transform:none; font-weight:400;">(Optional)</span></label>
+<input class="form-input" name="registrationNumber" placeholder="e.g. PV001234" type="text"/>
+</div>
+</div>
+<div class="form-group">
+<label>Business Description</label>
+<textarea class="form-textarea" name="description" placeholder="Briefly describe what your business offers..." required="" rows="4"></textarea>
+</div>
+</div>
+<!-- 2. Owner Information -->
+<div class="form-section scroll-reveal">
+<h2 class="form-section-title"><span>2</span> Owner Information</h2>
+<div class="form-grid-2">
+<div class="form-group">
+<label>Owner Full Name</label>
+<input class="form-input" name="ownerFullName" placeholder="John Doe" required="" type="text"/>
+</div>
+<div class="form-group">
+<label>NIC / Passport Number <span style="text-transform:none; font-weight:400;">(Optional)</span></label>
+<input class="form-input" name="ownerNIC" placeholder="NIC or Passport No" type="text"/>
+</div>
+<div class="form-group">
+<label>Personal Email Address</label>
+<input class="form-input" name="personalEmail" placeholder="john@example.com" required="" type="email"/>
+</div>
+<div class="form-group">
+<label>Personal Mobile Number</label>
+<input class="form-input" name="personalMobile" placeholder="+94 7X XXX XXXX" required="" type="tel"/>
+</div>
+</div>
+</div>
+<!-- 3. Business Location -->
+<div class="form-section scroll-reveal">
+<h2 class="form-section-title"><span>3</span> Business Location</h2>
+<div class="form-grid-2">
+<div class="form-group">
+<label>Province</label>
+<select class="form-select" name="province" id="provinceSelect" required="">
+<option disabled="" selected="" value="">Select Province</option>
+<option value="Western Province">Western Province</option>
+<option value="Central Province">Central Province</option>
+<option value="Southern Province">Southern Province</option>
+<option value="Northern Province">Northern Province</option>
+<option value="Eastern Province">Eastern Province</option>
+<option value="North Western Province">North Western Province</option>
+<option value="North Central Province">North Central Province</option>
+<option value="Uva Province">Uva Province</option>
+<option value="Sabaragamuwa Province">Sabaragamuwa Province</option>
+</select>
+</div>
+<div class="form-group">
+<label>District (Destination) *</label>
+<select class="form-select" name="destination" id="destinationSelect" required="">
+<option disabled="" selected="" value="">Loading districts…</option>
+</select>
+</div>
+</div>
+<div class="form-grid-2">
+<div class="form-group">
+<label>City / Town</label>
+<input class="form-input" name="city" required="" type="text"/>
+</div>
+<div class="form-group">
+<label>Postal Code</label>
+<input class="form-input" name="postalCode" required="" type="text"/>
+</div>
+</div>
+<div class="form-group">
+<label>Street Address</label>
+<input class="form-input" name="streetAddress" placeholder="123 Main Street" required="" type="text"/>
+</div>
+<div class="form-grid-2">
+<div class="form-group">
+<label>Google Maps Latitude</label>
+<input class="form-input" name="latitude" placeholder="e.g. 6.9271" type="text"/>
+</div>
+<div class="form-group">
+<label>Google Maps Longitude</label>
+<input class="form-input" name="longitude" placeholder="e.g. 79.8612" type="text"/>
+</div>
+</div>
+</div>
+<!-- 4. Contact Information -->
+<div class="form-section scroll-reveal">
+<h2 class="form-section-title"><span>4</span> Public Contact Details</h2>
+<div class="form-grid-2">
+<div class="form-group">
+<label>Business Phone Number</label>
+<input class="form-input" name="businessPhone" placeholder="Contact number for customers" required="" type="tel"/>
+</div>
+<div class="form-group">
+<label>WhatsApp Number</label>
+<input class="form-input" name="whatsapp" placeholder="WhatsApp contact (if available)" type="tel"/>
+</div>
+<div class="form-group">
+<label>Business Email</label>
+<input class="form-input" name="businessEmail" placeholder="support@yourbusiness.com" required="" type="email"/>
+</div>
+<div class="form-group">
+<label>Website <span style="text-transform:none; font-weight:400;">(Optional)</span></label>
+<input class="form-input" name="website" placeholder="https://www.yourwebsite.com" type="url"/>
+</div>
+</div>
+</div>
+<!-- 5. Operating Hours -->
+<div class="form-section scroll-reveal">
+<h2 class="form-section-title"><span>5</span> Operating Hours</h2>
+<div class="form-group">
+<label class="checkbox-label" style="display:inline-flex; width: auto; background: none; border: none; padding: 0; margin-bottom: 20px;">
+<input id="24hours" name="open24" type="checkbox" value="true"/> We are open 24 Hours
+              </label>
+</div>
+<div class="form-grid-3">
+<div class="form-group">
+<label>Opening Time</label>
+<input class="form-input" name="openTime" type="time"/>
+</div>
+<div class="form-group">
+<label>Closing Time</label>
+<input class="form-input" name="closeTime" type="time"/>
+</div>
+<div class="form-group">
+<label>Open Days</label>
+<select class="form-select" name="openDays">
+<option value="Everyday">Everyday</option>
+<option value="Weekdays Only">Weekdays Only</option>
+<option value="Weekends Only">Weekends Only</option>
+<option value="Custom">Custom</option>
+</select>
+</div>
+</div>
+</div>
+<!-- 6. Pricing Information -->
+<div class="form-section scroll-reveal">
+<h2 class="form-section-title"><span>6</span> Pricing Information</h2>
+<div class="form-grid-2">
+<div class="form-group">
+<label>General Price Range</label>
+<select class="form-select" name="priceTier" required="">
+<option disabled="" selected="" value="">Select Tier</option>
+<option value="$">$ (Budget / Affordable)</option>
+<option value="$$">$$ (Mid-range)</option>
+<option value="$$$">$$$ (Premium)</option>
+<option value="$$$$">$$$$ (Luxury)</option>
+</select>
+</div>
+<div class="form-group">
+<label>Starting Price (LKR) <span style="text-transform:none; font-weight:400;">(Optional)</span></label>
+<input class="form-input" name="startingPriceLKR" placeholder="e.g. 1500" type="number"/>
+</div>
+</div>
+</div>
+<!-- 7. Facilities & Services -->
+<div class="form-section scroll-reveal">
+<h2 class="form-section-title"><span>7</span> Facilities &amp; Services</h2>
+<p style="color: var(--ink-soft); margin-bottom: 16px; font-size: 0.95rem;">Select all the amenities your business provides (Optional).</p>
+<div class="checkbox-grid">
+<label class="checkbox-label"><input name="facilities" type="checkbox" value="Free Wi-Fi"/> Free Wi-Fi</label>
+<label class="checkbox-label"><input name="facilities" type="checkbox" value="Parking"/> Parking</label>
+<label class="checkbox-label"><input name="facilities" type="checkbox" value="Air Conditioning"/> Air Conditioning</label>
+<label class="checkbox-label"><input name="facilities" type="checkbox" value="Card Payment"/> Card Payment</label>
+<label class="checkbox-label"><input name="facilities" type="checkbox" value="Wheelchair Accessible"/> Wheelchair Accessible</label>
+<label class="checkbox-label"><input name="facilities" type="checkbox" value="Pet Friendly"/> Pet Friendly</label>
+<label class="checkbox-label"><input name="facilities" type="checkbox" value="Family Friendly"/> Family Friendly</label>
+<label class="checkbox-label"><input name="facilities" type="checkbox" value="Reservations Available"/> Reservations Available</label>
+<label class="checkbox-label"><input name="facilities" type="checkbox" value="Delivery Available"/> Delivery Available</label>
+<label class="checkbox-label"><input name="facilities" type="checkbox" value="Pickup Service"/> Pickup Service</label>
+<label class="checkbox-label"><input name="facilities" type="checkbox" value="Restrooms"/> Restrooms</label>
+<label class="checkbox-label"><input name="facilities" type="checkbox" value="Outdoor Seating"/> Outdoor Seating</label>
+</div>
+</div>
+<!-- 8. Images -->
+<div class="form-section scroll-reveal">
+<h2 class="form-section-title"><span>8</span> Images &amp; Branding</h2>
+<div class="form-grid-2">
+<div class="form-group">
+<label>Business Logo</label>
+<input accept="image/*" class="form-input" name="logo" required="" type="file"/>
+</div>
+<div class="form-group">
+<label>Cover Image (For Profile Header)</label>
+<input accept="image/*" class="form-input" name="cover" required="" type="file"/>
+</div>
+</div>
+<div class="form-group">
+<label>Gallery Images (Upload Multiple)</label>
+<input accept="image/*" class="form-input" multiple="" name="gallery" type="file"/>
+</div>
+</div>
+<!-- 9. Social Media -->
+<div class="form-section scroll-reveal">
+<h2 class="form-section-title"><span>9</span> Social Media Links <span style="font-size: 1rem; color: var(--ink-soft); font-weight: normal; margin-left: auto;">(Optional)</span></h2>
+<div class="form-grid-2">
+<div class="form-group">
+<label>Facebook Profile/Page URL</label>
+<input class="form-input" name="facebook" placeholder="https://facebook.com/yourpage" type="url"/>
+</div>
+<div class="form-group">
+<label>Instagram URL</label>
+<input class="form-input" name="instagram" placeholder="https://instagram.com/yourhandle" type="url"/>
+</div>
+<div class="form-group">
+<label>TikTok URL</label>
+<input class="form-input" name="tiktok" placeholder="https://tiktok.com/@yourhandle" type="url"/>
+</div>
+<div class="form-group">
+<label>YouTube Channel URL</label>
+<input class="form-input" name="youtube" placeholder="https://youtube.com/c/yourchannel" type="url"/>
+</div>
+</div>
+</div>
+<!-- 10. Account Information -->
+<div class="form-section scroll-reveal">
+<h2 class="form-section-title"><span>10</span> Account Setup</h2>
+<p style="color: var(--ink-soft); margin-bottom: 20px; font-size: 0.95rem;">Set up your login credentials for the Roamly Business Portal.</p>
+
+<div class="form-grid-2">
+<div class="form-group">
+<label>Password</label>
+<input class="form-input" name="password" required="" type="password"/>
+</div>
+<div class="form-group">
+<label>Confirm Password</label>
+<input class="form-input" name="confirmPassword" required="" type="password"/>
+</div>
+</div>
+</div>
+<!-- 11. Verification -->
+<div class="form-section scroll-reveal">
+<h2 class="form-section-title"><span>11</span> Verification &amp; Submission</h2>
+<div class="form-grid-2">
+<div class="form-group">
+<label>Upload Business License (PDF or Image)</label>
+<input accept=".pdf, image/*" class="form-input" name="license" required="" type="file"/>
+</div>
+<div class="form-group">
+<label>Upload Owner NIC / Passport <span style="text-transform:none; font-weight:400;">(Optional)</span></label>
+<input accept=".pdf, image/*" class="form-input" name="nic" type="file"/>
+</div>
+</div>
+<div class="form-group" style="margin-top: 30px;">
+<label class="checkbox-label" style="background: none; border: none; padding: 0;">
+<input name="termsAgreed" required="" type="checkbox" value="true"/> I confirm that the information provided is accurate and I agree to the <a href="#" style="color: var(--red); text-decoration: underline; margin-left: 4px;">Roamly Terms &amp; Conditions</a>.
+              </label>
+</div>
+<!-- Submit Action -->
+<button class="btn-primary" style="width: 100%; font-size: 1.2rem; padding: 20px; border-radius: 999px; margin-top: 20px;" type="submit">
+              Submit Business Registration
+            </button>
+</div>
+</form>
+</div>
+</section>
+</main>
+<script src="script.js"></script>
+<!-- Form Submission Handler -->
+<script>
+    function scrollToField(el) {
+      if (!el) return;
+      const headerOffset = 130;
+      const rect = el.getBoundingClientRect();
+      const targetTop = Math.max(0, rect.top + window.pageYOffset - headerOffset);
+
+      window.scrollTo({
+        top: targetTop,
+        behavior: 'smooth'
+      });
+
+      setTimeout(() => {
+        try {
+          el.focus({ preventScroll: true });
+        } catch(e) {}
+      }, 250);
+    }
+
+    function markInvalid(el, message) {
+      if (!el) return;
+      el.classList.add('is-invalid');
+      
+      const parent = el.closest('.form-group') || el.parentElement;
+      if (parent) {
+        const existingMsg = parent.querySelector('.field-error-msg');
+        if (existingMsg) existingMsg.remove();
+        
+        if (message) {
+          const msgEl = document.createElement('div');
+          msgEl.className = 'field-error-msg';
+          msgEl.textContent = message;
+          parent.appendChild(msgEl);
+        }
+      }
+
+      const clearHandler = () => {
+        el.classList.remove('is-invalid');
+        const p = el.closest('.form-group') || el.parentElement;
+        if (p) {
+          const m = p.querySelector('.field-error-msg');
+          if (m) m.remove();
+        }
+        el.removeEventListener('input', clearHandler);
+        el.removeEventListener('change', clearHandler);
+      };
+      el.addEventListener('input', clearHandler);
+      el.addEventListener('change', clearHandler);
+    }
+
+    function clearAllErrors(form) {
+      form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+      form.querySelectorAll('.field-error-msg').forEach(el => el.remove());
+    }
+
+    document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const errorBanner = document.getElementById('errorBanner');
+      errorBanner.style.display = 'none';
+      clearAllErrors(this);
+
+      let hasErrors = false;
+
+      // 1. Password Validation (Length & Matching)
+      const passEl = document.querySelector('input[name="password"]');
+      const confirmPassEl = document.querySelector('input[name="confirmPassword"]');
+      if (passEl) {
+        if (!passEl.value || passEl.value.length < 6) {
+          markInvalid(passEl, "Password must be at least 6 characters long.");
+          hasErrors = true;
+        }
+      }
+      if (passEl && confirmPassEl && passEl.value && confirmPassEl.value) {
+        if (passEl.value !== confirmPassEl.value) {
+          markInvalid(confirmPassEl, "Passwords do not match.");
+          hasErrors = true;
+        }
+      }
+
+      // 2. Required Fields Validation
+      const requiredInputs = this.querySelectorAll('[required]');
+      requiredInputs.forEach(el => {
+        if (el.type === 'checkbox' && !el.checked) {
+          markInvalid(el, "You must agree to continue.");
+          hasErrors = true;
+        } else if (el.type === 'file') {
+          if (!el.files || el.files.length === 0) {
+            markInvalid(el, "Please upload the required file.");
+            hasErrors = true;
+          }
+        } else if (!el.value || !el.value.trim()) {
+          markInvalid(el, `Please fill out this required field.`);
+          hasErrors = true;
+        }
+      });
+
+      // 3. Email Format Validation
+      const emailInputs = this.querySelectorAll('input[type="email"]');
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      emailInputs.forEach(el => {
+        if (el.value && !emailRegex.test(el.value.trim())) {
+          markInvalid(el, "Please enter a valid email address.");
+          hasErrors = true;
+        }
+      });
+
+      if (hasErrors) {
+        const firstInvalid = this.querySelector('.is-invalid');
+        if (firstInvalid) {
+          scrollToField(firstInvalid);
+        }
+        errorBanner.textContent = "Please correct the highlighted errors below before submitting.";
+        errorBanner.style.display = 'block';
+        return;
+      }
+
+      const formData = new FormData(this);
+      const facilities = formData.getAll('facilities');
+      formData.delete('facilities');
+      if (facilities.length > 0) {
+          formData.append('facilities', JSON.stringify(facilities));
+      }
+
+      const nicInput = document.querySelector('input[name="nic"]');
+      if (nicInput && nicInput.files.length === 0) formData.delete('nic');
+
+      try {
+          const res = await fetch('/api/business/register', {
+              method: 'POST',
+              body: formData
+          });
+          const data = await res.json();
+          if (data.success) {
+              localStorage.setItem('roamly_token', data.token);
+              
+              // Show success message
+              this.style.display = 'none';
+              const title = document.querySelector('.form-container h1');
+              const subtitle = document.querySelector('.form-container p');
+              if (title) title.style.display = 'none';
+              if (subtitle) subtitle.style.display = 'none';
+              
+              const successMsg = document.getElementById('successMessage');
+              successMsg.style.display = 'block';
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+              
+              setTimeout(() => {
+                  window.location.href = 'business.html';
+              }, 2500);
+          } else {
+              if (data.errors && Array.isArray(data.errors)) {
+                data.errors.forEach(err => {
+                  const fieldEl = this.querySelector(`[name="${err.path || err.param}"]`);
+                  if (fieldEl) markInvalid(fieldEl, err.msg);
+                });
+              }
+              const firstInvalid = this.querySelector('.is-invalid');
+              if (firstInvalid) {
+                scrollToField(firstInvalid);
+              } else {
+                scrollToField(errorBanner);
+              }
+              errorBanner.textContent = data.message || "Registration failed. Please check highlighted fields.";
+              errorBanner.style.display = 'block';
+          }
+      } catch (err) {
+          errorBanner.textContent = "An error occurred during registration. Please try again.";
+          errorBanner.style.display = 'block';
+          scrollToField(errorBanner);
+      }
+    });
+</script>
+
+<!-- Populate & filter destination dropdown from API -->
+<script>
+    let allDestinations = [];
+
+    function populateDestinations(filteredDests) {
+      const sel = document.getElementById('destinationSelect');
+      if (!sel) return;
+      sel.disabled = false;
+      const currentVal = sel.value;
+      sel.innerHTML = '<option disabled selected value="">Select district (destination)…</option>';
+      
+      if (filteredDests && filteredDests.length) {
+        filteredDests.forEach(d => {
+          const opt = document.createElement('option');
+          opt.value = d._id;
+          opt.textContent = d.province ? `${d.name} (${d.province})` : d.name;
+          if (d._id === currentVal) opt.selected = true;
+          sel.appendChild(opt);
+        });
+      } else {
+        sel.innerHTML = '<option disabled selected value="">No districts found for selected province</option>';
+      }
+    }
+
+    async function loadDestinations() {
+      const sel = document.getElementById('destinationSelect');
+      try {
+        const res = await fetch('/api/destinations?limit=100');
+        const body = await res.json();
+        if (body.success && body.data && body.data.length) {
+          allDestinations = body.data;
+          populateDestinations(allDestinations);
+        } else {
+          if (sel) sel.innerHTML = '<option disabled selected value="">No districts available</option>';
+        }
+      } catch (err) {
+        console.error('Failed to load destinations from API:', err);
+        if (sel) sel.innerHTML = '<option disabled selected value="">Error loading districts</option>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadDestinations();
+
+      const provSel = document.getElementById('provinceSelect');
+      const destSel = document.getElementById('destinationSelect');
+
+      if (provSel) {
+        provSel.addEventListener('change', (e) => {
+          const selectedProvince = e.target.value;
+          if (!selectedProvince) {
+            populateDestinations(allDestinations);
+          } else {
+            const filtered = allDestinations.filter(d => 
+              d.province && d.province.toLowerCase().trim() === selectedProvince.toLowerCase().trim()
+            );
+            populateDestinations(filtered.length ? filtered : allDestinations);
+          }
+        });
+      }
+
+      if (destSel) {
+        destSel.addEventListener('change', (e) => {
+          const selectedId = e.target.value;
+          const found = allDestinations.find(d => d._id === selectedId);
+          if (found && found.province && provSel) {
+            for (let opt of provSel.options) {
+              if (opt.value && opt.value.toLowerCase().trim() === found.province.toLowerCase().trim()) {
+                provSel.value = opt.value;
+                break;
+              }
+            }
+          }
+        });
+      }
+    });
+</script>
+</html>
